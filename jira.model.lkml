@@ -1,4 +1,5 @@
 connection: "snowflake_dev"
+label: "JIRA"
 
 # include all the views
 include: "*.view"
@@ -18,4 +19,5 @@ explore: vw_escal_detail {
     sql_on: ${vw_escal_detail.key} = ${vw_escal_components.key} ;;
     relationship: one_to_many
   }
+
 }
