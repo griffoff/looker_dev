@@ -32,7 +32,7 @@ explore: fact_learningobjective {
   }
 
   join: dim_learningobjective {
-    sql_on: ${fact_learningobjective.id} = ${dim_learningobjective.lobjectiveid} ;;
+    sql_on: ${fact_learningobjective.learningobjectiveid} = ${dim_learningobjective.learningobjectiveid} ;;
     relationship: many_to_one
   }
 

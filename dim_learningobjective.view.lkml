@@ -75,6 +75,7 @@ view: dim_learningobjective {
 
   dimension_group: startdate {
     label: "Start"
+    description: "The Start Date"
     type: time
     timeframes: [
       raw,
