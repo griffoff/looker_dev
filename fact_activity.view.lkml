@@ -72,7 +72,7 @@ view: fact_activity {
     description: "The % points of possible points"
     label: "Score (avg)"
     type: number
-    sql: ${TABLE}.SCALEDSCORE ;;
+    sql: case when ${TABLE}.SCALEDSCORE > 1 then null else ${TABLE}.SCALEDSCORE end  ;;
     value_format_name: percent_1
   }
 
