@@ -13,6 +13,11 @@ view: vw_escal_components {
     sql: ${TABLE}.KEY ;;
   }
 
+  dimension:topSystem {
+    type: yesno
+    sql: ${TABLE}.COMPONENT in ('MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','Cengagebrain.com','SSO Account Services') ;;
+  }
+
   measure: count {
     label: "component count"
     type: count

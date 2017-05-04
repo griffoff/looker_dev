@@ -20,4 +20,8 @@ explore: vw_escal_detail {
     relationship: one_to_many
   }
 
+  join: dim_date {
+    sql_on: ${vw_escal_detail.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
 }
