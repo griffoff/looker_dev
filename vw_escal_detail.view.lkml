@@ -115,7 +115,23 @@ view: vw_escal_detail {
 
   measure: count {
     type: count
-    drill_fields: [severity]
-  }
+    drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date]
+    link: {
+      label: "Look at Content Aging Data"
+      url: "https://cengage.looker.com/dashboards/37?Category=%25Content%20Development%25"
+    }
+      link: {
+        label: "Look at Software Aging Data"
+        url: "https://cengage.looker.com/dashboards/37?Category=%25Software%25"
 
+    }
+  }
+  #measure: count2 {
+  #  type: count
+  #  link: {
+  #    label: "‘Drill Down Test’"
+  #    url: "{{ sessions.count_bounce_sessions._link }}"
+  #    icon_url: "http://www.looker.com/favicon.ico"
+  #  }
+  #}
 }
