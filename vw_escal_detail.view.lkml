@@ -24,6 +24,21 @@ view: vw_escal_detail {
     sql: ${last_resolved_raw} is not null ;;
   }
 
+  dimension: resolutionIntime {
+    type: yesno
+    sql: ( ${last_resolved_raw} is not null) and (
+           ( (${priority} = 'P4 Escalation') and (${resolutionTime}<306))
+        or ( (${priority} = 'P3 Escalation') and (${resolutionTime}<186))
+        or ( (${priority} = 'P2 Escalation') and (${resolutionTime}<24))
+        or ( (${priority} = 'P1 Escalation') and (${resolutionTime}<8))
+                                                  );;
+  }
+
+  dimension: resolutionIntimeOuttime {
+    type: string
+    sql: case when (${resolutionIntime}) then 'In time' else 'Out time' end;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
