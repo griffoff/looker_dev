@@ -5,6 +5,14 @@ view: vw_escal_categories {
   dimension: category {
     type: string
     sql: ${TABLE}.CATEGORY ;;
+    link: {
+      label: "Show Aging"
+      url: "https://cengage.looker.com/dashboards/37?Category=%25{{category}}%25"
+    }
+    link: {
+      label: "Show Newly Opened"
+      url: "https://cengage.looker.com/dashboards/39?Category=%25{{category}}%25"
+    }
   }
 
   dimension: key {
