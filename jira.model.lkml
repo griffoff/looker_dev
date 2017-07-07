@@ -25,3 +25,9 @@ explore: vw_escal_detail {
     relationship: many_to_one
   }
 }
+
+# for work with DIG
+explore: vw_dig_info_detail {
+  label: "DIG"
+
+}
