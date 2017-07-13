@@ -14,12 +14,13 @@ view: vw_escal_detail {
 
   dimension:resolutionTime_bins {
     type: tier
-    tiers: [0, 7, 14, 21, 28, 56]
+    tiers: [1, 7, 14, 21, 28, 56]
     style: integer
     sql: ${TABLE}.resolutionTime ;;
   }
 
   dimension: resolutionStatus {
+    view_label: "Is Resolved?"
     type: yesno
     sql: ${last_resolved_raw} is not null ;;
   }
@@ -118,19 +119,19 @@ view: vw_escal_detail {
 
   dimension:age {
     type: number
-    sql:  ${TABLE}.age ;;
+    sql:  ${TABLE}.age/60 ;;
   }
 
   dimension:age_bins {
     type: tier
-    tiers: [0, 7, 14, 21, 28, 56]
+    tiers: [1, 7, 14, 21, 28, 56]
     style: integer
-    sql: ${TABLE}.resolutionTime ;;
+    sql: ${age} ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date]
+    drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
     link: {
       label: "Look at Content Aging Data"
       url: "https://cengage.looker.com/dashboards/37?Category=%25Content%20Development%25"
