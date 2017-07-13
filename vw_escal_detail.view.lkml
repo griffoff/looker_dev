@@ -14,14 +14,30 @@ view: vw_escal_detail {
 
   dimension:resolutionTime_bins {
     type: tier
-    tiers: [0, 7, 14, 21, 28, 56]
+    tiers: [1, 7, 14, 21, 28, 56]
     style: integer
     sql: ${TABLE}.resolutionTime ;;
   }
 
   dimension: resolutionStatus {
+    view_label: "Is Resolved?"
     type: yesno
     sql: ${last_resolved_raw} is not null ;;
+  }
+
+  dimension: resolutionIntime {
+    type: yesno
+    sql: ( ${last_resolved_raw} is not null) and (
+           ( (${priority} = 'P4 Escalation') and (${resolutionTime}<306))
+        or ( (${priority} = 'P3 Escalation') and (${resolutionTime}<186))
+        or ( (${priority} = 'P2 Escalation') and (${resolutionTime}<24))
+        or ( (${priority} = 'P1 Escalation') and (${resolutionTime}<8))
+                                                  );;
+  }
+
+  dimension: resolutionIntimeOuttime {
+    type: string
+    sql: case when (${resolutionIntime}) then 'In time' else 'Out time' end;;
   }
 
   dimension_group: created {
@@ -103,19 +119,35 @@ view: vw_escal_detail {
 
   dimension:age {
     type: number
-    sql:  ${TABLE}.age ;;
+    sql:  ${TABLE}.age/60 ;;
   }
 
   dimension:age_bins {
     type: tier
-    tiers: [0, 7, 14, 21, 28, 56]
+    tiers: [1, 7, 14, 21, 28, 56]
     style: integer
-    sql: ${TABLE}.resolutionTime ;;
+    sql: ${age} ;;
   }
 
   measure: count {
     type: count
-    drill_fields: [severity]
-  }
+    drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
+    link: {
+      label: "Look at Content Aging Data"
+      url: "https://cengage.looker.com/dashboards/37?Category=%25Content%20Development%25"
+    }
+      link: {
+        label: "Look at Software Aging Data"
+        url: "https://cengage.looker.com/dashboards/37?Category=%25Software%25"
 
+    }
+  }
+  #measure: count2 {
+  #  type: count
+  #  link: {
+  #    label: "‘Drill Down Test’"
+  #    url: "{{ sessions.count_bounce_sessions._link }}"
+  #    icon_url: "http://www.looker.com/favicon.ico"
+  #  }
+  #}
 }

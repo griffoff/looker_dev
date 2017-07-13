@@ -25,3 +25,27 @@ explore: vw_escal_detail {
     relationship: many_to_one
   }
 }
+
+# for work with DIG
+explore: vw_dig_info_detail {
+  label: "DIG"
+
+
+  join: vw_dig_info_changelog {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_info_changelog.key} ;;
+    relationship: one_to_many
+  }
+
+  join: dim_date {
+    sql_on: ${vw_dig_info_changelog.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+  join: issue_closures {
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${issue_closures.issue_id} = ${vw_dig_info_detail.key} ;;
+  }
+
+
+}
