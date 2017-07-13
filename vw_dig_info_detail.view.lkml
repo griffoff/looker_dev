@@ -2,6 +2,7 @@ view: vw_dig_info_detail {
   view_label: "DIG"
   sql_table_name: ZSS.VW_DIG_INFO_DETAIL ;;
 
+
   dimension: issue_type {
     type: string
     sql: ${TABLE}.issue_type ;;
@@ -61,6 +62,15 @@ view: vw_dig_info_detail {
     sql: ${TABLE}.core_isbn ;;
   }
 
+  dimension: copyright_year_new {
+    type: string
+    sql: ${TABLE}.copyright_year_new ;;
+  }
+
+  dimension: copyright_year {
+    type: string
+    sql: ${TABLE}.copyright_year ;;
+  }
 
   dimension_group: estimated_start_date {
     type: time
