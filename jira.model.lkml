@@ -21,6 +21,7 @@ explore: vw_escal_detail {
   }
 
   join: dim_date {
+    view_label: "Date"
     sql_on: ${vw_escal_detail.createdatekey} = ${dim_date.datekey} ;;
     relationship: many_to_one
   }
@@ -44,6 +45,7 @@ explore: vw_dig_info_detail {
   }
 
   join: dim_date {
+    view_label: "Date"
     sql_on: ${vw_dig_info_changelog.createdatekey} = ${dim_date.datekey} ;;
     relationship: many_to_one
   }

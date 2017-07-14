@@ -68,8 +68,16 @@ view: dim_student {
     sql: ${TABLE}.STUDENTID ;;
   }
 
+  measure: students {
+    label: "# Students (2)"
+    type: count_distinct
+    sql:  ${student_guid};;
+    drill_fields: [student, student_guid, fact_activity.count, fact_activity.timespent_hour_avg, fact_activity.timeliness_hour_avg, dim_learningobjective.learningobjective, fact_learningobjective.checkin_mastery, fact_learningobjective.mastery, fact_activity.scaledscore_avg]
+  }
+
   measure: count {
+    label: "# Students"
     type: count
-    drill_fields: []
+    drill_fields: [student, student_guid, fact_activity.count, fact_activity.timespent_hour_avg, fact_activity.timeliness_hour_avg, fact_activity.scaledscore_avg]
   }
 }
