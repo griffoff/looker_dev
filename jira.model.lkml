@@ -24,6 +24,13 @@ explore: vw_escal_detail {
     sql_on: ${vw_escal_detail.createdatekey} = ${dim_date.datekey} ;;
     relationship: many_to_one
   }
+
+
+  join: issue_status_last_month{
+    sql_on: ${issue_status_last_month.key} = ${vw_escal_detail.key} ;;
+    relationship: many_to_many
+  }
+
 }
 
 # for work with DIG
