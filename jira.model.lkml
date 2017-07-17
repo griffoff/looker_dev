@@ -26,11 +26,17 @@ explore: vw_escal_detail {
     relationship: many_to_one
   }
 
-
   join: issue_status_last_month{
     sql_on: ${issue_status_last_month.key} = ${vw_escal_detail.key} ;;
     relationship: many_to_many
   }
+
+  join: issue_escal_resolved {
+    type: left_outer
+    relationship: many_to_many
+    sql_on: ${issue_escal_resolved.issue_id} = ${vw_escal_detail.key} ;;
+  }
+
 
 }
 
