@@ -1,4 +1,4 @@
-connection: "snowflake_dev"
+connection: "snowflake_prod"
 label: "JIRA"
 
 # include all the views
