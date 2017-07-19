@@ -1,4 +1,4 @@
-view: issue_escal_resolved {
+view: vw_escal_issue_resolved {
   derived_table: {
     sql: with t1 as (select
                         key,
@@ -8,7 +8,7 @@ view: issue_escal_resolved {
                                   (key='ESCAL-12955' and end_date is null ) or
                                   (key='ESCAL-13784' and end_date is null ) or
                                   (key='ESCAL-13843' and end_date is null ) or
-                                  (key='ESCAL-13686' and end_date is null ) or
+                                  (key='ESCAL-13686' and end_date is null ) or --MindTap
                                   (key='ESCAL-15081' and end_date is null ) or
                                   (key='ESCAL-16234' and end_date is null ) or
                                   (key='ESCAL-14018' and end_date is null ) or
@@ -17,19 +17,23 @@ view: issue_escal_resolved {
                                   (key='ESCAL-70401' and end_date is null ) or
                                   (key='ESCAL-34771' and end_date is null ) or
                                   (key='ESCAL-61483' and end_date is null ) or
-                                  (key='ESCAL-78993' and end_date is null )
+                                  (key='ESCAL-78993' and end_date is null )     -- CL Homework
                                   --P2 Escalation
                                   or
                                   (key='ESCAL-12999' and end_date is null ) or
                                   (key='ESCAL-13197' and end_date is null ) or
                                   (key='ESCAL-12977' and end_date is null ) or
-                                  (key='ESCAL-13325' and end_date is null ) or
+                                  (key='ESCAL-13325' and end_date is null ) or --MindTap
                                   (key='ESCAL-13122' and end_date is null ) or
                                   (key='ESCAL-14150' and end_date is null ) or
                                   (key='ESCAL-14660' and end_date is null ) or
                                   (key='ESCAL-14860' and end_date is null ) or
                                   (key='ESCAL-31273' and end_date is null ) or
-                                  (key='ESCAL-51493' and end_date is null )
+                                  (key='ESCAL-35100' and end_date is null )    -- CL Homework
+                                  --P3 Escalation
+                                  or
+                                  (key='ESCAL-12961' and end_date is null ) or --MindTap
+                                  (key='ESCAL-20941' and end_date is null )     -- CL Homework
                                     then 'unresolved' else resolution end as resolution
                     from escal.vw_escal_resolution_time_interval )
     select calendar.general_date
