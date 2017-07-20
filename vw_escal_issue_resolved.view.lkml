@@ -4,38 +4,40 @@ view: vw_escal_issue_resolved {
                         key,
                         start_date,
                         end_date,
-                        case when --P1 Escalation
-                                  (key='ESCAL-12955' and end_date is null ) or
-                                  (key='ESCAL-13784' and end_date is null ) or
-                                  (key='ESCAL-13843' and end_date is null ) or
-                                  (key='ESCAL-13686' and end_date is null ) or --MindTap
-                                  (key='ESCAL-15081' and end_date is null ) or
-                                  (key='ESCAL-16234' and end_date is null ) or
-                                  (key='ESCAL-14018' and end_date is null ) or
-                                  (key='ESCAL-16755' and end_date is null ) or
-                                  (key='ESCAL-23870' and end_date is null ) or
-                                  (key='ESCAL-70401' and end_date is null ) or
-                                  (key='ESCAL-34771' and end_date is null ) or
-                                  (key='ESCAL-61483' and end_date is null ) or
-                                  (key='ESCAL-78993' and end_date is null )     -- CL Homework
-                                  --P2 Escalation
-                                  or
-                                  (key='ESCAL-12999' and end_date is null ) or
-                                  (key='ESCAL-13197' and end_date is null ) or
-                                  (key='ESCAL-12977' and end_date is null ) or
-                                  (key='ESCAL-13325' and end_date is null ) or --MindTap
-                                  (key='ESCAL-13122' and end_date is null ) or
-                                  (key='ESCAL-14150' and end_date is null ) or
-                                  (key='ESCAL-14660' and end_date is null ) or
-                                  (key='ESCAL-14860' and end_date is null ) or
-                                  (key='ESCAL-31273' and end_date is null ) or
-                                  (key='ESCAL-35100' and end_date is null )    -- CL Homework
-                                  --P3 Escalation
-                                  or
-                                  (key='ESCAL-12961' and end_date is null ) or --MindTap
-                                  (key='ESCAL-20941' and end_date is null )     -- CL Homework
-                                    then 'unresolved' else resolution end as resolution
-                    from escal.vw_escal_resolution_time_interval )
+                        resolution
+                    from escal.vw_escal_resolution_time_interval
+        union
+        -- add dummy issue as CROSS JOIN  category x product x priority
+        -- dummy issue has prefix 'dummy-'
+        (
+with  category_priority_component as (
+with
+category_priority as (
+with
+    category as (select   column1 as category
+        from values ('Digital Production'),('Content Development'),('Software'),('No Category')),
+    priority as (   select priority
+                    from escal.vw_escal_detail
+                    group by priority)
+select category,priority
+from category
+cross join priority
+                    ),
+    product as (select COMPONENT as product
+                from escal.VW_ESCAL_COMPONENTS
+                group by COMPONENT)
+select
+     category_priority.category, category_priority.priority, product
+from category_priority
+cross join product                    )
+-- dummy issue has prefix 'dummy-'
+select CONCAT('dummy-',(ROW_NUMBER() OVER ( ORDER BY category))::string) AS key,
+ TO_TIMESTAMP_NTZ('2017-01-01') as start_date,
+  null as end_date,
+  'unresolved' as resolution
+from category_priority_component
+          )
+                    )
     select calendar.general_date
         , t1.key as issue_id
         , t1.resolution as resolution
