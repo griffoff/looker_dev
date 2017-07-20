@@ -57,15 +57,15 @@ explore: vw_dig_info_detail {
 }
 
 # for work with ESCAL Summary Report
-  explore: vw_escal_detail_dummy {
+#  explore: vw_escal_detail_dummy {
+#    label: "ESCAL Summary Report"
+explore: vw_escal_statuses{
     label: "ESCAL Summary Report"
-
 
     join: vw_escal_issue_resolved {
       type: left_outer
       relationship: one_to_many
-      sql_on: ${vw_escal_issue_resolved.issue_id} = ${vw_escal_detail_dummy.key} ;;
+      sql_on: ${vw_escal_issue_resolved.issue_id} = ${vw_escal_statuses.key} ;;
     }
-
 
 }
