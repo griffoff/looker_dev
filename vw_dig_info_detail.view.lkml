@@ -32,6 +32,11 @@ view: vw_dig_info_detail {
   }
 
 
+dimension: summary {
+  type: string
+  sql:  ${TABLE}.summary ;;
+}
+
   dimension: risk {
     type: string
     sql: ${TABLE}.risk ;;
@@ -87,6 +92,7 @@ view: vw_dig_info_detail {
       hour_of_day,
       week_of_year,
       day_of_month,
+
       month_num
     ]
     sql: ${TABLE}.estimated_start_date ;;
