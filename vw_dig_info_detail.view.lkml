@@ -20,11 +20,6 @@ view: vw_dig_info_detail {
   }
 
 
-  dimension: components {
-    type: string
-    sql: ${TABLE}.components ;;
-  }
-
 
   dimension: product_type_or_environment {
     type: string

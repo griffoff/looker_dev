@@ -54,6 +54,17 @@ explore: vw_dig_info_detail {
     relationship: many_to_many
     sql_on: ${issue_closures.issue_id} = ${vw_dig_info_detail.key} ;;
   }
+
+  join: vw_dig_categories {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_categories.key} ;;
+    relationship: one_to_many
+  }
+
+  join: vw_dig_components {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_components.key} ;;
+    relationship: one_to_many
+  }
+
 }
 
 # for work with ESCAL Summary Report

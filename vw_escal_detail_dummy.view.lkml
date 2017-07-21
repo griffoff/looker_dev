@@ -14,7 +14,7 @@ view: vw_escal_detail_dummy  {
                 dc.key as key,
                 dc.priority as priority,
                 case when dc.category is null then  'No Category' else  dc.category end as category,
-                --dc.category as category,
+                -- replace null on 'No Category'
                 com.component  as component
               from details_categories as dc
                   left  join escal.VW_ESCAL_COMPONENTS com on dc.key=com.key
@@ -34,14 +34,16 @@ view: vw_escal_detail_dummy  {
       with
       category_priority as (
                     with
-                            category as (select
-                                          column1 as category
-                                         from values ('Digital Production'),('Content Development'),('Software'),('No Category')
-                                        ),
-                        priority as (   select
+                            category as (
+                                          select distinct
+                                            case when cat.category is null then  'No Category' else  cat.category end as category
+                                          from escal.VW_ESCAL_DETAIL det
+                                              LEFT OUTER JOIN escal.vw_escal_categories cat
+                                                on det.key = cat.key
+                                          ),
+                        priority as (   select distinct
                                           priority
                                         from escal.vw_escal_detail
-                                        group by priority
                                     )
                     select
                         category
@@ -49,10 +51,9 @@ view: vw_escal_detail_dummy  {
                     from category
                       cross join priority
                             ),
-                    product as (select
-                                  COMPONENT as product
-                                from escal.VW_ESCAL_COMPONENTS
-                                group by COMPONENT
+                      product as (select distinct
+                                    COMPONENT as product
+                                  from escal.VW_ESCAL_COMPONENTS
                                 )
           select
               category_priority.category
