@@ -55,13 +55,13 @@ explore: vw_dig_info_detail {
     sql_on: ${issue_closures.issue_id} = ${vw_dig_info_detail.key} ;;
   }
 
-  join: vw_dig_categories {
-    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_categories.key} ;;
+  join: vw_dig_info_categories {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_info_categories.key} ;;
     relationship: one_to_many
   }
 
-  join: vw_dig_components {
-    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_components.key} ;;
+  join: vw_dig_info_components {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_info_components.key} ;;
     relationship: one_to_many
   }
 

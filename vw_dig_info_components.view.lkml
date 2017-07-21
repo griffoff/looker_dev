@@ -1,5 +1,5 @@
-view: vw_dig_components {
-    view_label: "DIG Components"
+view: vw_dig_info_components {
+    view_label: "DIG"
     sql_table_name: ZSS.VW_DIG_INFO_COMPONENTS ;;
 
     dimension: components {

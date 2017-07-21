@@ -1,5 +1,5 @@
-view: vw_dig_categories {
-  view_label: "DIG Categories"
+view: vw_dig_info_categories {
+  view_label: "DIG"
   sql_table_name: ZSS.VW_DIG_INFO_CATEGORIES ;;
 
   dimension: category {
