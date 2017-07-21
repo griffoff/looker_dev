@@ -27,6 +27,12 @@ view: vw_dig_info_detail {
   }
 
 
+  dimension: product_group {
+    type: string
+    sql: ${TABLE}.product_group ;;
+  }
+
+
 dimension: summary {
   type: string
   sql:  ${TABLE}.summary ;;
