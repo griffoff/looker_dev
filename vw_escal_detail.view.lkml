@@ -129,7 +129,20 @@ view: vw_escal_detail {
     sql: ${age} ;;
   }
 
+  measure: count_resolved {
+    label: "# Resolved"
+    type:  count_distinct
+    sql: case when ${last_resolved_raw} is not null then ${key} end ;;
+  }
+
+  measure: count_notresolved {
+    label: "# Outstanding"
+    type:  count_distinct
+    sql: case when ${last_resolved_raw} is null then ${key} end;;
+  }
+
   measure: count {
+    label: " # Issues"
     type: count
     drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
     link: {
