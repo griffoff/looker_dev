@@ -109,6 +109,11 @@ explore: vw_dig_info_detail {
     relationship: one_to_many
   }
 
+  join: vw_dig_info_inwardissue {
+    sql_on: ${vw_dig_info_detail.key} = ${vw_dig_info_inwardissue.key} ;;
+    relationship: one_to_many
+  }
+
 }
 
 # for work with ESCAL Summary Report
