@@ -66,6 +66,15 @@ view: vw_escal_detail {
     sql: ${TABLE}.KEY ;;
   }
 
+  dimension: jiraKey {
+    link: {
+      label: "Review in Jira"
+      url: "https://jira.cengage.com/browse/{{value}}"
+    }
+
+    sql: ${TABLE}.KEY ;;
+  }
+
   dimension_group: last_closed {
     type: time
     timeframes: [
@@ -144,7 +153,7 @@ view: vw_escal_detail {
   measure: count {
     label: " # Issues"
     type: count
-    drill_fields: [key, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
+    drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
     link: {
       label: "Look at Content Aging Data"
       url: "https://cengage.looker.com/dashboards/37?Category=%25Content%20Development%25"
