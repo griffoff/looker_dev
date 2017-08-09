@@ -144,3 +144,12 @@ explore: vw_escal_detail_dummy{
   }
 
 }
+
+
+
+# for work with ESCAL Summary Report
+#  explore: vw_escal_detail_dummy {
+#    label: "ESCAL Summary Report"
+explore: vw_jira_status{
+  label: "ESCAL jira status DEV"
+  }
