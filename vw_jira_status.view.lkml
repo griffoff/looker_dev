@@ -51,7 +51,7 @@ view: vw_jira_status {
       label: "Max"
       type:  max
       sql:  ${Value} ;;
-      drill_fields: [created_date, Product, Priority, Category, Choose,Value]
+      drill_fields: [created_raw, Product, Priority, Category, Choose,Value]
           }
 
     measure: count {
