@@ -158,3 +158,9 @@ explore: tbl_jira_status{
 explore: tbl_jira_status_test{
   label: "ESCAL jira status for graph DEV"
 }
+
+
+# for work with KPI-data
+explore: vw_kpi_data{
+  label: "KPI status"
+}
