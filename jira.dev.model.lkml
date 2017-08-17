@@ -163,4 +163,11 @@ explore: tbl_jira_status_test{
 # for work with KPI-data
 explore: vw_kpi_data{
   label: "KPI status"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
 }

@@ -22,6 +22,12 @@ view: vw_kpi_data {
     sql: ${TABLE}.LAST_MODIFIED_DATE ;;
   }
 
+  dimension: MODIFIEDdatekey  {
+    type: number
+    sql: ${MODIFIED_year}*10000 + ${MODIFIED_month_num}*100 + ${MODIFIED_day_of_month} ;;
+
+  }
+
   dimension: Product {
     type: string
     sql: ${TABLE}.SERVICE_NAME ;;
@@ -32,6 +38,21 @@ view: vw_kpi_data {
     sql: ${TABLE}.SERVICE_STATUS ;;
   }
 
+  dimension: GoodBadStatus {
+    type: yesno
+    sql:   (${STATUS} = 'Available')
+      or (${STATUS} = 'Partial')
+      or (${STATUS} = 'Critical') ;;
+  }
+
+  dimension: UnavailableStatus {
+    type: string
+    sql:   case when ${STATUS}='Blackout'
+                OR ${STATUS}='Disabled'
+                OR ${STATUS}='Unavailable'
+                OR ${STATUS}='Indeterminate'
+                then 'Unavailable' else ${STATUS} end;;
+  }
   dimension: BLACKOUT_ENABLED {
     type: yesno
     sql: ${TABLE}.BLACKOUT_ENABLED ;;
