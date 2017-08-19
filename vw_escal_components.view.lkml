@@ -1,6 +1,14 @@
 view: vw_escal_components {
   view_label: "Escal Components"
-  sql_table_name: ESCAL.VW_ESCAL_COMPONENTS ;;
+  #sql_table_name: ESCAL.VW_ESCAL_COMPONENTS ;;
+  derived_table: {
+    sql:
+      select
+        detail.key
+        ,k.value:name::string as component
+      from ${vw_escal_detail.SQL_TABLE_NAME} detail
+        , lateral flatten(components) k;;
+  }
 
   dimension: component {
     type: string
