@@ -5,7 +5,7 @@ view: vw_escal_detail {
     sql:
     with issues as (
         select i.value:id
-            ,row_number() over(partition by i.value:id order by coalesce(to_timestamp_tz(i.value:fields:updated::string, 'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM'), 0::timestamp) desc) as latest
+            ,row_number() over(partition by i.value:id order by ldts desc, coalesce(to_timestamp_tz(i.value:fields:updated::string, 'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM'), 0::timestamp) desc) as latest
             ,i.value
         from escal.RAW_DATA_JSON_INFO
         , lateral FLATTEN(jsondata, 'issues') i
