@@ -132,15 +132,42 @@ explore: vw_escal_statuses{
 
 
 # for work with ESCAL Summary Report
-#  explore: vw_escal_detail_dummy {
-#    label: "ESCAL Summary Report"
 explore: vw_escal_detail_dummy{
   label: "ESCAL Summary Report DEV"
-
   join: vw_escal_issue_resolved {
     type: left_outer
     relationship: one_to_many
     sql_on: ${vw_escal_issue_resolved.issue_id} = ${vw_escal_detail_dummy.key} ;;
+  }
+
+}
+
+
+
+# for work with ESCAL Summary Report
+explore: vw_jira_status{
+  label: "ESCAL jira status DEV"
+}
+
+# for work with ESCAL Summary Report
+explore: tbl_jira_status{
+  label: "ESCAL jira status vs date DEV"
+}
+
+# for work with ESCAL Summary Report
+explore: tbl_jira_status_test{
+  label: "ESCAL jira status for graph DEV"
+}
+
+
+# for work with KPI-data
+explore: vw_kpi_data{
+  label: "KPI status"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
   }
 
 }

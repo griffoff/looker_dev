@@ -76,6 +76,23 @@ view: fact_activity {
     value_format_name: percent_1
   }
 
+  dimension: scaledscore_bucket {
+    description: "The % points of possible points placed in buckets for easier visual analysis"
+    label: "Score (avg) Bucket"
+    type: string
+    sql: CASE
+              WHEN ${normalscore} < .60 THEN 'F <60%'
+              WHEN ${normalscore} BETWEEN .60 AND .70 THEN 'D - 60-69%'
+              WHEN ${normalscore} BETWEEN .70 AND .80 THEN 'C- 70-79%'
+              WHEN ${normalscore} BETWEEN .80 AND .90 THEN 'B - 80-89%'
+              WHEN ${normalscore} >= .90 THEN 'A - 90+%'
+              ELSE NULL
+          END;;
+    value_format_name: percent_1
+  }
+
+
+
   measure: scaledscore_avg {
     label: "% Score (avg)"
     type: average
