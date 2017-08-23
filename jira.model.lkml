@@ -27,6 +27,10 @@ explore: vw_escal_detail {
   }
 }
 
+explore: vw_escal_report_totals {
+  label: "Escals Report Totals"
+}
+
 # for work with ESCAL Summary Report
 #  explore: vw_escal_detail_dummy {
 #    label: "ESCAL Summary Report"

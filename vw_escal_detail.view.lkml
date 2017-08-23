@@ -138,6 +138,40 @@ view: vw_escal_detail {
     sql: ${age} ;;
   }
 
+  dimension: recently_created {
+    type:  number
+    sql: iff(datediff(day, ${TABLE}.created, current_date()) <= 2,1,0) ;;
+  }
+
+  dimension: recently_resolved {
+    type:  number
+    sql: iff(${TABLE}.LAST_RESOLVED is null, 0, iff(datediff(day, ${TABLE}.LAST_RESOLVED, current_date()) <= 2,1,0)) ;;
+  }
+
+  dimension: isUnresolved {
+    type:  number
+    sql: iff(${TABLE}.LAST_RESOLVED is null, 1, 0) ;;
+  }
+
+  measure: sum_created {
+    label: "# of Recently Closed"
+    type:  sum_distinct
+    sql: ${recently_created} ;;
+  }
+
+  measure: sum_resolved {
+    label: "# of Recently Resolved"
+    type:  sum_distinct
+    sql: ${recently_resolved} ;;
+  }
+
+  measure: sum_unresolved {
+    label: "# of Unresolved"
+    type:  sum_distinct
+    sql: ${isUnresolved} ;;
+
+  }
+
   measure: count_resolved {
     label: "# Resolved"
     type:  count_distinct
