@@ -72,6 +72,31 @@ explore: vw_escal_detail {
 
 }
 
+#test dev table 'RAW_DATA_ISSUE_ALL' with optimize data collection
+explore: vw_escal_detail_test {
+  label: "Escals optimization test "
+
+  join: vw_escal_categories {
+    sql_on: ${vw_escal_detail_test.key} = ${vw_escal_categories.key} ;;
+    relationship: one_to_many
+  }
+
+  join: vw_escal_components {
+    sql_on: ${vw_escal_detail_test.key} = ${vw_escal_components.key} ;;
+    relationship: one_to_many
+  }
+
+  join: dim_date {
+    sql_on: ${vw_escal_detail_test.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+  #join: issue_status_last_month{
+  #  sql_on: ${issue_status_last_month.key} = ${vw_escal_detail_test.key} ;;
+  #  relationship: many_to_many
+  #}
+}
+
 # for work with DIG
 explore: vw_dig_info_detail {
   label: "DIG"
@@ -157,4 +182,17 @@ explore: tbl_jira_status{
 # for work with ESCAL Summary Report
 explore: tbl_jira_status_test{
   label: "ESCAL jira status for graph DEV"
+}
+
+
+# for work with KPI-data
+explore: vw_kpi_data{
+  label: "KPI status"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
 }

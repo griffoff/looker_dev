@@ -1,6 +1,59 @@
 view: vw_escal_detail {
   view_label: "Escals"
-  sql_table_name: ESCAL.VW_ESCAL_DETAIL ;;
+  #sql_table_name: ESCAL.VW_ESCAL_DETAIL ;;
+  derived_table: {
+    sql:
+    with issues as (
+        select i.value:id
+            ,row_number() over(partition by i.value:id order by ldts desc, coalesce(to_timestamp_tz(i.value:fields:updated::string, 'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM'), 0::timestamp) desc) as latest
+            ,i.value
+        from escal.RAW_DATA_JSON_INFO
+        , lateral FLATTEN(jsondata, 'issues') i
+    )
+    ,detail as (
+      select
+        i.value:key::string as key
+        , i.value:fields:priority:name::string as priority
+        , i.value:fields:customfield_23432:value::string as severity
+        , split_part(i.value:fields:customfield_23432:value, '-', 1)::int as severity_id
+        --you can pass negative numbers to split_part to use relative indexing from the end of the array
+        , split_part(i.value:fields:customfield_23432:value, '-', -1)::string as severity_name
+        --cast the json value to a string to use it in the to_timestamp function
+        , to_timestamp_tz(i.value:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
+        , to_timestamp_tz(i.value:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
+        -- you can use nullif instead of case to simplify this
+        , to_timestamp_tz(nullif(i.value:fields:customfield_24430, 'null')::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as acknowledged
+    --    , case when i.value:fields:customfield_24430='null' then null else to_timestamp(replace(i.value:fields:customfield_24430,'T',' '),'YYYY-MM-DD HH24:MI:SS.FFTZHTZM') end AS acknowledged
+        , case when i.value:fields:customfield_13438='null' then null else to_timestamp(as_number(i.value:fields:customfield_13438), 3) end AS last_resolved
+        , case when i.value:fields:customfield_13430='null' then null else to_timestamp(as_number(i.value:fields:customfield_13430), 3) end AS last_closed
+        ,i.value:fields:customfield_21431 as categories
+        ,array_size(i.value:fields:customfield_21431) as category_count
+        ,i.value:fields:components as components
+        ,array_size(i.value:fields:components) as component_count
+        ,latest
+       from issues i
+       where latest = 1
+     )
+    select
+    detail.key
+    , detail.priority
+    , detail.severity
+    , detail.created
+    , detail.updated
+    , detail.last_resolved
+    , detail.acknowledged
+    , detail.last_closed
+    , detail.categories
+    , detail.components
+    , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
+    , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
+    , timestampdiff(minute,detail.created,detail.last_closed)/60 as closedTime
+    , timestampdiff(minute, detail.created, current_timestamp())/60 as age
+    --,latest
+    from detail
+    ;;
+    sql_trigger_value: select max(ldts) from ESCAL.RAW_JSON_DATA_INFO ;;
+  }
 
   dimension: acknowledged {
     type: string
@@ -136,6 +189,40 @@ view: vw_escal_detail {
     tiers: [1, 7, 14, 21, 28, 56]
     style: integer
     sql: ${age} ;;
+  }
+
+  dimension: recently_created {
+    type:  number
+    sql: iff(datediff(day, ${TABLE}.created, current_date()) <= 2,1,0) ;;
+  }
+
+  dimension: recently_resolved {
+    type:  number
+    sql: iff(${TABLE}.LAST_RESOLVED is null, 0, iff(datediff(day, ${TABLE}.LAST_RESOLVED, current_date()) <= 2,1,0)) ;;
+  }
+
+  dimension: isUnresolved {
+    type:  number
+    sql: iff(${TABLE}.LAST_RESOLVED is null, 1, 0) ;;
+  }
+
+  measure: sum_created {
+    label: "# of Recently Closed"
+    type:  sum_distinct
+    sql: ${recently_created} ;;
+  }
+
+  measure: sum_resolved {
+    label: "# of Recently Resolved"
+    type:  sum_distinct
+    sql: ${recently_resolved} ;;
+  }
+
+  measure: sum_unresolved {
+    label: "# of Unresolved"
+    type:  sum_distinct
+    sql: ${isUnresolved} ;;
+
   }
 
   measure: count_resolved {
