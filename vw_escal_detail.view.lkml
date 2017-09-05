@@ -181,7 +181,8 @@ view: vw_escal_detail {
 
   dimension:age {
     type: number
-    sql:  ${TABLE}.age/60 ;;
+    sql: timestampdiff(minute, ${TABLE}.CREATED, current_timestamp())/60/60 ;;
+    # sql:  ${TABLE}.age/60 ;;
   }
 
   dimension:age_bins {
