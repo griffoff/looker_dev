@@ -81,10 +81,9 @@ view: fact_activity {
     label: "Score (avg) Bucket"
     type: string
     sql: CASE
-              WHEN ${normalscore} < .60 THEN 'F <60%'
-              WHEN ${normalscore} BETWEEN .60 AND .70 THEN 'D - 60-69%'
-              WHEN ${normalscore} BETWEEN .70 AND .80 THEN 'C- 70-79%'
-              WHEN ${normalscore} BETWEEN .80 AND .90 THEN 'B - 80-89%'
+              WHEN ${normalscore} < .60 THEN 'D <60%'
+              WHEN ${normalscore} BETWEEN .60 AND .69 THEN 'C - 60-69%'
+              WHEN ${normalscore} BETWEEN .70 AND .89 THEN 'B- 70-89%'
               WHEN ${normalscore} >= .90 THEN 'A - 90+%'
               ELSE NULL
           END;;
