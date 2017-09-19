@@ -97,6 +97,32 @@ explore: vw_escal_detail_test {
   #}
 }
 
+
+#test dev table 'RAW_JIRA_ISSUE' with optimize data collection for all jira's project
+explore: vw_escal_detail_test_optimization {
+  label: "Escals optimization test for all project"
+
+  join: vw_escal_categories {
+    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_categories.key} ;;
+    relationship: one_to_many
+  }
+
+  join: vw_escal_components {
+    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_components.key} ;;
+    relationship: one_to_many
+  }
+
+  join: dim_date {
+    sql_on: ${vw_escal_detail_test_optimization.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+  #join: issue_status_last_month{
+  #  sql_on: ${issue_status_last_month.key} = ${vw_escal_detail_test.key} ;;
+  #  relationship: many_to_many
+  #}
+}
+
 # for work with DIG
 explore: vw_dig_info_detail {
   label: "DIG"
