@@ -220,5 +220,27 @@ explore: vw_kpi_data{
     sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
     relationship: many_to_one
   }
+}
 
+# for work with mc-graw hill
+explore: vw_status_information_mgh {
+  label: "SCRAPING INFORMATION MGH"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_status_information_mgh.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}
+
+
+# for work with pearson
+explore: vw_status_information_prsn {
+  label: "Scraping information pearson"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_status_information_prsn.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
 }
