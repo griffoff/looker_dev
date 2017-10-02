@@ -234,6 +234,17 @@ explore: vw_status_information_mgh {
 }
 
 
+# for work with  mc-graw hill
+explore: vw_status_interval_mgh {
+  label: "Issue time interval for Mc-Graw Hill"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_status_interval_mgh.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}
+
 # for work with pearson
 explore: vw_status_information_prsn {
   label: "Scraping information pearson"
@@ -241,6 +252,18 @@ explore: vw_status_information_prsn {
   join: dim_date {
     view_label: "Date"
     sql_on: ${vw_status_information_prsn.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}
+
+
+# for work with pearson
+explore: vw_status_interval_prsn {
+  label: "Issue time interval for Pearson"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_status_interval_prsn.createdatekey} = ${dim_date.datekey} ;;
     relationship: many_to_one
   }
 }
