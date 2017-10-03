@@ -109,10 +109,31 @@ GROUP BY dates, name
     }
 
 
-    measure: count
-    {
-      label: "Count"
-      type: count
-      drill_fields: [name, start_issue_raw, fix_issue_raw  ]
-    }
+  measure: count
+  {
+    label: "Count"
+    type: count
+    drill_fields: [name, start_issue_raw, fix_issue_raw  ]
+  }
+
+  measure: total
+  {
+    label: "Total time"
+    type: sum
+    sql: ${time_fix} ;;
+  }
+
+
+  measure: count_average_health {
+    label: "Average time"
+    type:  average
+    sql: ${time_fix} ;;
+  }
+
+
+  measure: count_median_health {
+    label: "Median time"
+    type:  median
+    sql: ${time_fix} ;;
+  }
     }
