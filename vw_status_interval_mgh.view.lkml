@@ -19,6 +19,8 @@ where status <> 'None'
 select
 dates
 , name
+, SPLIT_PART( name, ' - ', 1) as group_of_product
+, SPLIT_PART(name, ' - ', 2) as name_of_product
 , min( status_datetime) as start_issue
 , max( status_datetime) as fix_issue
 , datediff(hour, start_issue, fix_issue) as fix_time_hour
@@ -28,11 +30,21 @@ GROUP BY dates, name
   }
 
 
-    dimension: name {
-      type: string
-      sql: ${TABLE}.name ;;
-      drill_fields: [name, start_issue_raw, fix_issue_raw ]
-    }
+  dimension: name {
+    type: string
+    sql: ${TABLE}.name ;;
+    drill_fields: [name, start_issue_raw, fix_issue_raw ]
+  }
+
+  dimension: group_of_product {
+    type: string
+    sql: ${TABLE}.group_of_product ;;
+  }
+
+  dimension: name_of_product {
+    type: string
+    sql: ${TABLE}.name_of_product ;;
+  }
 
     dimension_group: start_issue {
       type: time

@@ -38,6 +38,8 @@ GROUP BY dates, name
       )
 select general_date as date_of_message
         , name
+        , SPLIT_PART( name, ' - ', 1) as group_of_product
+        , SPLIT_PART(name, ' - ', 2) as name_of_product
         , start_date
         ,  fix_issue
       from interval
@@ -124,6 +126,17 @@ where name IS NOT NULL
       type: string
       sql: ${TABLE}.name ;;
       drill_fields:  [name, start_issue_date, fix_issue_date]
+    }
+
+
+    dimension: group_of_product {
+      type: string
+      sql: ${TABLE}.group_of_product ;;
+    }
+
+    dimension: name_of_product {
+      type: string
+      sql: ${TABLE}.name_of_product ;;
     }
 
 
