@@ -222,6 +222,13 @@ explore: vw_kpi_data{
   }
 }
 
+
+
+# for work with ESCAL Summary Report
+explore: vw_trust{
+  label: "TRUST"
+}
+
 # for work with mc-graw hill
 explore: vw_status_information_mgh {
   label: "SCRAPING INFORMATION MGH"

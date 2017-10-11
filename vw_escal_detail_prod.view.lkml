@@ -1,6 +1,8 @@
 view: vw_escal_detail_prod {
   view_label: "Escals"
   #sql_table_name: ESCAL.VW_ESCAL_DETAIL ;;
+  # Based on table PROD.ESCAL.RAW_DATA_ISSUE_ALL
+  # Table RAW_DATA_ISSUE_ALL updates by DAG Optimized_grab_escal_tickets
   derived_table: {
     sql:
     with detail as  (
