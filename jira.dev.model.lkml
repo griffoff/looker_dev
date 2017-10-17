@@ -227,6 +227,11 @@ explore: vw_kpi_data{
 # for work with ESCAL Summary Report
 explore: vw_trust{
   label: "TRUST"
+
+  join: vw_trust_time_interval {
+    sql_on: ${vw_trust.key} = ${vw_trust_time_interval.key} ;;
+    relationship: one_to_many
+  }
 }
 
 # for work with mc-graw hill

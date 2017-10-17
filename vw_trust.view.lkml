@@ -9,7 +9,8 @@ view: vw_trust {
       , to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       , JSONDATA:fields:summary::string as summary
       , JSONDATA:fields:status:name::string as current_status
-      , JSONDATA:fields:status:statusCategory:name::string as statuscategory
+      , JSONDATA:fields:issuetype:name::string as issuetype
+      , JSONDATA:fields:status:statusCategory:name::string as statusCategory
       , JSONDATA:fields:resolution:name::string as resolution
       , JSONDATA:fields:customfield_10792::number as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
@@ -22,15 +23,16 @@ view: vw_trust {
       ,  j.value:items as items
       from ZSS.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where contains(jsondata:key, 'TRUST') and sprint>'' and sprintend<>'<null>'      )
-, max_info as(
+        where contains(jsondata:key, 'TRUST') and sprintend<>'<null>'      )
+ , max_info as(
         select
       id
-      ,summary
+      , summary
       , created
       ,updated
       ,current_status
-      , statuscategory
+      ,issuetype
+      , statusCategory
       ,resolution
       ,story_point
       ,order_in_sprint
@@ -44,17 +46,28 @@ view: vw_trust {
       ,i.value:fromString::string as fromString
       ,i.value:toString::string as toString
       from histories, lateral flatten(input => items) i
-      where  to_date(modifyedtime) between to_date(sprintstart) and to_date(sprintend)
-      --order by sprint
-)
-, max_date as (
-select
- max(modifyedtime) as max_modifyedtime
-from max_info
-      group by modifyeddate, id  )
-select       max_info.* from max_date
-  inner join max_info on max_date.max_modifyedtime=max_info.modifyedtime
-  ;;
+      order by fromString      )
+ , status_prep as(
+        select
+      id
+      , max(modifyedtime) as  max_modifyedtime
+      , i.value:field::string as field
+      from histories, lateral flatten(input => items) i
+      where  to_date(modifyedtime) < to_date(sprintstart)  and field='status'
+       group by  id,field            )
+ , status_before as(
+        select
+      status_prep.id
+      , status_prep.max_modifyedtime
+      ,max_info.toString as status
+      from status_prep
+      left join max_info on status_prep.id=max_info.id     and status_prep.max_modifyedtime=max_info.modifyedtime
+       and max_info.field='status'   )
+  select         max_info.*
+      , case when status_before.id is null then 'Open' else status_before.status end as start_status_sprint
+     from status_before
+ RIGHT OUTER  join max_info on status_before.id=max_info.id
+   ;;
     }
 
   dimension: key {
@@ -165,6 +178,11 @@ select       max_info.* from max_date
     sql: ${TABLE}.summary ;;
   }
 
+  dimension: issuetype {
+    type: string
+    sql: ${TABLE}.issuetype ;;
+  }
+
   dimension: currentstatus {
     type: string
     sql: ${TABLE}.current_status ;;
@@ -203,6 +221,11 @@ select       max_info.* from max_date
   dimension: field {
     type: string
     sql: ${TABLE}.field ;;
+  }
+
+  dimension: startstatus {
+    type: string
+    sql: ${TABLE}.start_status_sprint ;;
   }
 
   dimension: OldString {
