@@ -232,6 +232,10 @@ explore: vw_trust{
     sql_on: ${vw_trust.key} = ${vw_trust_time_interval.key} ;;
     relationship: one_to_many
   }
+  join: vw_trust_status_interval {
+    sql_on: ${vw_trust.key} = ${vw_trust_status_interval.key} ;;
+    relationship: one_to_many
+  }
 }
 
 # for work with mc-graw hill

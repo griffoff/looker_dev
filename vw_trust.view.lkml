@@ -73,8 +73,11 @@ view: vw_trust {
   dimension: key {
     type: string
     sql: ${TABLE}.id ;;
+    link: {
+      label: "Review in Jira"
+      url: "https://jira.cengage.com/browse/{{value}}"
+    }
   }
-
 
   dimension_group: created {
     type: time

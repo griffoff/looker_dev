@@ -1,8 +1,8 @@
 view: vw_escal_detail_prod {
   view_label: "Escals"
   #sql_table_name: ESCAL.VW_ESCAL_DETAIL ;;
-  # Based on table PROD.ESCAL.RAW_DATA_ISSUE_ALL
-  # Table RAW_DATA_ISSUE_ALL updates by DAG Optimized_grab_escal_tickets
+  # Based on table PROD.ESCAL.RAW_DATA_ISSUE_ALL --> PROD.JIRA.RAW_JIRA_ISSUE
+  # Table RAW_DATA_ISSUE_ALL updates by DAG Optimized_grab_escal_tickets -->  load_jira_to_snowflake
   derived_table: {
     sql:
     with detail as  (
@@ -24,7 +24,8 @@ select
     ,JSONDATA:fields:components as components
     ,array_size(JSONDATA:fields:components) as component_count
    from
-     ESCAL.RAW_DATA_ISSUE_ALL  )
+     JIRA.RAW_JIRA_ISSUE
+   where contains(key, 'ESCAL')   ) -- PROD.ESCAL.RAW_DATA_ISSUE_ALL --> PROD.JIRA.RAW_JIRA_ISSUE
 select
 detail.key
 , detail.priority
