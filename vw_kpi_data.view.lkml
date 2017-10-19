@@ -117,27 +117,27 @@ FROM ESCAL.raw_data_kpi
   }
 
 
-  measure: count_max_health {
+  measure: max_TOTAL_TIME {
     label: "Max TOTAL_TIME"
     type:  max
     sql:  ${TOTAL_TIME} ;;
   }
 
-  measure: count_min_health {
+  measure: min_TOTAL_TIME {
     label: "Min TOTAL_TIME"
     type:  min
     sql:  ${TOTAL_TIME} ;;
   }
 
 
-  measure: count_average_health {
+  measure: average_TOTAL_TIME {
     label: "Average TOTAL_TIME"
     type:  average
     sql:  ${TOTAL_TIME} ;;
   }
 
 
-  measure: count_median_health {
+  measure: median_TOTAL_TIME {
     label: "Median TOTAL_TIME"
     type:  median
     sql:  ${TOTAL_TIME} ;;
@@ -148,7 +148,7 @@ FROM ESCAL.raw_data_kpi
     label: "Count"
     type: count
     drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
-    }
+  }
 
   }
 

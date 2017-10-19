@@ -21,7 +21,7 @@ view: vw_trust {
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
       ,to_date(modifyedtime) as modifyeddate
       ,  j.value:items as items
-      from ZSS.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
+      from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
         where contains(jsondata:key, 'TRUST') and sprintend<>'<null>'      )
  , max_info as(
