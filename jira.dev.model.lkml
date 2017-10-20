@@ -230,7 +230,7 @@ explore: vw_kpi_data{
 
 
 
-# for work with ESCAL Summary Report
+# for work with TRUST
 explore: vw_trust{
   label: "TRUST"
 
@@ -240,6 +240,17 @@ explore: vw_trust{
   }
   join: vw_trust_status_interval {
     sql_on: ${vw_trust.key} = ${vw_trust_status_interval.key} ;;
+    relationship: one_to_many
+  }
+}
+
+
+# for work with GIA
+explore: vw_gia_detail{
+  label: "GIA"
+
+  join: vw_gia_time_interval {
+    sql_on: ${vw_gia_detail.key} = ${vw_gia_time_interval.key} ;;
     relationship: one_to_many
   }
 }
