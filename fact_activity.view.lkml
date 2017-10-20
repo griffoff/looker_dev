@@ -135,7 +135,7 @@ view: fact_activity {
   dimension: timespent {
     label: "Time spent"
     type: number
-    sql: case when ${TABLE}.TIMESPENT <0 then null else ${TABLE}.TIMESPENT   / 24.0 end ;;
+    sql: case when ${TABLE}.TIMESPENT <0 then null else ${TABLE}.TIMESPENT   / 24.0 / 60.0 / 60.0 end ;;
     value_format: "h:mm:ss"
   }
 
