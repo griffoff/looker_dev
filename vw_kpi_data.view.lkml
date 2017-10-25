@@ -68,11 +68,6 @@ FROM ESCAL.raw_data_kpi
 
   }
 
-  dimension:CustomerSystem {
-    type: yesno
-    sql: ${TABLE}.COMPONENT in ('4LTR Press Online v2 Techcheck','Aplia','Aplia Techcheck','CengageBrain DPS','CengageBrain Shop','CengageBrain SPS','CengageBrain Techcheck','CNOWv7 CVG Techcheck','CNOWv7 EAST Techcheck','CNOWv7 SJC Techcheck','CNOWv7 WEST Techcheck','CNOWv8 Techcheck','MindTap School Techcheck','MindTap Techcheck','MindTapMath-DevMath Techcheck','OWLv2 CVG Techcheck','OWLv2 EAST Techcheck','OWLv2 SJC Techcheck','OWLv2 WEST Techcheck', 'Questia Techcheck', 'SAM Techcheck, 'WebAssign Techcheck') ;;
-  }
-
   dimension: SERVICE_ID {
     type: string
     sql: ${TABLE}.SERVICE_ID ;;
