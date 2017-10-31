@@ -300,3 +300,15 @@ explore: vw_status_interval_prsn {
     relationship: many_to_one
   }
 }
+
+
+# for work with twitter
+explore: vw_twitter {
+  label: "Twitts"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_twitter.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}

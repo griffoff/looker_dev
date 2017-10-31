@@ -9,6 +9,7 @@ view: vw_gia_detail {
       , to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       , JSONDATA:fields:summary::string as summary
       , JSONDATA:fields:status:name::string as current_status
+      , JSONDATA:fields:fixVersions[0]:name::string as fixversions
       , JSONDATA:fields:issuetype:name::string as issuetype
       , JSONDATA:fields:status:statusCategory:name::string as statusCategory
       , JSONDATA:fields:resolution:name::string as resolution
@@ -31,6 +32,7 @@ view: vw_gia_detail {
       , created
       ,updated
       ,current_status
+      ,fixversions
       ,issuetype
       , statusCategory
       ,resolution
@@ -179,6 +181,11 @@ view: vw_gia_detail {
   dimension: summary {
     type: string
     sql: ${TABLE}.summary ;;
+  }
+
+  dimension: fixversions {
+    type: string
+    sql: ${TABLE}.fixversions ;;
   }
 
   dimension: issuetype {
