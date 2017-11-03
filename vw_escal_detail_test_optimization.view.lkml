@@ -18,6 +18,7 @@ select
     , case when JSONDATA:fields:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13430), 3) end AS last_closed
     ,JSONDATA:fields:customfield_21431 as categories
     ,JSONDATA:fields:customfield_30130::string as sso_isbn
+    ,JSONDATA:fields:customfield_10030:value::string as discipline
     ,array_size(JSONDATA:fields:customfield_21431) as category_count
     ,JSONDATA:fields:components as components
     ,array_size(JSONDATA:fields:components) as component_count
@@ -34,6 +35,7 @@ where contains(key, 'ESCAL')  )
   , detail.last_closed
   , detail.categories
   , detail.sso_isbn
+  , detail.discipline
   , detail.components
   , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
   , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
@@ -54,6 +56,11 @@ from detail_categories
   dimension: acknowledged {
     type: string
     sql: ${TABLE}.ACKNOWLEDGED ;;
+  }
+
+  dimension: discipline {
+    type: string
+    sql: ${TABLE}.discipline ;;
   }
 
   dimension: resolutionTime {
@@ -220,9 +227,16 @@ from detail_categories
     sql: case when ${last_resolved_raw} is null then ${key} end;;
   }
 
-  measure: count {
-    label: "Issues"
+  measure: count_distinct {
+    label: "IssuesDistinct"
     type: count_distinct
+    sql: ${key};;
+    drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
+  }
+
+  measure: count {
+    label: "IssuesAll"
+    type: count
     drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
     link: {
       label: "Look at Content Aging Data"

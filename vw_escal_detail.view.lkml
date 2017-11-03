@@ -28,6 +28,7 @@ view: vw_escal_detail {
         , case when i.value:fields:customfield_13430='null' then null else to_timestamp(as_number(i.value:fields:customfield_13430), 3) end AS last_closed
         ,i.value:fields:customfield_21431 as categories
         ,i.value:fields:customfield_30130::string as sso_isbn
+    ,i.value:fields:customfield_10030:value::string as discipline
         ,array_size(i.value:fields:customfield_21431) as category_count
         ,i.value:fields:components as components
         ,array_size(i.value:fields:components) as component_count
@@ -46,6 +47,7 @@ view: vw_escal_detail {
     , detail.last_closed
     , detail.categories
     , detail.sso_isbn
+  , detail.discipline
     , detail.components
     , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
     , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
@@ -60,6 +62,11 @@ view: vw_escal_detail {
   dimension: acknowledged {
     type: string
     sql: ${TABLE}.ACKNOWLEDGED ;;
+  }
+
+  dimension: discipline {
+    type: string
+    sql: ${TABLE}.discipline ;;
   }
 
   dimension: resolutionTime {
