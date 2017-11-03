@@ -1,6 +1,54 @@
 view: vw_escal_detail_test_optimization {
   view_label: "Escals_optimized"
-  sql_table_name: JIRA.VW_ESCAL_DETAIL ;;
+  derived_table: {
+    sql:
+with detail as  (
+select
+    JSONDATA:key::string as key
+    , JSONDATA:fields:priority:name::string as priority
+    , JSONDATA:fields:customfield_23432:value::string as severity
+    , split_part(JSONDATA:fields:customfield_23432:value, '-', 1)::int as severity_id
+    --you can pass negative numbers to split_part to use relative indexing from the end of the array
+    , split_part(JSONDATA:fields:customfield_23432:value, '-', -1)::string as severity_name
+    --cast the json value to a string to use it in the to_timestamp function
+    , to_timestamp_tz(JSONDATA:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
+    -- you can use nullif instead of case to simplify this
+    , to_timestamp_tz(nullif(JSONDATA:fields:customfield_24430, 'null')::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as acknowledged
+    , case when JSONDATA:fields:customfield_13438='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13438), 3) end AS last_resolved
+    , case when JSONDATA:fields:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13430), 3) end AS last_closed
+    ,JSONDATA:fields:customfield_21431 as categories
+    ,JSONDATA:fields:customfield_30130::string as sso_isbn
+    ,array_size(JSONDATA:fields:customfield_21431) as category_count
+    ,JSONDATA:fields:components as components
+    ,array_size(JSONDATA:fields:components) as component_count
+   from
+     JIRA.RAW_JIRA_ISSUE
+where contains(key, 'ESCAL')  )
+, detail_categories as (select
+  detail.key
+  , detail.priority
+  , detail.severity
+  , detail.created
+  , detail.last_resolved
+  , detail.acknowledged
+  , detail.last_closed
+  , detail.categories
+  , detail.sso_isbn
+  , detail.components
+  , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
+  , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
+  , timestampdiff(minute,detail.created,detail.last_closed)/60 as closedTime
+  , timestampdiff(minute, detail.created, current_timestamp())/60 as age
+  , i.value:value::string as category
+from detail
+     , lateral flatten(detail.categories) i )
+ select
+  detail_categories.*
+  , i.value:name::string as component
+from detail_categories
+     , lateral flatten(detail_categories.components) i
+;;
+  }
 
 
   dimension: acknowledged {
@@ -21,7 +69,7 @@ view: vw_escal_detail_test_optimization {
   }
 
   dimension: resolutionStatus {
-    view_label: "Is Resolved?"
+   # view_label: "Is Resolved?"
     type: yesno
     sql: ${last_resolved_raw} is not null ;;
   }
@@ -39,6 +87,11 @@ view: vw_escal_detail_test_optimization {
   dimension: resolutionIntimeOuttime {
     type: string
     sql: case when (${resolutionIntime}) then 'In time' else 'Out time' end;;
+  }
+
+  dimension: sso_isbn {
+    type: string
+    sql: ${TABLE}.sso_isbn ;;
   }
 
   dimension_group: created {
@@ -139,6 +192,22 @@ view: vw_escal_detail_test_optimization {
     sql: ${age} ;;
   }
 
+
+  dimension: category {
+    type: string
+    sql: ${TABLE}.CATEGORY ;;
+  }
+
+  dimension: component {
+    type: string
+    sql: ${TABLE}.COMPONENT ;;
+  }
+
+  dimension:topSystem {
+    type: yesno
+    sql: ${TABLE}.COMPONENT in ('MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage') ;;
+  }
+
   measure: count_resolved {
     label: "# Resolved"
     type:  count_distinct
@@ -152,8 +221,8 @@ view: vw_escal_detail_test_optimization {
   }
 
   measure: count {
-    label: " # Issues"
-    type: count
+    label: "Issues"
+    type: count_distinct
     drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
     link: {
       label: "Look at Content Aging Data"

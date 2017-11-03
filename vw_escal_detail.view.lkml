@@ -27,6 +27,7 @@ view: vw_escal_detail {
         , case when i.value:fields:customfield_13438='null' then null else to_timestamp(as_number(i.value:fields:customfield_13438), 3) end AS last_resolved
         , case when i.value:fields:customfield_13430='null' then null else to_timestamp(as_number(i.value:fields:customfield_13430), 3) end AS last_closed
         ,i.value:fields:customfield_21431 as categories
+        ,i.value:fields:customfield_30130::string as sso_isbn
         ,array_size(i.value:fields:customfield_21431) as category_count
         ,i.value:fields:components as components
         ,array_size(i.value:fields:components) as component_count
@@ -44,6 +45,7 @@ view: vw_escal_detail {
     , detail.acknowledged
     , detail.last_closed
     , detail.categories
+    , detail.sso_isbn
     , detail.components
     , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
     , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
@@ -92,6 +94,12 @@ view: vw_escal_detail {
     type: string
     sql: case when (${resolutionIntime}) then 'In time' else 'Out time' end;;
   }
+
+  dimension: sso_isbn {
+    type: string
+    sql: ${TABLE}.sso_isbn ;;
+  }
+
 
   dimension_group: created {
     type: time

@@ -102,15 +102,15 @@ explore: vw_escal_detail_test {
 explore: vw_escal_detail_test_optimization {
   label: "Escals optimization test for all project"
 
-  join: vw_escal_categories {
-    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_categories.key} ;;
-    relationship: one_to_many
-  }
+#  join: vw_escal_categories {
+#    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_categories_test.key} ;;
+#    relationship: one_to_many
+#  }
 
-  join: vw_escal_components {
-    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_components.key} ;;
-    relationship: one_to_many
-  }
+#  join: vw_escal_components {
+#    sql_on: ${vw_escal_detail_test_optimization.key} = ${vw_escal_components_test.key} ;;
+#    relationship: one_to_many
+#  }
 
   join: dim_date {
     sql_on: ${vw_escal_detail_test_optimization.createdatekey} = ${dim_date.datekey} ;;
