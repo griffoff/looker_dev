@@ -20,7 +20,7 @@ select
     ,JSONDATA:fields:customfield_30130::string as sso_isbn
     ,JSONDATA:fields:customfield_10030:value::string as discipline
     ,JSONDATA:fields:customfield_11248::string as customer_institution
-    ,JSONDATA:fields:customfield_28633::string as Course_Key
+    ,JSONDATA:fields:customfield_28633::string as course_key
     ,array_size(JSONDATA:fields:customfield_21431) as category_count
     ,JSONDATA:fields:components as components
     ,array_size(JSONDATA:fields:components) as component_count
@@ -41,6 +41,7 @@ t1.*
 , timestampdiff(minute,t1.created,t1.acknowledged)/60 as acknowledgedTime
 , timestampdiff(minute,t1.created,t1.last_closed)/60 as closedTime
 , timestampdiff(minute, t1.created, current_timestamp())/60 as age
+, t2.category
 --, case when i.value:value::string is null then 'null' else i.value:value::string end  as category
 from detail t1
 -- select * from detail_categories  ;
@@ -60,9 +61,33 @@ left join  t_components t2 on t1.id=t2.id
     sql: ${TABLE}.ACKNOWLEDGED ;;
   }
 
-  dimension: Course_Key {
+  dimension:age {
+    type: number
+    value_format: "0.0"
+    sql:  ${TABLE}.age/24 ;;
+  }
+
+  dimension:age_bins {
+    type: tier
+    tiers: [1, 7, 14, 21, 28, 56]
+    style: integer
+    sql: ${age} ;;
+  }
+
+
+  dimension: category {
     type: string
-    sql: ${TABLE}.Course_Key ;;
+    sql: ${TABLE}.CATEGORY ;;
+  }
+
+  dimension: component {
+    type: string
+    sql: ${TABLE}.COMPONENT ;;
+  }
+
+  dimension: course_key {
+    type: string
+    sql: ${TABLE}.course_key ;;
   }
 
   dimension: customer_institution {
@@ -211,29 +236,6 @@ left join  t_components t2 on t1.id=t2.id
     type: number
     sql: ${created_year}*10000 + ${created_month_num}*100 + ${created_day_of_month} ;;
 
-  }
-
-  dimension:age {
-    type: number
-    sql:  ${TABLE}.age/24 ;;
-  }
-
-  dimension:age_bins {
-    type: tier
-    tiers: [1, 7, 14, 21, 28, 56]
-    style: integer
-    sql: ${age} ;;
-  }
-
-
-  dimension: category {
-    type: string
-    sql: ${TABLE}.CATEGORY ;;
-  }
-
-  dimension: component {
-    type: string
-    sql: ${TABLE}.COMPONENT ;;
   }
 
   dimension:topSystem {
