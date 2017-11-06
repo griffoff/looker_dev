@@ -4,7 +4,7 @@ view: vw_escal_detail_test_optimization {
     sql:
 with detail as  (
 select
-    JSONDATA:key::string as key
+    JSONDATA:key::string as id
     , JSONDATA:fields:priority:name::string as priority
     , JSONDATA:fields:customfield_23432:value::string as severity
     , split_part(JSONDATA:fields:customfield_23432:value, '-', 1)::int as severity_id
@@ -27,32 +27,30 @@ select
    from
      JIRA.RAW_JIRA_ISSUE
 where contains(key, 'ESCAL')  )
+, t_categories as (  select  detail.id,
+ i.value:value::string as category
+ from detail
+, lateral flatten(detail.categories) i )
+, t_components as (  select  detail.id,
+ i.value:name::string as component
+ from detail
+, lateral flatten(detail.components) i )
 , detail_categories as (select
-  detail.key
-  , detail.priority
-  , detail.severity
-  , detail.created
-  , detail.last_resolved
-  , detail.acknowledged
-  , detail.last_closed
-  , detail.categories
-  , detail.sso_isbn
-  , detail.discipline
-  , detail.customer_institution
-  , detail.Course_Key
-  , detail.components
-  , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
-  , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
-  , timestampdiff(minute,detail.created,detail.last_closed)/60 as closedTime
-  , timestampdiff(minute, detail.created, current_timestamp())/60 as age
-  , i.value:value::string as category
-from detail
-     , lateral flatten(detail.categories) i )
+t1.*
+, timestampdiff(minute,t1.created,t1.last_resolved)/60 as resolutionTime
+, timestampdiff(minute,t1.created,t1.acknowledged)/60 as acknowledgedTime
+, timestampdiff(minute,t1.created,t1.last_closed)/60 as closedTime
+, timestampdiff(minute, t1.created, current_timestamp())/60 as age
+--, case when i.value:value::string is null then 'null' else i.value:value::string end  as category
+from detail t1
+-- select * from detail_categories  ;
+left join  t_categories t2 on t1.id=t2.id)
+-- select * from detail_categories  ;
  select
-  detail_categories.*
-  , i.value:name::string as component
-from detail_categories
-     , lateral flatten(detail_categories.components) i
+t1.*
+, t2.component
+from detail_categories t1
+left join  t_components t2 on t1.id=t2.id
 ;;
   }
 
@@ -152,7 +150,7 @@ from detail_categories
   dimension: key {
     type: string
     primary_key: yes
-    sql: ${TABLE}.KEY ;;
+    sql: ${TABLE}.id ;;
   }
 
   dimension: jiraKey {
@@ -161,7 +159,7 @@ from detail_categories
       url: "https://jira.cengage.com/browse/{{value}}"
     }
 
-    sql: ${TABLE}.KEY ;;
+    sql: ${TABLE}.id ;;
   }
 
   dimension_group: last_closed {
