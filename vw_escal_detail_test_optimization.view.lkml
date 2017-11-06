@@ -19,6 +19,8 @@ select
     ,JSONDATA:fields:customfield_21431 as categories
     ,JSONDATA:fields:customfield_30130::string as sso_isbn
     ,JSONDATA:fields:customfield_10030:value::string as discipline
+    ,JSONDATA:fields:customfield_11248::string as customer_institution
+    ,JSONDATA:fields:customfield_28633::string as Course_Key
     ,array_size(JSONDATA:fields:customfield_21431) as category_count
     ,JSONDATA:fields:components as components
     ,array_size(JSONDATA:fields:components) as component_count
@@ -36,6 +38,8 @@ where contains(key, 'ESCAL')  )
   , detail.categories
   , detail.sso_isbn
   , detail.discipline
+  , detail.customer_institution
+  , detail.Course_Key
   , detail.components
   , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
   , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
@@ -58,9 +62,33 @@ from detail_categories
     sql: ${TABLE}.ACKNOWLEDGED ;;
   }
 
+  dimension: Course_Key {
+    type: string
+    sql: ${TABLE}.Course_Key ;;
+  }
+
+  dimension: customer_institution {
+    type: string
+    sql: ${TABLE}.customer_institution ;;
+  }
+
   dimension: discipline {
     type: string
     sql: ${TABLE}.discipline ;;
+  }
+
+  dimension:days_resolution {
+    type: tier
+    tiers: [7, 15, 30, 60, 90]
+    style: integer
+    sql: ${TABLE}.age/24 ;;
+  }
+
+  dimension:days_resolution_mounth {
+    type: tier
+    tiers: [30, 60, 90]
+    style: integer
+    sql: case when  ${TABLE}.age >720 then  ${TABLE}.age/24 else null end ;;
   }
 
   dimension: resolutionTime {
@@ -189,7 +217,7 @@ from detail_categories
 
   dimension:age {
     type: number
-    sql:  ${TABLE}.age/60 ;;
+    sql:  ${TABLE}.age/24 ;;
   }
 
   dimension:age_bins {
