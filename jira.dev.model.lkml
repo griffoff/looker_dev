@@ -99,6 +99,7 @@ explore: vw_escal_detail_test {
 
 
 #test dev table 'RAW_JIRA_ISSUE' with optimize data collection for all jira's project
+# View was move to PROD as 'vw_escal_optimized'
 explore: vw_escal_detail_test_optimization {
   label: "Escals optimization test for all project"
 

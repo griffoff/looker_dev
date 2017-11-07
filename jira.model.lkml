@@ -62,5 +62,10 @@ explore: vw_escal_detail_dummy{
     relationship: one_to_many
     sql_on: ${vw_escal_issue_resolved.issue_id} = ${vw_escal_detail_dummy.key} ;;
   }
+}
 
+# Table 'RAW_JIRA_ISSUE' is used  for optimized data collection of all jira's project
+# View was test on DEV as 'vw_escal_detail_test_optimization'
+explore: vw_escal_optimized {
+  label: "Escal optimized"
 }

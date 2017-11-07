@@ -1,5 +1,5 @@
-view: vw_escal_detail_test_optimization {
-  view_label: "Escals_optimized"
+view: vw_escal_optimized {
+  view_label: "Escal_optimized"
   derived_table: {
     sql:
     with detail as  (
@@ -294,12 +294,4 @@ view: vw_escal_detail_test_optimization {
 
     }
   }
-  #measure: count2 {
-  #  type: count
-  #  link: {
-  #    label: "‘Drill Down Test’"
-  #    url: "{{ sessions.count_bounce_sessions._link }}"
-  #    icon_url: "http://www.looker.com/favicon.ico"
-  #  }
-  #}
 }
