@@ -24,7 +24,7 @@ view: vw_escal_detail_test_optimization {
         , case when JSONDATA:fields:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13430), 3) end AS last_closed
         ,JSONDATA:fields:customfield_21431 as categories
         ,JSONDATA:fields:customfield_30130::string as sso_isbn
-        ,case when JSONDATA:fields:customfield_26738='null' then 'Unspecified' else JSONDATA:fields:customfield_26738::string end as discipline
+        ,case when JSONDATA:fields:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:fields:customfield_26738::string) end as discipline
         ,JSONDATA:fields:customfield_11248::string as customer_institution
         ,JSONDATA:fields:customfield_28633::string as course_key
         ,array_size(JSONDATA:fields:customfield_21431) as category_count
@@ -284,6 +284,11 @@ view: vw_escal_detail_test_optimization {
     type: number
     sql: ${created_year}*10000 + ${created_month_num}*100 + ${created_day_of_month} ;;
 
+  }
+
+  dimension:topDiscipline {
+    type: yesno
+    sql: ${TABLE}.discipline in ('Accounting','Business Law','Chemistry','Decision Sciences','Economics','Health Science/Nursing','Management','Psychology & Psychotherapy','Taxation','Unspecified') ;;
   }
 
   dimension:topSystem {
