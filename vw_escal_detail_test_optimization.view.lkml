@@ -6,6 +6,11 @@ view: vw_escal_detail_test_optimization {
     select
         JSONDATA:key::string as id
         , JSONDATA:fields:priority:name::string as priority
+        , JSONDATA:fields:resolution:name::string as resolution
+        , JSONDATA:fields:status:name::string as status
+        , JSONDATA:fields:issuetype:name::string as issuetype
+        , JSONDATA:fields:summary::string as summary
+        , JSONDATA:fields:description::string as description
         , JSONDATA:fields:customfield_23432:value::string as severity
         , split_part(JSONDATA:fields:customfield_23432:value, '-', 1)::int as severity_id
         --you can pass negative numbers to split_part to use relative indexing from the end of the array
@@ -19,7 +24,7 @@ view: vw_escal_detail_test_optimization {
         , case when JSONDATA:fields:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13430), 3) end AS last_closed
         ,JSONDATA:fields:customfield_21431 as categories
         ,JSONDATA:fields:customfield_30130::string as sso_isbn
-        ,JSONDATA:fields:customfield_10030:value::string as discipline
+        ,case when JSONDATA:fields:customfield_26738='null' then 'Unspecified' else JSONDATA:fields:customfield_26738::string end as discipline
         ,JSONDATA:fields:customfield_11248::string as customer_institution
         ,JSONDATA:fields:customfield_28633::string as course_key
         ,array_size(JSONDATA:fields:customfield_21431) as category_count
@@ -101,6 +106,11 @@ view: vw_escal_detail_test_optimization {
     sql: ${TABLE}.discipline ;;
   }
 
+  dimension: description {
+    type: string
+    sql: ${TABLE}.description ;;
+  }
+
   dimension:days_resolution {
     type: tier
     tiers: [7, 15, 30, 60, 90]
@@ -113,6 +123,16 @@ view: vw_escal_detail_test_optimization {
     tiers: [30, 60, 90]
     style: integer
     sql: case when  ${TABLE}.age >720 then  ${TABLE}.age/24 else null end ;;
+  }
+
+  dimension: issuetype {
+    type: string
+    sql: ${TABLE}.issuetype ;;
+  }
+
+  dimension: resolution {
+    type: string
+    sql: ${TABLE}.resolution ;;
   }
 
   dimension: resolutionTime {
@@ -151,6 +171,16 @@ view: vw_escal_detail_test_optimization {
   dimension: sso_isbn {
     type: string
     sql: ${TABLE}.sso_isbn ;;
+  }
+
+  dimension: status {
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: summary {
+    type: string
+    sql: ${TABLE}.summary ;;
   }
 
   dimension_group: created {
