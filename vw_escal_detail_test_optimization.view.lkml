@@ -2,7 +2,7 @@ view: vw_escal_detail_test_optimization {
   view_label: "Escals_optimized"
   derived_table: {
     sql:
-    with detail as  (
+ with detail as  (
     select
         JSONDATA:key::string as id
         , JSONDATA:fields:priority:name::string as priority
@@ -23,6 +23,7 @@ view: vw_escal_detail_test_optimization {
         , case when JSONDATA:fields:customfield_13438='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13438), 3) end AS last_resolved
         , case when JSONDATA:fields:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13430), 3) end AS last_closed
         ,JSONDATA:fields:customfield_21431 as categories
+        ,JSONDATA:fields:issuelinks as issuelinks
         ,JSONDATA:fields:customfield_30130::string as sso_isbn
         ,case when JSONDATA:fields:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:fields:customfield_26738::string) end as discipline
         ,JSONDATA:fields:customfield_11248::string as customer_institution
@@ -41,7 +42,13 @@ view: vw_escal_detail_test_optimization {
      i.value:name::string as component
      from detail
     , lateral flatten(detail.components) i )
-    , detail_categories as (select
+    , t_issuelinks as (  select  detail.id
+    , i.value:type:inward::string as issuelink
+    , i.value:inwardIssue:key::string as inwardIssue
+     from detail
+    , lateral flatten(detail.issuelinks) i )
+--    select * from t_issuelinks
+ , detail_categories as (select
     t1.*
     , timestampdiff(minute,t1.created,t1.last_resolved)/60 as resolutionTime
     , timestampdiff(minute,t1.created,t1.acknowledged)/60 as acknowledgedTime
@@ -53,11 +60,17 @@ view: vw_escal_detail_test_optimization {
     -- select * from detail_categories  ;
     left join  t_categories t2 on t1.id=t2.id)
     -- select * from detail_categories  ;
-     select
+ , detail_categ_comp as ( select
     t1.*
     , t2.component
     from detail_categories t1
-    left join  t_components t2 on t1.id=t2.id
+    left join  t_components t2 on t1.id=t2.id )
+select
+    t1.*
+    , t2.issuelink
+    , t2.inwardIssue
+    from detail_categ_comp t1
+    left join  t_issuelinks t2 on t1.id=t2.id
     ;;
   }
 
@@ -123,6 +136,16 @@ view: vw_escal_detail_test_optimization {
     tiers: [30, 60, 90]
     style: integer
     sql: case when  ${TABLE}.age >720 then  ${TABLE}.age/24 else null end ;;
+  }
+
+  dimension: inwardIssue {
+    type: string
+    sql: ${TABLE}.inwardIssue ;;
+  }
+
+  dimension: issuelink {
+    type: string
+    sql: ${TABLE}.issuelink ;;
   }
 
   dimension: issuetype {
