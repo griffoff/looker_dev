@@ -52,21 +52,23 @@ view: vw_trust {
       id
       , max(modifyedtime) as  max_modifyedtime
       , i.value:field::string as field
+      ,sprint
       from histories, lateral flatten(input => items) i
       where  to_date(modifyedtime) < to_date(sprintstart)  and field='status'
-       group by  id,field            )
+       group by  id,field ,sprint         )
  , status_before as(
         select
       status_prep.id
       , status_prep.max_modifyedtime
+    , status_prep.sprint
       ,max_info.toString as status
       from status_prep
       left join max_info on status_prep.id=max_info.id     and status_prep.max_modifyedtime=max_info.modifyedtime
-       and max_info.field='status'   )
+       and max_info.field='status'    and status_prep.sprint=max_info.sprint )
   select         max_info.*
       , case when status_before.id is null then 'Open' else status_before.status end as start_status_sprint
      from status_before
- RIGHT OUTER  join max_info on status_before.id=max_info.id
+ RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint
    ;;
     }
 
