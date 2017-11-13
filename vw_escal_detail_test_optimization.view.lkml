@@ -96,7 +96,7 @@ select
 
   dimension: category {
     type: string
-    sql: ${TABLE}.CATEGORY ;;
+    sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
   }
 
   dimension: component {
@@ -141,6 +141,11 @@ select
   dimension: inwardIssue {
     type: string
     sql: ${TABLE}.inwardIssue ;;
+  }
+
+  dimension: inwardIssue_project {
+    type: string
+    sql: case when ${TABLE}.inwardIssue is null then null else split_part( ${TABLE}.inwardIssue, '-', 1) end;;
   }
 
   dimension: issuelink {
