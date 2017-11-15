@@ -99,6 +99,12 @@ select
     sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
   }
 
+  dimension: closedTime_day {
+    type: number
+    value_format: "0"
+    sql: ROUND(${TABLE}.closedTime/24) ;;
+  }
+
   dimension: component {
     type: string
     sql: ${TABLE}.COMPONENT ;;
@@ -161,6 +167,12 @@ select
   dimension: resolution {
     type: string
     sql: ${TABLE}.resolution ;;
+  }
+
+  dimension: resolutionTime_day {
+    type: number
+    value_format: "0"
+    sql: ROUND(${TABLE}.resolutionTime/24) ;;
   }
 
   dimension: resolutionTime {
