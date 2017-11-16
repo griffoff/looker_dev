@@ -124,6 +124,17 @@ explore: vw_escal_detail_test_optimization {
   #}
 }
 
+
+
+#For tickets from Jira's project NG: dev table 'RAW_JIRA_ISSUE' with optimize data collection for all jira's project
+explore: vw_ng_detail {
+  label: "NG project"
+  join: dim_date {
+    sql_on: ${vw_ng_detail.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}
+
 # for work with DIG
 explore: vw_dig_info_detail {
   label: "DIG"
