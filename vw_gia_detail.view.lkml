@@ -13,6 +13,7 @@ view: vw_gia_detail {
       , JSONDATA:fields:issuetype:name::string as issuetype
       , JSONDATA:fields:status:statusCategory:name::string as statusCategory
       , JSONDATA:fields:resolution:name::string as resolution
+      , JSONDATA:fields:labels::string as labels
       , JSONDATA:fields:customfield_10792::number as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
@@ -36,6 +37,7 @@ view: vw_gia_detail {
       ,issuetype
       , statusCategory
       ,resolution
+      , labels
       ,story_point
       ,order_in_sprint
       ,last_in_progress_user
@@ -198,6 +200,11 @@ view: vw_gia_detail {
   dimension: currentstatus {
     type: string
     sql: ${TABLE}.current_status ;;
+  }
+
+  dimension: labels {
+    type: string
+    sql: ${TABLE}.labels ;;
   }
 
   dimension: statusCategory {
