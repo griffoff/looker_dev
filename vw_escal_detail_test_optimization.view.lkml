@@ -348,6 +348,24 @@ select
     sql: case when ${last_resolved_raw} is null then ${key} end;;
   }
 
+
+  measure: average_closedDay {
+    label: "Average_closedDay"
+    type:  average
+    value_format: "0.0"
+    sql: ${TABLE}.closedTime/24 ;;
+    #sql:  ${BROWSER_TIME} ;;
+  }
+
+
+  measure: median_closedDay {
+    label: "Median_closedDay"
+    type:  median
+    value_format: "0.0"
+    sql: ${TABLE}.closedTime/24 ;;
+    #sql:  ${BROWSER_TIME} ;;
+  }
+
   measure: count_distinct {
     label: "IssuesDistinct"
     type: count_distinct
