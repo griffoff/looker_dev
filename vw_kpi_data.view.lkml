@@ -9,8 +9,8 @@ view: vw_kpi_data {
   json_data:SERVICE_ID::number as SERVICE_ID
 , json_data:APPVIEW_STATUS::string as APPVIEW_STATUS
 , json_data:CHECK_UUID::string as CHECK_UUID
-,  to_timestamp_tz(json_data:LAST_MODIFIED_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as LAST_MODIFIED_DATE
-,  to_timestamp_tz(json_data:MONITOR_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as MONITOR_DATE
+,  to_timestamp_ntz(json_data:LAST_MODIFIED_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as LAST_MODIFIED_DATE
+,  to_timestamp_ntz(json_data:MONITOR_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as MONITOR_DATE
 , json_data:NAME::string as LOCATION_NAME
 , json_data:BROWSER_TIME::number as BROWSER_TIME
 , json_data:NETWORK_TIME::number as NETWORK_TIME
