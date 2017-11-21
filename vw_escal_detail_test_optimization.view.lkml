@@ -181,6 +181,19 @@ select
     sql: ROUND(${TABLE}.resolutionTime/24) ;;
   }
 
+  dimension: resolution_times_acc_to_priority {
+    type: number
+    value_format: "0.0"
+    sql: CASE
+          WHEN ${priority} = 'P1 Escalation' THEN  ROUND(${TABLE}.resolutionTime/.8)/10
+          WHEN ${priority} = 'P2 Escalation' THEN  ROUND(${TABLE}.resolutionTime/2.4)/10
+          WHEN ${priority} = 'P3 Escalation' THEN  ROUND(${TABLE}.resolutionTime/18.6)/10
+          WHEN ${priority} = 'P4 Escalation' THEN  ROUND(${TABLE}.resolutionTime/30.6)/10
+          ELSE null
+      END
+      ;;
+  }
+
   dimension: resolutionTime {
     type: string
     sql: ${TABLE}.resolutionTime ;;
