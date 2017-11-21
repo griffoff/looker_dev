@@ -12,7 +12,7 @@ view: vw_trust {
       , JSONDATA:fields:issuetype:name::string as issuetype
       , JSONDATA:fields:status:statusCategory:name::string as statusCategory
       , JSONDATA:fields:resolution:name::string as resolution
-      , JSONDATA:fields:customfield_10792::number as story_point
+      , JSONDATA:fields:customfield_10792::float as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
       , split_part(split_part(i.value::string, 'name=Sprint ', 2),',startDate=',1)::string as sprint

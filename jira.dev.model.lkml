@@ -241,6 +241,18 @@ explore: vw_kpi_data{
 }
 
 
+# for work with KPI-data summary
+explore: vw_kpi_summary{
+  label: "KPI Summary"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_kpi_summary.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+}
+
+
 
 # for work with TRUST
 explore: vw_trust{

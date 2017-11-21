@@ -99,6 +99,12 @@ select
     sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
   }
 
+
+  dimension: category_non_software {
+    type: string
+    sql: case when ${TABLE}.CATEGORY='Software' then 'Software' else 'Non-Software' end ;;
+  }
+
   dimension: closedTime_day {
     type: number
     value_format: "0"

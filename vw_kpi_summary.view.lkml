@@ -16,7 +16,7 @@ with main as (
 , json_data:NETWORK_TIME::number as NETWORK_TIME
 , json_data:SERVER_TIME::number as SERVER_TIME
 , json_data:TOTAL_TIME::number as TOTAL_TIME
-FROM raw_data_kpi )
+FROM ESCAL.raw_data_kpi )
 , health as ( select
 SERVICE_ID
 ,CHECK_UUID
@@ -33,7 +33,7 @@ select t1.SERVICE_ID
 , t1.LAST_MODIFIED_DATE
 , t2.SERVISE as SERVICE_NAME
 from health t1
- left join  KPI_SERVISES_ID t2 on t1.SERVICE_ID=t2.SERVICE_ID
+ left join  ESCAL.KPI_SERVISES_ID t2 on t1.SERVICE_ID=t2.SERVICE_ID
     ;;
   }
 
