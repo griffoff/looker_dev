@@ -7,7 +7,7 @@ view: vw_kpi_summary {
 with main as (
  SELECT
   json_data:SERVICE_ID::number as SERVICE_ID
-, json_data:APPVIEW_STATUS::string as APPVIEW_STATUS
+, case when json_data:APPVIEW_STATUS::string='OK' then 1 else 0 end as APPVIEW_STATUS
 , json_data:CHECK_UUID::string as CHECK_UUID
 , to_timestamp_ntz(json_data:LAST_MODIFIED_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM')  as LAST_MODIFIED_DATE
 , to_timestamp_ntz(json_data:MONITOR_DATE::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as MONITOR_DATE
@@ -21,10 +21,7 @@ FROM ESCAL.raw_data_kpi )
 SERVICE_ID
 ,CHECK_UUID
 , min (LAST_MODIFIED_DATE)  as LAST_MODIFIED_DATE
-, count(APPVIEW_STATUS) as total_statuses
-, count(APPVIEW_STATUS='OK') as ok_statuses
-, case when total_statuses>0 then to_number(100*ok_statuses/total_statuses) else NULL end as LOCATION_HEALTH
-, case when total_statuses=0 then TRUE else FALSE end as BLACKOUT_ENABLED
+, (100*avg(APPVIEW_STATUS))::number as LOCATION_HEALTH
 from main
 GROUP BY SERVICE_ID,CHECK_UUID)
  -- SERVICE_ID --> SERVICE_NAME
@@ -39,24 +36,20 @@ from health t1
   }
 
 
-  dimension_group: MONITORED {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      month_name,
-      quarter,
-      year,
-      day_of_week,
-      hour_of_day,
-      week_of_year,
-      day_of_month,
-      month_num
-    ]
-    sql: ${TABLE}.MONITOR_DATE ;;
+  dimension: status {
+    type: string
+    sql: CASE
+          WHEN ${LOCATION_HEALTH} >70 THEN 'Available'
+          WHEN ${LOCATION_HEALTH} >50 THEN 'Partial'
+          WHEN ${LOCATION_HEALTH} >0 THEN  'Critical'
+          ELSE 'Disabled'
+      END
+      ;;
+  }
+
+  dimension: LOCATION_HEALTH {
+    type: number
+    sql: ${TABLE}.LOCATION_HEALTH ;;
   }
 
 
@@ -106,7 +99,7 @@ from health t1
     label: "Count"
     type: count  #_distinct
     # sql: CONCAT(${CHECK_UUID},${LOCATION_NAME}) ;;
-    drill_fields: [MODIFIED_raw, MONITORED_raw,  SERVICE_ID, SERVICE_NAME, CHECK_UUID]
+    drill_fields: [MODIFIED_raw, SERVICE_ID, SERVICE_NAME, CHECK_UUID]
   }
 
 
