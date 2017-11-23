@@ -69,3 +69,29 @@ explore: vw_escal_detail_dummy{
 explore: vw_escal_optimized {
   label: "Escal optimized"
 }
+
+
+# for work with TRUST
+explore: vw_trust{
+  label: "TRUST (PROD)"
+
+  join: vw_trust_time_interval {
+    sql_on: ${vw_trust.key} = ${vw_trust_time_interval.key} ;;
+    relationship: one_to_many
+  }
+  join: vw_trust_status_interval {
+    sql_on: ${vw_trust.key} = ${vw_trust_status_interval.key} ;;
+    relationship: one_to_many
+  }
+}
+
+
+# for work with GIA
+explore: vw_gia_detail{
+  label: "GIA (PROD)"
+
+  join: vw_gia_time_interval {
+    sql_on: ${vw_gia_detail.key} = ${vw_gia_time_interval.key} ;;
+    relationship: one_to_many
+  }
+}

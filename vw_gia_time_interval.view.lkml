@@ -44,7 +44,7 @@ view: vw_gia_time_interval {
         , t1.id as id
         , t1.current_statuss as currentstatuss
       from (SELECT DATEADD(day, -seq4(), current_date) as general_date FROM
-    TABLE ( GENERATOR (  ROWCOUNT =>77  ) )  ) as calendar
+    TABLE ( GENERATOR (  ROWCOUNT =>177  ) )  ) as calendar
       left join status_time_interval as t1
       on  calendar.general_date between TIMESTAMPADD(day,-1,t1.begin_status) and TIMESTAMPADD(day,-1,coalesce(t1.end_status, TO_TIMESTAMP(current_date)))
    ;;
