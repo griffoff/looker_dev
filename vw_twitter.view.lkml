@@ -7,7 +7,7 @@ with
    select
  i.value:name::string as channel
 , i.value:twits as twits
-FROM TESTSCHEMAA.TWITTER_INFORMATION_copy
+FROM SCRAPING.TWITTER_INFORMATION  --  TESTSCHEMAA.TWITTER_INFORMATION_copy
 , lateral flatten(input => INFORMATION) i   )
 , all_twits as(
 select
@@ -21,8 +21,7 @@ channel
 , i.value:time::string as time
 , i.value:user::string as user
 from channels
- , lateral flatten(input => twits) i
-where dates<'2017-10-27')
+ , lateral flatten(input => twits) i )
 , twit_sent as (select t1.*
 ,t2.positiv
 from all_twits t1

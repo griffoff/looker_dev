@@ -389,13 +389,13 @@ select
     label: "IssuesDistinct"
     type: count_distinct
     sql: ${key};;
-    drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
+    drill_fields: [jiraKey,  priority, created_date, resolution, status, last_resolved_date, last_closed_date, age]
   }
 
   measure: count {
     label: "IssuesAll"
     type: count
-    drill_fields: [jiraKey, severity, priority, created_date, resolutionStatus, last_resolved_date, age]
+    drill_fields: [jiraKey,  priority, created_date, resolution, status, last_resolved_date, last_closed_date, age]
     link: {
       label: "Look at Content Aging Data"
       url: "https://cengage.looker.com/dashboards/37?Category=%25Content%20Development%25"
