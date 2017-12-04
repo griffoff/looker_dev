@@ -149,24 +149,24 @@ view: vw_twitter {
 
   dimension: support_message {
     type: yesno
-    sql: CONTAINS(${message}, 'Do you need help upgrading temporary') or
-    CONTAINS(${message}, 'Check out our troubleshooting wizard') or
-    CONTAINS(${message}, 'Check out our new troubleshooting wizard') or
-    CONTAINS(${message}, 'Do you need an access code for your course?') or
-    CONTAINS(${message}, 'If you receive a "cannot determine the product" message while registering, please see') or
-    CONTAINS(${message}, 'Do you need help opening homework, quizzes, or tests') or
-    CONTAINS(${message}, 'Some Pearson course content opens in new windows') or
-    CONTAINS(${message}, 'Questions about entering answers in your course') or
-    CONTAINS(${message}, 'Need help retrieving your username (login name) or password') or
-    CONTAINS(${message}, 'Follow the steps listed at') or
-    CONTAINS(${message}, 'Already have a pearson account, but need to enroll in') or
-    CONTAINS(${message}, 'Having trouble registering for your course') or
-    CONTAINS(${message}, 'Need help signing in') or
-    CONTAINS(${message}, 'While registering, are you receiving a message stating your access code was not found') or
-    CONTAINS(${message}, 'System status updates can be found at') or
-    CONTAINS(${message}, 'Our support site can be found at') or
-    CONTAINS(${message}, 'Using a Pearson website with the safari browser') or
-    CONTAINS(${message}, 'If you need help getting')
+    sql: CONTAINS(LOWER(${message}), 'do you need help upgrading temporary') or
+    CONTAINS(LOWER(${message}), 'check out our troubleshooting wizard') or
+    CONTAINS(LOWER(${message}), 'check out our new troubleshooting wizard') or
+    CONTAINS(LOWER(${message}), 'do you need an access code for your course?') or
+    CONTAINS(LOWER(${message}), 'if you receive a "cannot determine the product" message while registering, please see') or
+    CONTAINS(LOWER(${message}), 'do you need help opening homework, quizzes, or tests') or
+    CONTAINS(LOWER(${message}), 'some pearson course content opens in new windows') or
+    CONTAINS(LOWER(${message}), 'questions about entering answers in your course') or
+    CONTAINS(LOWER(${message}), 'need help retrieving your username (login name) or password') or
+    CONTAINS(LOWER(${message}), 'follow the steps listed at') or
+    CONTAINS(LOWER(${message}), 'already have a pearson account, but need to enroll in') or
+    CONTAINS(LOWER(${message}), 'having trouble registering for your course') or
+    CONTAINS(LOWER(${message}), 'need help signing in') or
+    CONTAINS(LOWER(${message}), 'while registering, are you receiving a message stating your access code was not found') or
+    CONTAINS(LOWER(${message}), 'system status updates can be found at') or
+    CONTAINS(LOWER(${message}), 'our support site can be found at') or
+    CONTAINS(LOWER(${message}), 'using a pearson website with the safari browser') or
+    CONTAINS(LOWER(${message}), 'if you need help getting')
     ;;
   }
 

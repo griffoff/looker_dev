@@ -54,6 +54,10 @@ view: vw_gia_time_interval {
     type: string
     hidden: yes
     sql: ${TABLE}.id ;;
+    link: {
+      label: "Review in Jira"
+      url: "https://jira.cengage.com/browse/{{value}}"
+    }
   }
 
   dimension: currentstatuss {
@@ -74,9 +78,21 @@ view: vw_gia_time_interval {
     drill_fields: [currentstatuss, general_date, key]
   }
 
+# get max status without date
+  dimension: dayli_state_as_dim {
+    type: string
+    sql: max (${currentstatuss});;
+  }
+
   measure: dayli_state {
     type: string
     sql: max (${currentstatuss});;
+  }
+
+  measure: dayli_state_count {
+    type: count_distinct
+    sql: when ${dayli_state_as_dim} case then ${key} else null end;;
+    drill_fields: [key,  currentstatuss]
   }
 
   measure: WIP  {
