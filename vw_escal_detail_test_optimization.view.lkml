@@ -52,6 +52,7 @@ view: vw_escal_detail_test_optimization {
     t1.*
     , timestampdiff(minute,t1.created,t1.last_resolved)/60 as resolutionTime
     , timestampdiff(minute,t1.created,t1.acknowledged)/60 as acknowledgedTime
+    , timestampdiff(minute,t1.acknowledged,t1.last_resolved)/60 as openresolutionTime
     , timestampdiff(minute,t1.created,t1.last_closed)/60 as closedTime
     , timestampdiff(minute, t1.created, current_timestamp())/60 as age
     , t2.category
@@ -168,6 +169,11 @@ select
   dimension: issuetype {
     type: string
     sql: ${TABLE}.issuetype ;;
+  }
+
+  dimension: openresolutionTime {
+    type: string
+    sql: ${TABLE}.openresolutionTime ;;
   }
 
   dimension: resolution {
@@ -365,6 +371,24 @@ select
     label: "# Outstanding"
     type:  count_distinct
     sql: case when ${last_resolved_raw} is null then ${key} end;;
+  }
+
+
+  measure: average_time_in_days {
+    label: "Average_open_to_resolution"
+    type:  average
+    value_format: "0.0"
+    sql: ${TABLE}.resolutionTime/24 ;;
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_date, last_closed_date, age, openresolutionTime]
+  }
+
+  #for openresolutionTime
+  measure: average_ACKNOWLEDGED_to_resolution_days {
+    label: "Average_ACKNOWLEDGED_to_resolution"
+    type:  average
+    value_format: "0.0"
+    sql: ${TABLE}.openresolutionTime/24 ;;
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_date, last_closed_date, age, openresolutionTime]
   }
 
 
