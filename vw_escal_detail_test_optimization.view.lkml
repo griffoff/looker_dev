@@ -379,7 +379,7 @@ select
     type:  average
     value_format: "0.0"
     sql: ${TABLE}.resolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_date, last_closed_date, age, openresolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
   }
 
   #for openresolutionTime
@@ -388,7 +388,25 @@ select
     type:  average
     value_format: "0.0"
     sql: ${TABLE}.openresolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_date, last_closed_date, age, openresolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
+  }
+
+
+  measure: median_time_open_to_resolution {
+    label: "Median_open_to_resolution"
+    type:  median
+    value_format: "0.0"
+    sql: ${TABLE}.resolutionTime/24 ;;
+    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
+  }
+
+  #for openresolutionTime
+  measure: median_ACKNOWLEDGED_to_resolution_days {
+    label: "Median_ACKNOWLEDGED_to_resolution"
+    type:  median
+    value_format: "0.0"
+    sql: ${TABLE}.openresolutionTime/24 ;;
+    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
   }
 
 
