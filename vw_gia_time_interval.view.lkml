@@ -52,7 +52,7 @@ view: vw_gia_time_interval {
 
   dimension: key {
     type: string
-    hidden: yes
+    #hidden: yes
     sql: ${TABLE}.id ;;
     link: {
       label: "Review in Jira"
@@ -98,5 +98,11 @@ view: vw_gia_time_interval {
   measure: WIP  {
     type: date
     sql: max (${currentstatuss});;
+  }
+
+  measure: count_distinct  {
+    type: count_distinct
+    sql: ${key};;
+    drill_fields: [key, general_date,  currentstatuss]
   }
 }
