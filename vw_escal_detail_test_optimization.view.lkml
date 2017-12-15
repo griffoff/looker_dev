@@ -251,8 +251,6 @@ select
   dimension_group: created {
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
@@ -265,8 +263,10 @@ select
       day_of_month,
       month_num
     ]
-    sql: ${TABLE}.CREATED ;;
+    # sql: ${TABLE}.CREATED ;; in this case we have duplicate
+    sql: to_date(${TABLE}.CREATED) ;;
   }
+
 
   dimension: key {
     type: string
@@ -379,7 +379,7 @@ select
     type:  average
     value_format: "0.0"
     sql: ${TABLE}.resolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
   }
 
   #for openresolutionTime
@@ -388,7 +388,7 @@ select
     type:  average
     value_format: "0.0"
     sql: ${TABLE}.openresolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
   }
 
 
@@ -397,7 +397,7 @@ select
     type:  median
     value_format: "0.0"
     sql: ${TABLE}.resolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_raw, last_closed_raw, age, openresolutionTime,resolutionTime]
   }
 
   #for openresolutionTime
@@ -406,7 +406,7 @@ select
     type:  median
     value_format: "0.0"
     sql: ${TABLE}.openresolutionTime/24 ;;
-    drill_fields: [jiraKey, resolution, status, created_raw, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
+    drill_fields: [jiraKey, resolution, status, created_date, acknowledged, last_resolved_raw, last_closed_raw, age, resolutionTime, openresolutionTime]
   }
 
 
