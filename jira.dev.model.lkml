@@ -269,6 +269,17 @@ explore: vw_trust{
 }
 
 
+# for work with SSO GATE ACMS GATEDPL
+explore: vw_sso{
+  label: "SSO"
+
+  join: vw_sso_time_interval {
+    sql_on: ${vw_sso.key} = ${vw_sso_time_interval.key} ;;
+    relationship: one_to_many
+  }
+}
+
+
 # for work with GIA
 explore: vw_gia_detail{
   label: "GIA"

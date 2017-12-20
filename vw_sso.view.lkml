@@ -1,5 +1,5 @@
-view: vw_gia_detail {
-  view_label: "GIA detail"
+view: vw_sso {
+  view_label: "SSO"
   derived_table: {
     sql:
       with histories as(
@@ -9,15 +9,13 @@ view: vw_gia_detail {
       , to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       , JSONDATA:fields:summary::string as summary
       , JSONDATA:fields:status:name::string as current_status
-      , JSONDATA:fields:fixVersions[0]:name::string as fixversions
       , JSONDATA:fields:issuetype:name::string as issuetype
       , JSONDATA:fields:status:statusCategory:name::string as statusCategory
       , JSONDATA:fields:resolution:name::string as resolution
-      , JSONDATA:fields:labels::string as labels
       , JSONDATA:fields:customfield_10792::float as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
-      , split_part(split_part(i.value::string, 'name=ABIW - Sprint ', 2),' [',1)::string as sprint
+      , split_part(split_part(i.value::string, 'name=', 2),',startDate=',1)::string as sprint
       , split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
       , split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
@@ -25,7 +23,7 @@ view: vw_gia_detail {
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where contains(jsondata:key, 'GIA') and sprintend<>'<null>'     ) -- and sprint>''
+        where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') ) and sprintend<>'<null>'      )
  , max_info as(
         select
       id
@@ -33,11 +31,9 @@ view: vw_gia_detail {
       , created
       ,updated
       ,current_status
-      ,fixversions
       ,issuetype
       , statusCategory
       ,resolution
-      , labels
       ,story_point
       ,order_in_sprint
       ,last_in_progress_user
@@ -59,7 +55,7 @@ view: vw_gia_detail {
       ,sprint
       from histories, lateral flatten(input => items) i
       where  to_date(modifyedtime) < to_date(sprintstart)  and field='status'
-       group by  id,field ,sprint      )
+       group by  id,field ,sprint         )
  , status_before as(
         select
       status_prep.id
@@ -68,12 +64,12 @@ view: vw_gia_detail {
       ,max_info.toString as status
       from status_prep
       left join max_info on status_prep.id=max_info.id     and status_prep.max_modifyedtime=max_info.modifyedtime
-       and max_info.field='status'   and status_prep.sprint=max_info.sprint  )
+       and max_info.field='status'    and status_prep.sprint=max_info.sprint )
   select         max_info.*
       , case when status_before.id is null then 'Open' else status_before.status end as start_status_sprint
      from status_before
  RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint
-;;
+   ;;
   }
 
   dimension: key {
@@ -187,11 +183,6 @@ view: vw_gia_detail {
     sql: ${TABLE}.summary ;;
   }
 
-  dimension: fixversions {
-    type: string
-    sql: ${TABLE}.fixversions ;;
-  }
-
   dimension: issuetype {
     type: string
     sql: ${TABLE}.issuetype ;;
@@ -200,11 +191,6 @@ view: vw_gia_detail {
   dimension: currentstatus {
     type: string
     sql: ${TABLE}.current_status ;;
-  }
-
-  dimension: labels {
-    type: string
-    sql: ${TABLE}.labels ;;
   }
 
   dimension: statusCategory {
