@@ -81,6 +81,11 @@ view: vw_sso {
     }
   }
 
+  dimension: project {
+    type: string
+    sql: split_part( ${TABLE}.id, '-', 1) ;;
+  }
+
   dimension_group: created {
     type: time
     timeframes: [
