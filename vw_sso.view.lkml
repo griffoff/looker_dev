@@ -15,15 +15,15 @@ view: vw_sso {
       , JSONDATA:fields:customfield_10792::float as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
-      , split_part(split_part(i.value::string, 'name=', 2),',startDate=',1)::string as sprint
-      , split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
-      , split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend
+      --, split_part(split_part(i.value::string, 'name=', 2),',startDate=',1)::string as sprint
+      --, split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
+      --, split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
       ,to_date(modifyedtime) as modifyeddate
       ,  j.value:items as items
-      from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
+      from JIRA.RAW_JIRA_ISSUE  --, lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') ) and sprintend<>'<null>'      )
+        where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') )     ) --and sprintend<>'<null>'
  , max_info as(
         select
       id
@@ -37,9 +37,9 @@ view: vw_sso {
       ,story_point
       ,order_in_sprint
       ,last_in_progress_user
-      ,sprint
-      , to_timestamp_tz(sprintstart,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintstart
-      , to_timestamp_tz(sprintend,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintend
+      --,sprint
+      --, to_timestamp_tz(sprintstart,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintstart
+     -- , to_timestamp_tz(sprintend,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintend
       ,modifyedtime
       ,to_date(modifyedtime) as modifyeddate
       , i.value:field::string as field
@@ -52,23 +52,23 @@ view: vw_sso {
       id
       , max(modifyedtime) as  max_modifyedtime
       , i.value:field::string as field
-      ,sprint
+      -- ,sprint
       from histories, lateral flatten(input => items) i
-      where  to_date(modifyedtime) < to_date(sprintstart)  and field='status'
-       group by  id,field ,sprint         )
+      where  field='status' -- to_date(modifyedtime) < to_date(sprintstart)  and
+       group by  id,field        ) --
  , status_before as(
         select
       status_prep.id
       , status_prep.max_modifyedtime
-    , status_prep.sprint
+      -- , status_prep.sprint
       ,max_info.toString as status
       from status_prep
       left join max_info on status_prep.id=max_info.id     and status_prep.max_modifyedtime=max_info.modifyedtime
-       and max_info.field='status'    and status_prep.sprint=max_info.sprint )
+       and max_info.field='status'    ) -- and status_prep.sprint=max_info.sprint
   select         max_info.*
       , case when status_before.id is null then 'Open' else status_before.status end as start_status_sprint
      from status_before
- RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint
+ RIGHT OUTER  join max_info on status_before.id=max_info.id  -- and status_before.sprint=max_info.sprint
    ;;
   }
 

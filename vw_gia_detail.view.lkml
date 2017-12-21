@@ -17,6 +17,7 @@ view: vw_gia_detail {
       , JSONDATA:fields:customfield_10792::float as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
+      --, split_part(split_part(i.value::string, 'name=', 2),' [',1)::string as sprint
       , split_part(split_part(i.value::string, 'name=ABIW - Sprint ', 2),' [',1)::string as sprint
       , split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
       , split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend

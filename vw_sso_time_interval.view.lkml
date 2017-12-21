@@ -10,7 +10,7 @@ view: vw_sso_time_interval {
       ,  to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
       ,  j.value:items as items
-      from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
+      from JIRA.RAW_JIRA_ISSUE -- , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
         where  contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-'))
 , status_changes as (
