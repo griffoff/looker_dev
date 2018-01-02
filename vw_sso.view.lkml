@@ -18,11 +18,11 @@ view: vw_sso {
       --, split_part(split_part(i.value::string, 'name=', 2),',startDate=',1)::string as sprint
       --, split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
       --, split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend
-      ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
-      ,to_date(modifyedtime) as modifyeddate
-      ,  j.value:items as items
+      , case when j.value:created='null' then null else  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as modifyedtime
+      , case when j.value:created='null' then null else to_date(modifyedtime) end as modifyeddate
+      , case when j.value:items='null' then null else j.value:items end as items
       from JIRA.RAW_JIRA_ISSUE  --, lateral flatten(input => JSONDATA:fields:customfield_12530) i
-      , lateral flatten(input => JSONDATA:changelog:histories) j
+      , lateral flatten(input => JSONDATA:changelog:histories, OUTER => TRUE) j
         where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') )     ) --and sprintend<>'<null>'
  , max_info as(
         select
@@ -45,7 +45,7 @@ view: vw_sso {
       , i.value:field::string as field
       ,i.value:fromString::string as fromString
       ,i.value:toString::string as toString
-      from histories, lateral flatten(input => items) i
+      from histories, lateral flatten(input => items, OUTER => TRUE) i
       order by fromString      )
  , status_prep as(
         select
@@ -53,7 +53,7 @@ view: vw_sso {
       , max(modifyedtime) as  max_modifyedtime
       , i.value:field::string as field
       -- ,sprint
-      from histories, lateral flatten(input => items) i
+      from histories, lateral flatten(input => items, OUTER => TRUE) i
       where  field='status' -- to_date(modifyedtime) < to_date(sprintstart)  and
        group by  id,field        ) --
  , status_before as(
