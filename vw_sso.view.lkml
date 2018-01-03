@@ -8,6 +8,7 @@ view: vw_sso {
       , to_timestamp_tz(JSONDATA:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
       , to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       , JSONDATA:fields:summary::string as summary
+        , JSONDATA:fields:priority:name::string as priority
       , JSONDATA:fields:status:name::string as current_status
       , JSONDATA:fields:issuetype:name::string as issuetype
       , JSONDATA:fields:status:statusCategory:name::string as statusCategory
@@ -28,6 +29,7 @@ view: vw_sso {
         select
       id
       , summary
+      , priority
       , created
       ,updated
       ,current_status
@@ -186,6 +188,11 @@ view: vw_sso {
   dimension: summary {
     type: string
     sql: ${TABLE}.summary ;;
+  }
+
+  dimension: priority {
+    type: string
+    sql: ${TABLE}.priority ;;
   }
 
   dimension: issuetype {
