@@ -15,6 +15,7 @@ view: vw_sso {
       , JSONDATA:fields:resolution:name::string as resolution
       , JSONDATA:fields:customfield_10792::float as story_point
       , JSONDATA:fields:customfield_18730::string as order_in_sprint
+      , JSONDATA:fields:customfield_10330:value::string as Production_Release
       , JSONDATA:fields:customfield_13435:name::string as last_in_progress_user
       --, split_part(split_part(i.value::string, 'name=', 2),',startDate=',1)::string as sprint
       --, split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
@@ -22,7 +23,7 @@ view: vw_sso {
       , case when j.value:created='null' then null else  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as modifyedtime
       , case when j.value:created='null' then null else to_date(modifyedtime) end as modifyeddate
       , case when j.value:items='null' then null else j.value:items end as items
-      from JIRA.RAW_JIRA_ISSUE  --, lateral flatten(input => JSONDATA:fields:customfield_12530) i
+      from JIRA.RAW_JIRA_ISSUE  --, lateral flatten(input => JSONDATA:fields:customfield_12530, OUTER => TRUE) i
       , lateral flatten(input => JSONDATA:changelog:histories, OUTER => TRUE) j
         where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') )     ) --and sprintend<>'<null>'
  , max_info as(
@@ -38,10 +39,11 @@ view: vw_sso {
       ,resolution
       ,story_point
       ,order_in_sprint
+      ,Production_Release
       ,last_in_progress_user
       --,sprint
       --, to_timestamp_tz(sprintstart,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintstart
-     -- , to_timestamp_tz(sprintend,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintend
+      --, to_timestamp_tz(sprintend,'YYYY-MM-DD"T"HH24:MI:SS.FFTZH:TZM')  as sprintend
       ,modifyedtime
       ,to_date(modifyedtime) as modifyeddate
       , i.value:field::string as field
@@ -54,7 +56,7 @@ view: vw_sso {
       id
       , max(modifyedtime) as  max_modifyedtime
       , i.value:field::string as field
-      -- ,sprint
+      --,sprint
       from histories, lateral flatten(input => items, OUTER => TRUE) i
       where  field='status' -- to_date(modifyedtime) < to_date(sprintstart)  and
        group by  id,field        ) --
@@ -188,6 +190,11 @@ view: vw_sso {
   dimension: summary {
     type: string
     sql: ${TABLE}.summary ;;
+  }
+
+  dimension: production_release {
+    type: string
+    sql: ${TABLE}.Production_Release ;;
   }
 
   dimension: priority {
