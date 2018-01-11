@@ -29,6 +29,8 @@ view: vw_escal_detail {
         ,i.value:fields:customfield_21431 as categories
         ,i.value:fields:customfield_30130::string as sso_isbn
     ,i.value:fields:customfield_10030:value::string as discipline
+    ,i.value:fields:customfield_26738::string as discipline_major
+    ,i.value:fields:customfield_26739::string as discipline_minor
         ,array_size(i.value:fields:customfield_21431) as category_count
         ,i.value:fields:components as components
         ,array_size(i.value:fields:components) as component_count
@@ -48,6 +50,8 @@ view: vw_escal_detail {
     , detail.categories
     , detail.sso_isbn
   , detail.discipline
+  , detail.discipline_major
+  , detail.discipline_minor
     , detail.components
     , timestampdiff(minute,detail.created,detail.last_resolved)/60 as resolutionTime
     , timestampdiff(minute,detail.created,detail.acknowledged)/60 as acknowledgedTime
@@ -65,8 +69,31 @@ view: vw_escal_detail {
   }
 
   dimension: discipline {
+    label: "Discipline"
+    description: "customfield_10030"
     type: string
     sql: ${TABLE}.discipline ;;
+  }
+
+  dimension: discipline_major {
+    label: "Discipline major"
+    description: "customfield_26738. Don't confused with not Discipline Major New or Discipline Major Multi"
+    type: string
+    sql: ${TABLE}.discipline_major ;;
+  }
+
+  dimension: discipline_major_non_empty {
+    label: "Discipline major is not empty"
+    description: "customfield_26738 not empty "
+    type: string
+    sql: case when (${discipline_major} is not null and ${discipline_major}<>' ') then 'Populated' else 'Empty' end;;
+  }
+
+  dimension: discipline_minor {
+    label: "Discipline minor"
+    description: "customfield_26739. Don't confused with not Discipline Minor New or Discipline Major Multi"
+    type: string
+    sql: ${TABLE}.discipline_minor ;;
   }
 
   dimension: resolutionTime {
