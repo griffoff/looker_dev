@@ -1,5 +1,6 @@
 view: dim_date {
   sql_table_name: DW_DEVMATH.DIM_DATE ;;
+  set: curated_fields {fields:[datevalue_date,datevalue_week,datevalue_month,datevalue_month_name,datevalue_year,datevalue_day_of_week,count]}
 
   dimension: calendarmonthid {
     type: string
@@ -59,7 +60,11 @@ view: dim_date {
       week,
       month,
       quarter,
-      year
+      year,
+      week_of_year,
+      month_name,
+      day_of_week,
+      day_of_year
     ]
     convert_tz: no
     sql: ${TABLE}.DATEVALUE ;;
