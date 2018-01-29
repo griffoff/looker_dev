@@ -26,14 +26,23 @@ label:"Test: Source Data stg_clts on Snowflake"
 # CLTS
 explore:activations_olr {
   label: "Import CLTS - Activations"
-#  fields: [activations_olr.actv_code,activations_olr.actv_datekey,activations_olr.actv_entity_id, activations_olr.isbn13, activations_olr.actv_entity_name,
-#    activations_olr.platform,activations_olr.actv_isbn,activations_olr.code_source,activations_olr.code_type,
-#    activations_olr.context_id, activations_olr.entity_no, activations_olr.platform
-#    ,activations_olr.actv_count,actv_counter,actv_counter_base
-#    ,entities.enrollment_no,entities.institution_nm
-#    ,products.discipline_de,products.hed_discipline_nm,products.imprint_de,products.isbn13,products.title
-#    ,olr_courses.course_key, olr_courses.course_name,olr_courses.entity_name_course
-#    ,dim_date.curated_fields*]
+  fields: [
+    # activations_olr Dimension
+    activations_olr.actv_code, activations_olr.actv_count, activations_olr.actv_datekey,
+    activations_olr.actv_dt_date, activations_olr.actv_dt_year,
+    activations_olr.actv_entity_id, activations_olr.isbn13, activations_olr.actv_entity_name,
+    activations_olr.platform, activations_olr.actv_isbn, activations_olr.code_source, activations_olr.code_type,
+    activations_olr.context_id, activations_olr.entity_no, activations_olr.platform, activations_olr.user_guid
+    # activations_olr Counters
+    ,activations_olr.actv_counter, activations_olr.actv_code_count, activations_olr.m_actv_count
+    # entities
+    ,entities.enrollment_no,entities.institution_nm
+    # products
+    ,products.discipline_de,products.hed_discipline_nm,products.imprint_de,products.isbn13,products.title
+    # olr_courses
+    ,olr_courses.course_key, olr_courses.course_name,olr_courses.entity_name_course
+    # dim_date
+    ,dim_date.curated_fields*]
   join: entities{
     sql_on: ${activations_olr.entity_no} = ${entities.entity_no} ;;
     relationship: many_to_one
