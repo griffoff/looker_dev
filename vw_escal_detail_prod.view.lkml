@@ -15,6 +15,7 @@ select
     , split_part(JSONDATA:fields:customfield_23432:value, '-', -1)::string as severity_name
     --cast the json value to a string to use it in the to_timestamp function
     , to_timestamp_tz(JSONDATA:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
+    , to_timestamp_tz(JSONDATA:fields:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as resolutiondate
     -- you can use nullif instead of case to simplify this
     , to_timestamp_tz(nullif(JSONDATA:fields:customfield_24430, 'null')::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as acknowledged
     , case when JSONDATA:fields:customfield_13438='null' then null else to_timestamp(as_number(JSONDATA:fields:customfield_13438), 3) end AS last_resolved
@@ -31,6 +32,7 @@ detail.key
 , detail.priority
 , detail.severity
 , detail.created
+, detail.resolutiondate
 , detail.last_resolved
 , detail.acknowledged
 , detail.last_closed
@@ -50,6 +52,11 @@ from detail
     sql: ${TABLE}.ACKNOWLEDGED ;;
   }
 
+  dimension: resolutiondate {
+    type: string
+    sql: ${TABLE}.resolutiondate ;;
+  }
+
   dimension: resolutionTime {
     type: string
     sql: ${TABLE}.resolutionTime ;;
@@ -65,7 +72,7 @@ from detail
   dimension: resolutionStatus {
     view_label: "Is Resolved?"
     type: yesno
-    sql: ${last_resolved_raw} is not null ;;
+    sql: ${resolutiondate} is not null ;;
   }
 
   dimension: resolutionIntime {
