@@ -1,4 +1,4 @@
-view: vw_escal_components {
+view: vw_escalcomponents_prod {
   view_label: "Escal Components"
   #sql_table_name: ESCAL.VW_ESCAL_COMPONENTS ;;
   derived_table: {

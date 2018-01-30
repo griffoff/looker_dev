@@ -1,4 +1,4 @@
-view: vw_escal_categories {
+view: vw_escal_categories_prod {
   view_label: "Escal Categories"
   #sql_table_name: ESCAL.VW_ESCAL_CATEGORIES ;;
   derived_table: {
