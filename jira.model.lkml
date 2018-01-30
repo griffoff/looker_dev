@@ -9,7 +9,7 @@ include: "*.dashboard"
 
 explore: vw_escal_detail {
   label: "Escals"
-
+#used in dashboard-19. Will be deleted.
   join: vw_escal_categories {
     sql_on: ${vw_escal_detail.key} = ${vw_escal_categories.key} ;;
     relationship: one_to_many
@@ -29,7 +29,7 @@ explore: vw_escal_detail {
 
 explore: vw_escal_detail_prod {
   label: "Escals_new"
-
+#used in dashboard-104, 114. Will be used.
   join: vw_escal_categories {
     sql_on: ${vw_escal_detail_prod.key} = ${vw_escal_categories.key} ;;
     relationship: one_to_many
