@@ -21,6 +21,7 @@ view: vw_escal_detail {
         --cast the json value to a string to use it in the to_timestamp function
         , to_timestamp_tz(i.value:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
         , to_timestamp_tz(i.value:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
+        , JSONDATA:fields:resolution:name::string  AS resolution
         , to_timestamp_tz(i.value:fields:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as resolutiondate
         -- you can use nullif instead of case to simplify this
         , to_timestamp_tz(nullif(i.value:fields:customfield_24430, 'null')::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as acknowledged
@@ -46,6 +47,7 @@ view: vw_escal_detail {
     , detail.created
     , detail.updated
     , detail.last_resolved
+    , detail.resolution
     , detail.resolutiondate
     , detail.acknowledged
     , detail.last_closed
@@ -68,6 +70,11 @@ view: vw_escal_detail {
   dimension: acknowledged {
     type: string
     sql: ${TABLE}.ACKNOWLEDGED ;;
+  }
+
+  dimension: resolution {
+    type: string
+    sql: ${TABLE}.resolution ;;
   }
 
   dimension: discipline {
@@ -118,7 +125,7 @@ view: vw_escal_detail {
   dimension: resolutionStatus {
     view_label: "Is Resolved?"
     type: yesno
-    sql: ${resolutiondate} is not null ;;
+    sql: ${resolution} is not null ;;
   }
 
   dimension: resolutionIntime {
