@@ -129,7 +129,7 @@ view: vw_escal_detail_test {
 
   dimension:age {
     type: number
-    sql:  ${TABLE}.age/60 ;;
+    sql:  ${TABLE}.age/24 ;;
   }
 
   dimension:age_bins {

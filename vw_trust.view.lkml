@@ -72,6 +72,30 @@ view: vw_trust {
    ;;
     }
 
+# List of Jira's fields used here:
+
+# components
+# created
+# key
+# priority
+# resolution
+# resolutiondate
+# status
+# summary
+# updated
+#
+#
+# customfield_10792  as story_point
+# customfield_12530  for sprint_info: name, start, stop
+# customfield_13430  as last_closed
+# customfield_13435  as last_in_progress_user
+# customfield_13438  as last_resolved
+# customfield_18730  as order_in_sprint
+# customfield_24430  as acknowledged
+# customfield_21431  as categories
+# customfield_23432  as severity
+
+
   dimension: key {
     type: string
     sql: ${TABLE}.id ;;

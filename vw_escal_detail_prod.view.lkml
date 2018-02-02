@@ -49,6 +49,23 @@ from detail
     #sql_trigger_value: select max(ldts) from ESCAL.RAW_JSON_DATA_INFO ;;
   }
 
+
+# List of Jira's fields used here:
+
+# components
+# created
+# key
+# priority
+# resolution
+# resolutiondate
+#
+# customfield_13430  AS last_closed
+# customfield_13438  AS last_resolved
+# customfield_24430  as acknowledged
+# customfield_21431  as categories
+# customfield_23432  as severity
+
+
   dimension: acknowledged {
     type: string
     sql: ${TABLE}.ACKNOWLEDGED ;;
@@ -185,7 +202,7 @@ from detail
 
   dimension:age {
     type: number
-    sql: timestampdiff(minute, ${TABLE}.CREATED, current_timestamp())/60/60 ;;
+    sql: timestampdiff(minute, ${TABLE}.CREATED, current_timestamp())/60/24 ;;
     # sql:  ${TABLE}.age/60 ;;
   }
 

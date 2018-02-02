@@ -31,6 +31,7 @@ view: vw_escal_categories {
   }
 
   measure: count {
+    description: "Keep in mind that a ticket can have a few category."
     type: count
     drill_fields: []
   }
