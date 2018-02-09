@@ -64,7 +64,7 @@ view: vw_escal_detail {
     --,latest
     from detail
     ;;
-    sql_trigger_value: select max(ldts) from ESCAL.RAW_JSON_DATA_INFO ;;
+    sql_trigger_value: select max(ldts) from ESCAL.RAW_DATA_JSON_INFO ;;
   }
 
   dimension: acknowledged {

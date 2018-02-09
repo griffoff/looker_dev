@@ -95,9 +95,9 @@ view: activations_olr_v {
   }
 
   dimension:topSystem {
-    description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage'"
+    description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MindTap Reader','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL V2','CourseMate','SAM','4LTR Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage', 'AUS - Nelsonnet'"
     type: yesno
-    sql: platform in ('MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage') ;;
+    sql: platform in ('MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MindTap Reader','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL V2','CourseMate','SAM','4LTR Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage', 'AUS - Nelsonnet') ;;
   }
 
   dimension: user_guid {

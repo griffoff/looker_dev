@@ -43,6 +43,11 @@ explore:activations_olr_v {
  #   ,olr_courses.course_key, olr_courses.course_name,olr_courses.entity_name_course
     # dim_date
 #    ,dim_date.curated_fields*]
+  join: activation_products_v {
+    sql_on: ${activations_olr_v.actv_isbn} =${activation_products_v.isbn13};;
+    relationship: many_to_one
+#    fields: [products.discipline_de,products.hed_discipline_nm,products.imprint_de,products.isbn13,products.title]
+  }
   }
 
 #  join: entities{
