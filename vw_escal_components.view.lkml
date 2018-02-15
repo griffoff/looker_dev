@@ -14,7 +14,11 @@ view: vw_escal_components {
   dimension: component {
     type: string
     sql: case when  ${TABLE}.COMPONENT='MTQ' and ${TABLE}.created< TO_DATE('20180120', 'yyyymmdd') then 'zDEP_MTQ' else ${TABLE}.COMPONENT end  ;;
-  }
+    link: {
+      label: "Show component"
+      url: "https://cengage.looker.com/dashboards/104?Component={{component}}"
+    }
+    }
 
   dimension: key {
     type: string

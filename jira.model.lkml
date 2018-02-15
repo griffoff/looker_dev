@@ -5,7 +5,7 @@ label: "JIRA"
 include: "*.view"
 
 # include all the dashboards
-include: "*.dashboard"
+# include: "*.dashboard"
 
 explore: vw_escal_detail {
   label: "Escals"

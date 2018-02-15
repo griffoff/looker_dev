@@ -14,7 +14,7 @@ view: vw_escalcomponents_prod {
   dimension: component {
     type: string
     sql: case when  ${TABLE}.COMPONENT='MTQ' and ${TABLE}.created< TO_DATE('20180120', 'yyyymmdd') then 'zDEP_MTQ' else ${TABLE}.COMPONENT end  ;;
-  }
+     }
 
   dimension: key {
     type: string
