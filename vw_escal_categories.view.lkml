@@ -6,7 +6,7 @@ view: vw_escal_categories {
       select
           detail.key
           ,j.value:value::string as category
-      from ${vw_escal_detail_prod.SQL_TABLE_NAME} detail
+      from ${vw_escal_detail.SQL_TABLE_NAME} detail
       cross join lateral flatten(categories) j
     ;;
   }

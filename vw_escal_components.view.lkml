@@ -7,7 +7,7 @@ view: vw_escal_components {
         detail.key
         ,k.value:name::string as component
         , detail.created
-      from ${vw_escal_detail_prod.SQL_TABLE_NAME} detail
+      from ${vw_escal_detail.SQL_TABLE_NAME} detail
         , lateral flatten(components) k;;
   }
 
@@ -35,6 +35,6 @@ view: vw_escal_components {
   measure: count {
     label: "component count"
     type: count
-    drill_fields: []
+    # drill_fields: []
   }
 }

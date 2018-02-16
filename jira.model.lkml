@@ -16,7 +16,7 @@ explore: vw_escal_detail {
   }
 
   join: vw_escal_components {
-    sql_on: ${vw_escal_detail.key} = ${vw_escal_components.key} ;;
+    sql_on: ${vw_escal_detail.key} = ${vw_escal_components.key};;
     relationship: one_to_many
   }
 
@@ -30,13 +30,13 @@ explore: vw_escal_detail {
 explore: vw_escal_detail_prod {
   label: "Escals_new"
 #used in dashboard-104, 114. Will be used.
-  join: vw_escal_categories {
-    sql_on: ${vw_escal_detail_prod.key} = ${vw_escal_categories.key} ;;
+  join: vw_escal_categories_prod {
+    sql_on: ${vw_escal_detail_prod.key} = ${vw_escal_categories_prod.key} ;;
     relationship: one_to_many
   }
 
-  join: vw_escal_components {
-    sql_on: ${vw_escal_detail_prod.key} = ${vw_escal_components.key} ;;
+  join: vw_escal_components_prod {
+    sql_on: ${vw_escal_detail_prod.key} = ${vw_escal_components_prod.key} ;;
     relationship: one_to_many
   }
 

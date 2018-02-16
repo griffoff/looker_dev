@@ -1,4 +1,4 @@
-view: vw_escalcomponents_prod {
+view: vw_escal_components_prod {
   view_label: "Escal Components"
   #sql_table_name: ESCAL.VW_ESCAL_COMPONENTS ;;
   derived_table: {
@@ -14,7 +14,11 @@ view: vw_escalcomponents_prod {
   dimension: component {
     type: string
     sql: case when  ${TABLE}.COMPONENT='MTQ' and ${TABLE}.created< TO_DATE('20180120', 'yyyymmdd') then 'zDEP_MTQ' else ${TABLE}.COMPONENT end  ;;
-     }
+  # link: {
+  #    label: "Filter on this component"
+  #    url: "https://cengage.looker.com/dashboards/104?Component={{component}}"
+  #  }
+    }
 
   dimension: key {
     type: string
@@ -23,6 +27,7 @@ view: vw_escalcomponents_prod {
   }
 
   dimension:topSystem {
+    description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage'"
     type: yesno
     sql: component in ('MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MTQ','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL v2','OWL v1','SAM','4LTR Press Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage') ;;
   }
@@ -30,6 +35,6 @@ view: vw_escalcomponents_prod {
   measure: count {
     label: "component count"
     type: count
-    drill_fields: []
+   # drill_fields: []
   }
 }
