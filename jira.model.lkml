@@ -95,3 +95,20 @@ explore: vw_gia_detail{
     relationship: one_to_many
   }
 }
+
+# for work with KPI-data from PROD
+explore: vw_kpi_data{
+  label: "KPI status (PROD)"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+  join: vw_kpi_services {
+    view_label: "KPI SERVICES"
+    sql_on: ${vw_kpi_data.SERVICE_ID} = ${vw_kpi_services.SERVICE_ID} ;;
+    relationship: one_to_one
+  }
+}
