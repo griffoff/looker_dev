@@ -1,5 +1,5 @@
-- dashboard: kpi_prod
-  title: KPI (PROD)
+- dashboard: kpi
+  title: KPI (Cengage systems’ key performance indicators)
   layout: newspaper
   elements:
   - name: Statistics for yesterday

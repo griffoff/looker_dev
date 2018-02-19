@@ -5,7 +5,7 @@ label: "JIRA DEV"
 include: "*.view"
 
 # include all the dashboards
-include: "*.dashboard"
+# include: "*.dashboard"
 
 explore: escals {
   from: vw_escal_detail
