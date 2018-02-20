@@ -13,7 +13,7 @@
     height: 3
   - name: Number of good and bad statuses by location, for yesterday
     title: Number of good and bad statuses by location, for yesterday
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -97,7 +97,7 @@
     height: 8
   - name: Number of bad locations' statuses by monitor, for yesterday
     title: Number of bad locations' statuses by monitor, for yesterday
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -199,7 +199,7 @@
     height: 3
   - name: Average server access time by location, for past week
     title: Average server access time by location, for past week
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -303,7 +303,7 @@
     height: 6
   - name: D) Average total access time by location
     title: D) Average total access time by location
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -408,7 +408,7 @@
     height: 8
   - name: A) Percentage of bad statuses by monitor for past week - alternate view
     title: A) Percentage of bad statuses by monitor for past week - alternate view
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -430,7 +430,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad}),1)
       value_format:
       value_format_name:
@@ -518,7 +518,7 @@
   - name: C1) Percentage of bad statuses by location (for past week) - alternate view
     title: C1) Percentage of bad statuses by location (for past week) - alternate
       view
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -537,7 +537,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad}),1)
       value_format:
       value_format_name:
@@ -625,7 +625,7 @@
     height: 8
   - name: C) Percentage of bad statuses by location
     title: C) Percentage of bad statuses by location
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -646,7 +646,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad}),1)
       value_format:
       value_format_name:
@@ -743,7 +743,7 @@
       2
     title: C2) Percentage of bad statuses by location (for past week) - alternate
       view 2
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -762,7 +762,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad}),1)
       value_format:
       value_format_name:
@@ -861,7 +861,7 @@
       - alternate view
     title: Percentage of bad statuses for the past month, history graph for each location
       - alternate view
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -880,7 +880,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad}),1)
       value_format:
       value_format_name:
@@ -1037,7 +1037,7 @@
     height: 8
   - name: C) Percentage of bad statuses by location, for the past month
     title: C) Percentage of bad statuses by location, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1058,7 +1058,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad}),1)
       value_format:
       value_format_name:
@@ -1153,7 +1153,7 @@
     height: 10
   - name: Location average server access time, for past month
     title: Location average server access time, for past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1257,7 +1257,7 @@
     height: 7
   - name: A) Percentage of bad statuses by monitor
     title: A) Percentage of bad statuses by monitor
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1280,7 +1280,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad}),1)
       value_format:
       value_format_name:
@@ -1447,7 +1447,7 @@
     height: 10
   - name: A) Percentage of bad statuses by monitor, for the past month
     title: A) Percentage of bad statuses by monitor, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1470,7 +1470,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(100*${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad}),1)
       value_format:
       value_format_name:
@@ -1640,7 +1640,7 @@
     height: 12
   - name: Average access times by location, for yesterday
     title: Average access times by location, for yesterday
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -1660,7 +1660,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: round(${vw_kpi_data.average_BROWSER_TIME}+${vw_kpi_data.average_NETWORK_TIME}+${vw_kpi_data.average_SERVER_TIME},0)
       value_format:
       value_format_name:
@@ -1737,7 +1737,7 @@
     height: 8
   - name: Average server access time, by day of week
     title: Average server access time, by day of week
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1846,7 +1846,7 @@
     height: 7
   - name: Average server access time, by hour of day
     title: Average server access time, by hour of day
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -1955,7 +1955,7 @@
     height: 8
   - name: Average total access time, by hour of day
     title: Average total access time, by hour of day
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -2064,7 +2064,7 @@
     height: 8
   - name: Average total access time, by day of week
     title: Average total access time, by day of week
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -2182,7 +2182,7 @@
     height: 3
   - name: Percentage of bad locations' statuses by monitor, for yesterday
     title: Percentage of bad locations' statuses by monitor, for yesterday
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -2204,7 +2204,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad})"
       value_format:
       value_format_name: percent_1
@@ -2278,7 +2278,7 @@
     height: 8
   - name: Percentage of bad statuses by location, for yesterday
     title: Percentage of bad statuses by location, for yesterday
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -2297,7 +2297,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad})"
       value_format:
       value_format_name: percent_1
@@ -2367,7 +2367,7 @@
     height: 8
   - name: D) Average total access time by location, for the past month
     title: D) Average total access time by location, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -2472,7 +2472,7 @@
     height: 10
   - name: B) Average total access time by monitor, for the past month
     title: B) Average total access time by monitor, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -2641,7 +2641,7 @@
     height: 12
   - name: B) Average total access time by monitor
     title: B) Average total access time by monitor
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_line
     fields:
@@ -2810,7 +2810,7 @@
     height: 10
   - name: Percentage of bad statuses by monitor, for the past week
     title: Percentage of bad statuses by monitor, for the past week
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -2828,7 +2828,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad})"
       value_format:
       value_format_name: percent_1
@@ -2901,7 +2901,7 @@
     height: 8
   - name: Percentage of bad statuses by monitor, for the past month
     title: Percentage of bad statuses by monitor, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -2919,7 +2919,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_bad}/(${vw_kpi_data.count_good}+${vw_kpi_data.count_bad})"
       value_format:
       value_format_name: percent_1
@@ -2992,7 +2992,7 @@
     height: 8
   - name: Percentage of bad statuses by location, for the past month
     title: Percentage of bad statuses by location, for the past month
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -3007,7 +3007,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad})"
       value_format:
       value_format_name: percent_1
@@ -3077,7 +3077,7 @@
     height: 7
   - name: Percentage of bad statuses by location, for the past week
     title: Percentage of bad statuses by location, for the past week
-    model: jira.dev
+    model: jira
     explore: vw_kpi_data
     type: looker_column
     fields:
@@ -3092,7 +3092,7 @@
     column_limit: 50
     dynamic_fields:
     - table_calculation: calculation_1
-      label: Calculation 1
+      label: "% of non-ok statuses"
       expression: "${vw_kpi_data.count_location_bad}/(${vw_kpi_data.count_location_good}+${vw_kpi_data.count_location_bad})"
       value_format:
       value_format_name: percent_1
