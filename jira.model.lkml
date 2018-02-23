@@ -6,6 +6,7 @@ include: "*.view"
 
 # include all the dashboards
 include: "kpi.dashboard"
+include: "escal.dashboard"
 
 explore: vw_escal_detail {
   label: "Escals"

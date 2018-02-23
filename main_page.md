@@ -1,6 +1,6 @@
 # Dashboards
 
-## [KPI dashboard](https://cengage.looker.com/dashboards/115)
+## [KPI dashboard](https://cengage.looker.com/dashboards/jira::kpi)
 
 Statistics on Cengage systems' key performance indicators
 
@@ -20,7 +20,7 @@ KPI summary dashboard, showing the overall uptime/downtime for the Cenage top sy
 
 ## JIRA projects
 
-### [ESCAL](https://cengage.looker.com/dashboards/104)
+### [ESCAL](https://cengage.looker.com/dashboards/104) [(LookMLversion)](https://cengage.looker.com/dashboards/jira%3A%3Aescal)
 
 The basic statistics on the tickets opened and resolved in the ESCAL project during the past several months
 
