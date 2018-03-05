@@ -14,11 +14,11 @@ view: vw_escal_components_prod {
   dimension: component {
     type: string
     sql: case when  ${TABLE}.COMPONENT='MTQ' and ${TABLE}.created< TO_DATE('20180120', 'yyyymmdd') then 'zDEP_MTQ' else ${TABLE}.COMPONENT end  ;;
-  # link: {
-  #    label: "Filter on this component"
-  #    url: "https://cengage.looker.com/dashboards/104?Component={{component}}"
-  #  }
+   # link: {
+   #   label: "Filter on this component"
+   #   url: "https://cengage.looker.com/dashboards/jira::escal?Component={{component}}&f[vw_escal_categories_prod.category]={{ _filters[vw_escal_categories_prod.category] | url_encode }}"
     }
+  # }
 
   dimension: key {
     type: string
