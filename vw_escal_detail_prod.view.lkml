@@ -46,7 +46,7 @@ detail.key
 , timestampdiff(minute, detail.created, current_timestamp())/60 as age
 from detail
     ;;
-    #sql_trigger_value: select max(ldts) from ESCAL.RAW_JSON_DATA_INFO ;;
+    sql_trigger_value: select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
   }
 
 
