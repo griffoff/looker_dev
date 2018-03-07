@@ -18,7 +18,8 @@ view: vw_kpi_data {
 , json_data:TOTAL_TIME::number as TOTAL_TIME
 FROM ESCAL.raw_data_kpi
     ;;
-    sql_trigger_value: select max(LAST_MODIFIED_DATE) FROM ESCAL.vw_kpi_data ;;
+    sql_trigger_value: SELECT  FLOOR( (EXTRACT(epoch_second from CURRENT_TIMESTAMP ) - 60*60*3)/(60*60*24)) ;; # Table rebuilds once per day at a 3 am
+    # sql_trigger_value: select max(LAST_MODIFIED_DATE) FROM ESCAL.vw_kpi_data ;;
   }
 
 
