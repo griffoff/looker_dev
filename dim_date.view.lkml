@@ -1,5 +1,5 @@
 view: dim_date {
-  sql_table_name: DW_DEVMATH.DIM_DATE ;;
+  sql_table_name: DW_GA.DIM_DATE ;; # table DW_DEVMATH.DIM_DATE non-actual
   set: curated_fields {fields:[datevalue_date,datevalue_week,datevalue_month,datevalue_month_name,datevalue_year,datevalue_day_of_week,count]}
 
   dimension: calendarmonthid {
