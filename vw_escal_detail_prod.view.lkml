@@ -46,8 +46,8 @@ detail.key
 , timestampdiff(minute, detail.created, current_timestamp())/60 as age
 from detail
     ;;
-    sql_trigger_value: SELECT  FLOOR((HOUR (CURRENT_TIMESTAMP ) - 3)/24) ;; # Table rebuilds twise per day at a 3 am and at midnight
-    # select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
+    # sql_trigger_value: SELECT  FLOOR((HOUR (CURRENT_TIMESTAMP ) - 3)/24) ;; # Table rebuilds twise per day at a 3 am and at midnight
+    sql_trigger_value: select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
   }
 
 
