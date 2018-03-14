@@ -22,6 +22,12 @@ FROM ESCAL.raw_data_kpi
     # sql_trigger_value: select max(LAST_MODIFIED_DATE) FROM ESCAL.vw_kpi_data ;;
   }
 
+  # this fields uses for test sql_trigger_value
+  dimension: current_time {
+    type: string
+    sql: CURRENT_TIMESTAMP ;;
+  }
+
 
   dimension_group: MONITORED {
     type: time
