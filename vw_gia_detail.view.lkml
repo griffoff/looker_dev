@@ -77,6 +77,13 @@ view: vw_gia_detail {
      from status_before
  RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint
 ;;
+    sql_trigger_value: select FLOOR( (EXTRACT(epoch_second from CURRENT_TIMESTAMP ) )/(60*60)) ;;  # Table rebuilds every hour
+  }
+
+  # this fields uses for test sql_trigger_value
+  dimension: current_time {
+    type: string
+    sql: CURRENT_TIMESTAMP ;;
   }
 
   dimension: key {

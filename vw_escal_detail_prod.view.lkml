@@ -46,7 +46,7 @@ detail.key
 , timestampdiff(minute, detail.created, current_timestamp())/60 as age
 from detail
     ;;
-    sql_trigger_value: FLOOR( (EXTRACT(epoch_second from CURRENT_TIMESTAMP ) - 60*60*3)/(60*60*24)) ;;  # Table rebuilds at a 3 am
+    sql_trigger_value: select FLOOR( (EXTRACT(epoch_second from CURRENT_TIMESTAMP ) - 60*60*3)/(60*60*24)) ;;  # Table rebuilds after 3 am
     # sql_trigger_value: select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
   }
 
