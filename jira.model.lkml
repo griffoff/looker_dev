@@ -8,6 +8,12 @@ include: "*.view"
 include: "kpi.dashboard"
 include: "escal.dashboard"
 
+datagroup: escal_datagroup {
+  sql_trigger: select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
+  max_cache_age: "24 hours"
+}
+
+
 explore: vw_escal_detail {
   label: "Escals"
 #used in dashboard-19. Will be deleted.
@@ -29,6 +35,7 @@ explore: vw_escal_detail {
 }
 
 explore: vw_escal_detail_prod {
+  persist_with: escal_datagroup
   label: "Escals_new"
 #used in dashboard-104, 114. Will be used.
   join: vw_escal_categories_prod {
@@ -89,6 +96,7 @@ explore: vw_trust{
 
 # for work with GIA
 explore: vw_gia_detail{
+  persist_with: escal_datagroup
   label: "GIA (PROD)"
 
   join: vw_gia_time_interval {
