@@ -118,8 +118,6 @@ from detail
   dimension_group: created {
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
@@ -132,7 +130,8 @@ from detail
       day_of_month,
       month_num
     ]
-    sql: ${TABLE}.CREATED ;;
+    # sql: ${TABLE}.CREATED ;; in this case we have duplicate
+    sql: to_date(${TABLE}.CREATED) ;;
   }
 
   dimension: key {

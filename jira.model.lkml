@@ -9,7 +9,7 @@ include: "kpi.dashboard"
 include: "escal.dashboard"
 
 datagroup: escal_datagroup {
-  sql_trigger: select max(last_update) from JIRA.RAW_JIRA_ISSUE where contains(key, 'ESCAL-') ;;
+  sql_trigger: SELECT COUNT(*) FROM JIRA.RAW_JIRA_ISSUE ;;
   max_cache_age: "24 hours"
 }
 
