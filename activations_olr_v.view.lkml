@@ -108,6 +108,7 @@ view: activations_olr_v {
   measure: count {
     label: "Record count"
     type: count
+    drill_fields: [activation_details*]
   }
 
   }
