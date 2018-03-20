@@ -12,6 +12,7 @@ view: vw_escal_components_prod {
   }
 
   dimension: component {
+    description: "Keep in mind that a ticket can have a few components."
     type: string
     sql: case when  ${TABLE}.COMPONENT='MTQ' and ${TABLE}.created< TO_DATE('20180120', 'yyyymmdd') then 'zDEP_MTQ' else ${TABLE}.COMPONENT end  ;;
    # link: {
@@ -33,6 +34,7 @@ view: vw_escal_components_prod {
   }
 
   measure: count {
+    description: "Keep in mind that a ticket can have a few components."
     label: "component count"
     type: count
    # drill_fields: []

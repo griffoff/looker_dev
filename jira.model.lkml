@@ -10,7 +10,7 @@ include: "escal.dashboard"
 
 datagroup: escal_datagroup {
   sql_trigger: SELECT COUNT(*) FROM JIRA.RAW_JIRA_ISSUE ;;
-  max_cache_age: "24 hours"
+  max_cache_age: "12 hours"
 }
 
 

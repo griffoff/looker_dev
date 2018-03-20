@@ -106,8 +106,10 @@ view: activations_olr_v {
   }
 
   measure: count {
+    # description:"Count distinct activation code"
     label: "Record count"
-    type: count
+    type: count_distinct
+    sql: ${actv_code} ;;
     drill_fields: [activation_details*]
   }
 

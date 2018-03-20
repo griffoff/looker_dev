@@ -12,6 +12,7 @@ view: vw_escal_categories_prod {
   }
 
   dimension: category {
+    description: "Keep in mind that a ticket can have a few category."
     type: string
     sql: ${TABLE}.CATEGORY ;;
     #  link: {
