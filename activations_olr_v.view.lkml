@@ -45,7 +45,7 @@ view: activations_olr_v {
   }
 
   dimension: actv_entity_name {
-    description: "!"
+    #description: "!"
     type: string
     sql: ${TABLE}.ACTV_ENTITY_NAME ;;
   }
@@ -56,7 +56,7 @@ view: activations_olr_v {
   }
 
   dimension: actv_region {
-    description: "!"
+    #description: "!"
     type: string
     sql: ${TABLE}.ACTV_REGION ;;
   }
@@ -67,13 +67,13 @@ view: activations_olr_v {
   }
 
   dimension: actv_user_type {
-    description: "!"
+    #description: "!"
     type: string
     sql: ${TABLE}.ACTV_USER_TYPE ;;
   }
 
   dimension: code_type {
-    description: "!"
+    #description: "!"
     type: string
     sql: ${TABLE}.CODE_TYPE ;;
   }
@@ -89,7 +89,7 @@ view: activations_olr_v {
   }
 
   dimension: platform {
-    description: "!"
+    description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MindTap Reader','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL V2','CourseMate','SAM','4LTR Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage', 'AUS - Nelsonnet'"
     type: string
     sql: ${TABLE}.PLATFORM ;;
   }
