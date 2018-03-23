@@ -1,5 +1,26 @@
 view: activations_olr_v {
-    sql_table_name: STG_CLTS.ACTIVATIONS_OLR_V ;;
+    #sql_table_name: STG_CLTS.ACTIVATIONS_OLR_V ;;
+  derived_table: {
+    sql:
+      SELECT activations_olr.source, actv_trial_purchase,
+      activations_olr.actv_olr_id, actv_dt,
+      code_source, platform, actv_isbn,
+      context_id, activations_olr.user_guid,
+      actv_entity_id, actv_entity_name,
+      actv_user_type, actv_region,
+      actv_count, code_type,
+      actv_code
+      FROM stg_clts.activations_olr WHERE activations_olr.in_actv_flg = 1
+      GROUP BY activations_olr.source, activations_olr.actv_trial_purchase,
+      activations_olr.actv_olr_id, activations_olr.actv_dt,
+      code_source, activations_olr.platform, activations_olr.actv_isbn,
+      activations_olr.context_id, activations_olr.user_guid,
+      activations_olr.actv_entity_id, activations_olr.actv_entity_name,
+      activations_olr.actv_user_type, activations_olr.actv_region,
+      activations_olr.actv_count, activations_olr.code_type,
+      activations_olr.actv_code
+        ;;
+  }
 
     set: activation_details {
       fields: [actv_code, actv_dt_date, actv_entity_name, actv_user_type, actv_region, platform, code_type]
@@ -72,6 +93,11 @@ view: activations_olr_v {
     sql: ${TABLE}.ACTV_USER_TYPE ;;
   }
 
+  dimension: code_source {
+    type: string
+    sql: ${TABLE}.CODE_SOURCE ;;
+  }
+
   dimension: code_type {
     #description: "!"
     type: string
@@ -83,15 +109,15 @@ view: activations_olr_v {
     sql: ${TABLE}.CONTEXT_ID ;;
   }
 
-  dimension: entity_no {
-    type: string
-    sql: ${TABLE}.ENTITY_NO ;;
-  }
-
   dimension: platform {
     description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MindTap Reader','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL V2','CourseMate','SAM','4LTR Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage', 'AUS - Nelsonnet'"
     type: string
     sql: ${TABLE}.PLATFORM ;;
+  }
+
+  dimension: source {
+    type: string
+    sql: ${TABLE}.SOURCE ;;
   }
 
   dimension:topSystem {
@@ -114,71 +140,3 @@ view: activations_olr_v {
   }
 
   }
-  # # You can specify the table name if it's different from the view name:
-  # sql_table_name: my_schema_name.tester ;;
-  #
-  # # Define your dimensions and measures here, like this:
-  # dimension: user_id {
-  #   description: "Unique ID for each user that has ordered"
-  #   type: number
-  #   sql: ${TABLE}.user_id ;;
-  # }
-  #
-  # dimension: lifetime_orders {
-  #   description: "The total number of orders for each user"
-  #   type: number
-  #   sql: ${TABLE}.lifetime_orders ;;
-  # }
-  #
-  # dimension_group: most_recent_purchase {
-  #   description: "The date when each user last ordered"
-  #   type: time
-  #   timeframes: [date, week, month, year]
-  #   sql: ${TABLE}.most_recent_purchase_at ;;
-  # }
-  #
-  # measure: total_lifetime_orders {
-  #   description: "Use this for counting lifetime orders across many users"
-  #   type: sum
-  #   sql: ${lifetime_orders} ;;
-  # }
-#}
-
-# view: activations_olr_v {
-#   # Or, you could make this view a derived table, like this:
-#   derived_table: {
-#     sql: SELECT
-#         user_id as user_id
-#         , COUNT(*) as lifetime_orders
-#         , MAX(orders.created_at) as most_recent_purchase_at
-#       FROM orders
-#       GROUP BY user_id
-#       ;;
-#   }
-#
-#   # Define your dimensions and measures here, like this:
-#   dimension: user_id {
-#     description: "Unique ID for each user that has ordered"
-#     type: number
-#     sql: ${TABLE}.user_id ;;
-#   }
-#
-#   dimension: lifetime_orders {
-#     description: "The total number of orders for each user"
-#     type: number
-#     sql: ${TABLE}.lifetime_orders ;;
-#   }
-#
-#   dimension_group: most_recent_purchase {
-#     description: "The date when each user last ordered"
-#     type: time
-#     timeframes: [date, week, month, year]
-#     sql: ${TABLE}.most_recent_purchase_at ;;
-#   }
-#
-#   measure: total_lifetime_orders {
-#     description: "Use this for counting lifetime orders across many users"
-#     type: sum
-#     sql: ${lifetime_orders} ;;
-#   }
-# }

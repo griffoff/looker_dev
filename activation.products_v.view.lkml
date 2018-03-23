@@ -3,6 +3,12 @@ view: activation_products_v {
   sql_table_name: STG_CLTS.PRODUCTS_V ;;
 
 
+
+  dimension: discipline_de {
+    type: string
+    sql: ${TABLE}.DISCIPLINE_DE ;;
+  }
+
   dimension: hed_discipline_nm {
     type: string
     sql: ${TABLE}.HED_DISCIPLINE_NM ;;
@@ -33,6 +39,12 @@ view: activation_products_v {
     type: string
     sql: ${TABLE}.PRODUCTION_ED_DE ;;
   }
+
+  dimension: pt_course_area {
+    type: string
+    sql: ${TABLE}.PT_COURSE_AREA ;;
+  }
+
   dimension: title {
     type: string
     sql: ${TABLE}.TITLE ;;
