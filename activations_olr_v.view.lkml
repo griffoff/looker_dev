@@ -109,6 +109,11 @@ view: activations_olr_v {
     sql: ${TABLE}.CONTEXT_ID ;;
   }
 
+  dimension: context_empty {
+    type: yesno
+    sql: ${context_id}='-' ;;
+  }
+
   dimension: platform {
     description: "Top platform is one of 'MindTap','SSO/OLR','CL Homework','DevMath','Gradebook','Mobile','MindTap Reader','CNOW','CNOW MindApp','CNOW v7','CNOW v8','Aplia','CXP','OWL V2','CourseMate','SAM','4LTR Online','CengageBrain.com','SSO Account Services', 'WebAssign', 'MyCengage', 'AUS - Nelsonnet'"
     type: string

@@ -26,6 +26,7 @@ label:"Test: Source Data stg_clts on Snowflake"
 ## CLTS
 explore:activations_olr_v {
   label: "Import CLTS - Activations_v"
+  persist_for: "8 hour"
  # fields: [
 #    # activations_olr Dimension
 #    actv_code, actv_count, activations_olr.actv_datekey,

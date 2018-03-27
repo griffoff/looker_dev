@@ -82,7 +82,7 @@ explore: vw_escal_optimized {
 # for work with TRUST
 explore: vw_trust{
   label: "TRUST (PROD)"
-
+  persist_for: "8 hour"
   join: vw_trust_time_interval {
     sql_on: ${vw_trust.key} = ${vw_trust_time_interval.key} ;;
     relationship: one_to_many
