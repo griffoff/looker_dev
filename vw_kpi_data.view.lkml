@@ -184,6 +184,19 @@ FROM ESCAL.raw_data_kpi
     drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
   }
 
+  measure: count_disable {
+    label: "count_disable"
+    type: count_distinct
+    sql:   case when ${STATUS} in ( 'DISABLED', 'INDETERMINATE')   then CONCAT(${CHECK_UUID},${LOCATION_NAME}) end ;;
+    drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
+  }
+
+  measure: count_failed {
+    label: "count_failed"
+    type: count_distinct
+    sql:   case when not ( ${STATUS} in ('OK', 'DISABLED', 'INDETERMINATE') )  then CONCAT(${CHECK_UUID},${LOCATION_NAME}) end ;;
+    drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
+  }
 
   measure: count_good {
     label: "count_good"
@@ -192,14 +205,12 @@ FROM ESCAL.raw_data_kpi
     drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
   }
 
-
   measure: count_bad {
     label: "count_bad"
     type: count_distinct
     sql:   case when ${STATUS} <> 'OK' then CONCAT(${CHECK_UUID},${LOCATION_NAME}) end ;;
     drill_fields: [MODIFIED_raw, MONITORED_raw, STATUS, SERVICE_ID, CHECK_UUID, LOCATION_NAME, TOTAL_TIME]
   }
-
 
   measure: count_location_good {
     label: "count_location_good"
