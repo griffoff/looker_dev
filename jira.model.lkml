@@ -122,3 +122,14 @@ explore: vw_kpi_data{
     relationship: one_to_one
   }
 }
+
+# for work with SSO GATE ACMS GATEDPL
+explore: vw_sso{
+  persist_with: escal_datagroup
+  label: "SSO (PROD)"
+
+  join: vw_sso_time_interval {
+    sql_on: ${vw_sso.key} = ${vw_sso_time_interval.key} ;;
+    relationship: one_to_many
+  }
+}

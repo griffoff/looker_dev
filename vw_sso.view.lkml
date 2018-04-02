@@ -25,7 +25,7 @@ view: vw_sso {
       , case when j.value:items='null' then null else j.value:items end as items
       from JIRA.RAW_JIRA_ISSUE  --, lateral flatten(input => JSONDATA:fields:customfield_12530, OUTER => TRUE) i
       , lateral flatten(input => JSONDATA:changelog:histories, OUTER => TRUE) j
-        where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') or contains(jsondata:key, 'ACMS-') )     ) --and sprintend<>'<null>'
+        where ( contains(jsondata:key, 'SSO-') or contains(jsondata:key, 'GATEDPTL-') or contains(jsondata:key, 'GATE-') )    ) -- or contains(jsondata:key, 'ACMS-') and sprintend<>'<null>'
  , max_info as(
         select
       id
