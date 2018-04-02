@@ -14,7 +14,7 @@ During a day, there are 288 checks run from each location for a monitor. So for 
 
 For more information on the data and how it is collected see AppNeta PathView API Integration.
 
-### [Another KPI dashboard](https://cengage.looker.com/dashboards/148)
+### [Another KPI dashboard](https://cengage.looker.com/dashboards/223)
 
 KPI summary dashboard, showing the overall uptime/downtime for the Cenage top systems, in particular Jira.
 
@@ -38,13 +38,30 @@ The basic statistics on the tickets opened and resolved in the ESCAL project dur
 
 ##### SSO + Gateway
 
- -   [dashboard](https://cengage.looker.com/dashboards/157) for the Gateway project
+ -   [dashboard](https://cengage.looker.com/dashboards/225) for the Gateway project
 
- -   [dashboard](https://cengage.looker.com/dashboards/158) for the SSO project
+ -   [dashboard](https://cengage.looker.com/dashboards/224) for the SSO project
 
 Currently, there are the tickets created since the start of 2014.
 
 Note also that Looker by default only displays the first several hundred entries in a table; to get all items, click Download and select 'All results'
+
+## Activation
+
+-  [Overview of activation:](https://cengage.looker.com/dashboards/177) Top-20 code types, entities, platforms. Activation by region and user types.
+
+-  [Time series of activation.](https://cengage.looker.com/dashboards/178)
+
+-  [Activation by discipline.](https://cengage.looker.com/dashboards/215)
+
+-  [Activation by code source.](https://cengage.looker.com/dashboards/216)
+
+-  [Activation by institutions.](https://cengage.looker.com/dashboards/217)
+
+-  [Activation with empty context_id (ebook, etc).](https://cengage.looker.com/dashboards/222)
+
+-  [The dashboard shows empty fields at activation data:](https://cengage.looker.com/dashboards/180) discipline, title, ISBN.
+
 
 ## Scraping
 
