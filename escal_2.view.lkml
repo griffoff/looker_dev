@@ -25,11 +25,11 @@ ID_TICKET
     , jsondata:resolution:name::string  AS resolution
     , jsondata:status:name::string  AS status
     , jsondata:summary::string  AS summary
-    , jsondata:project:projectCategory:name::string as Category
+    --, jsondata:project:projectCategory:name::string as Category
     , jsondata:customfield_31240:value::string as COMPONENT
     , jsondata:updated::string as LAST_UPDATED
     , jsondata:issuetype:name::string as issuetype
-            ,JSONDATA:customfield_21431[0]:value::string as category_escal
+            ,JSONDATA:customfield_21431[0]:value::string as category
             ,JSONDATA:customfield_30130::string as sso_isbn
             ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
@@ -67,12 +67,6 @@ from tickets
   dimension: category {
     type: string
     sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
-  }
-
-
-  dimension: category_escal {
-    type: string
-    sql: case when ${TABLE}.category_escal is null then 'Uncategorized' else ${TABLE}.category_escal end ;;
   }
 
   dimension: component {
@@ -297,6 +291,7 @@ from tickets
 
   dimension: createdatekey  {
     type: number
+    hidden: yes
     sql: ${created_year}*10000 + ${created_month_num}*100 + ${created_day_of_month} ;;
 
   }
