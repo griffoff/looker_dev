@@ -347,3 +347,16 @@ explore: vw_twitter {
     relationship: many_to_one
   }
 }
+
+
+explore: escal_2 {
+  from: escal_2
+  label: "Escal-2"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${escal_2.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+}

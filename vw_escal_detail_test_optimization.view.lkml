@@ -33,7 +33,7 @@ view: vw_escal_detail_test_optimization {
         ,array_size(JSONDATA:fields:components) as component_count
        from
          JIRA.RAW_JIRA_ISSUE
-    where contains(key, 'ESCAL')  )
+    where where contains(key, 'ESCAL-') ) --    key='filter-99244'  )
     , t_categories as (  select  detail.id,
      i.value:value::string as category
      from detail
