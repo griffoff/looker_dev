@@ -6,14 +6,15 @@ view: escal_2 {
         SELECT T1.ID_TICKET
         , T2.JSONDATA
         , T2.KEY_JIRA
+        , T2.COMPONENT
         FROM JIRA.JIRA_PROCS_ISSUE T1
           INNER JOIN JIRA.RAW_JIRA_DATA T2 ON T1.ID_TICKET=T2.ID_TICKET
         where PROCESS_NAME='filter-92672'
   )
 select
-ID_TICKET
-    ,KEY_JIRA
-    , to_timestamp_tz(jsondata:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
+      ID_TICKET
+    , KEY_JIRA
+    , TO_TIMESTAMP_TZ(jsondata:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
     , case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
     , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
@@ -26,7 +27,9 @@ ID_TICKET
     , jsondata:status:name::string  AS status
     , jsondata:summary::string  AS summary
     --, jsondata:project:projectCategory:name::string as Category
-    , jsondata:customfield_31240:value::string as COMPONENT
+    --, jsondata:customfield_31240:value::string as COMPONENT
+    --,JSONDATA:components[0]:name::string as component_escal
+    , COMPONENT
     , jsondata:updated::string as LAST_UPDATED
     , jsondata:issuetype:name::string as issuetype
             ,JSONDATA:customfield_21431[0]:value::string as category
@@ -35,7 +38,6 @@ ID_TICKET
             ,JSONDATA:customfield_11248::string as customer_institution
             ,JSONDATA:customfield_28633::string as course_key
             ,array_size(JSONDATA:customfield_21431) as category_escal_count
-            ,JSONDATA:components[0]:name::string as component_escal
         , round(timestampdiff(minute,created,last_resolved)/60) as resolutionTime
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
         , round(timestampdiff(minute,created,last_closed)/60) as closedTime
@@ -74,10 +76,10 @@ from tickets
     sql: ${TABLE}.COMPONENT ;;
   }
 
-  dimension: component_escal {
-    type: string
-    sql: ${TABLE}.component_escal ;;
-  }
+  #dimension: component_escal {
+  #  type: string
+  #  sql: ${TABLE}.component_escal ;;
+  #}
 
   dimension: course_key {
     type: string
@@ -205,7 +207,7 @@ from tickets
   dimension: jiraKey {
     link: {
       label: "Review in Jira"
-      url: "https://jira.cengage.com/browse/{{value}}"
+      url: "https://s-jira.cengage.com/browse/{{value}}"
     }
     sql: ${TABLE}.KEY_JIRA ;;
   }

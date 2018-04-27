@@ -7,6 +7,11 @@ include: "*.view"
 # include all the dashboards
 # include: "*.dashboard"
 
+datagroup: escal_datagroup {
+  sql_trigger: SELECT COUNT(*) FROM JIRA.RAW_JIRA_ISSUE ;;
+  max_cache_age: "24 hours"
+}
+
 explore: escals {
   from: vw_escal_detail
   label: "Alternative Escals"
@@ -351,6 +356,7 @@ explore: vw_twitter {
 
 explore: escal_2 {
   from: escal_2
+  persist_with: escal_datagroup
   label: "Escal-2"
 
   join: dim_date {
