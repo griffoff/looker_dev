@@ -140,7 +140,7 @@ from tickets
   dimension: resolutionStatus {
     # view_label: "Is Resolved?"
     type: yesno
-    sql: ${resolved_raw} is not null ;;
+    sql: ${acknowledged} is not null ;;
   }
 
   dimension: resolutionIntime {
