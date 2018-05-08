@@ -73,7 +73,15 @@ from dummy
 
   dimension: component_priority {
     type: string
-    sql: ${TABLE}.COMPONENT || ' ' || ${TABLE}.priority ;;
+    sql: ${TABLE}.COMPONENT || ' (' || SPLIT_PART(${TABLE}.priority,' ',1)||')' ;;
+
+    html:
+    {% if priority._value == 'P2 Escalation' %}
+    <div style="color: black; background-color: lightblue; font-size:100%; text-align:left;margin:0; padding:0 ">{{ value}}</div >
+    {% else %}
+     <font color="black">{{ value }}</font>
+    {% endif %}
+    ;;
   }
 
 
@@ -157,22 +165,36 @@ from dummy
   measure: count {
     label: " # Issues"
     type: count_distinct
-    sql: ${KEY_JIRA} ;;
+    sql: case when  ${resolution} is null then ${KEY_JIRA} end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
   }
 
   measure: count_created_yesterday {
     label: "# Created_yesterday"
     type:  count_distinct
-    sql: case when ${created_date} =TO_DATE(dateadd(day,-5,current_timestamp))  then ${KEY_JIRA} end ;;
+    sql: case when ${created_date} =TO_DATE(dateadd(day,-1,current_timestamp))  then ${KEY_JIRA} end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
+    html:
+    {% if priority._value == 'P2 Escalation' %}
+    <div style="color: black; background-color: lightblue; font-size:100%; text-align:right;margin:0; padding:0 ">{{ value}}</div >
+    {% else %}
+     <font color="black">{{ value }}</font>
+    {% endif %}
+    ;;
   }
 
   measure: count_resolved_yesterday {
     label: "# Resolved_yesterday"
     type:  count_distinct
-    sql: case when ${resolutiondate_date} =TO_DATE(dateadd(day,-5,current_timestamp)) then ${KEY_JIRA} end ;;
+    sql: case when ${resolutiondate_date} =TO_DATE(dateadd(day,-1,current_timestamp)) then ${KEY_JIRA} end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
+    html:
+    {% if priority._value == 'P2 Escalation' %}
+    <div style="color: black; background-color: lightgreen; font-size:100%; margin:0; padding:0 ">{{ value}}</div >
+    {% else %}
+     <font color="black">{{ value }}</font>
+    {% endif %}
+    ;;
   }
 
   }
