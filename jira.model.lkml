@@ -133,3 +133,23 @@ explore: vw_sso{
     relationship: one_to_many
   }
 }
+
+explore: escal_2 {
+  from: escal_2
+  persist_with: escal_datagroup
+  label: "Escal-2"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${escal_2.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+}
+
+explore: escal_2_total {
+  from: escal_2_total
+  persist_with: escal_datagroup
+  label: "Escal-2-total"
+
+}
