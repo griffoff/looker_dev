@@ -170,6 +170,10 @@ from tickets
   }
 
   dimension: salesforce_key {
+    link: {
+      label: "Review in Jira"
+      url: "https://s-jira.cengage.com/issues/?jql=cf%5B31335%5D%20%3D%22{{ value }}%22"
+    }
     type: string
     sql: ${TABLE}.salesforce_key ;;
   }
