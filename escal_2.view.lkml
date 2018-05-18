@@ -37,6 +37,7 @@ select
             ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
             ,JSONDATA:customfield_28633::string as course_key
+            ,JSONDATA:customfield_31335::string as salesforce_key
             ,array_size(JSONDATA:customfield_21431) as category_escal_count
         , round(timestampdiff(minute,created,last_resolved)/60) as resolutionTime
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
@@ -44,6 +45,16 @@ select
         , round(timestampdiff(minute,created,current_timestamp())/60) as age
 from tickets
         ;;
+  }
+
+  set: detalized_set_fields {
+    fields: [
+      jira_url_by_Key,
+      priority,
+      created_date,
+      resolutionStatus,
+      last_resolved_date, age
+    ]
   }
 
 
@@ -158,6 +169,11 @@ from tickets
     sql: case when (${resolutionIntime}) then 'In time' else 'Out time' end;;
   }
 
+  dimension: salesforce_key {
+    type: string
+    sql: ${TABLE}.salesforce_key ;;
+  }
+
   dimension: sso_isbn {
     type: string
     sql: ${TABLE}.sso_isbn ;;
@@ -204,7 +220,7 @@ from tickets
     sql: ${TABLE}.KEY_JIRA ;;
   }
 
-  dimension: jiraKey {
+  dimension: jira_url_by_Key {
     link: {
       label: "Review in Jira"
       url: "https://s-jira.cengage.com/browse/{{value}}"
@@ -313,24 +329,26 @@ from tickets
     label: "# Resolved"
     type:  count_distinct
     sql: case when ${last_resolved_raw} is not null then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
   }
 
   measure: count_notresolved {
     label: "# Outstanding"
     type:  count_distinct
     sql: case when ${last_resolved_raw} is null then ${ID_TICKET} end;;
+    drill_fields: [detalized_set_fields*]
   }
 
   measure: count_distinct {
     label: "IssuesDistinct"
     type: count_distinct
     sql: ${ID_TICKET};;
-    drill_fields: [jiraKey, priority, created_date, resolutionStatus, last_resolved_date, age]
+    drill_fields: [detalized_set_fields*]
   }
 
   measure: count {
     label: "IssuesAll"
     type: count
-    drill_fields: [jiraKey, priority, created_date, resolutionStatus, last_resolved_date, age]
+    drill_fields: [detalized_set_fields*]
   }
 }
