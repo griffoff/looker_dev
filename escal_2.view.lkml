@@ -53,7 +53,9 @@ from tickets
       priority,
       created_date,
       resolutionStatus,
-      last_resolved_date, age
+      last_resolved_date,
+      age,
+      salesforce_key
     ]
   }
 

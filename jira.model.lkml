@@ -153,3 +153,10 @@ explore: escal_2_total {
   label: "Escal-2-total"
 
 }
+
+explore: escal_2_cloned {
+  from: escal_2_cloned
+  persist_with: escal_datagroup
+  label: "Escal-2-cloned"
+
+}
