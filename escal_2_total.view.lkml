@@ -9,7 +9,7 @@ view: escal_2_total {
         , T2.COMPONENT
         FROM JIRA.JIRA_PROCS_ISSUE T1
           INNER JOIN JIRA.RAW_JIRA_DATA T2 ON T1.ID_TICKET=T2.ID_TICKET
-        where PROCESS_NAME='filter-92672'
+        where PROCESS_NAME='filter-99476'  -- stg 92672
   )
   , category as (
 select
@@ -119,7 +119,7 @@ from dummy
   dimension: jiraKey {
     link: {
       label: "Review in Jira"
-      url: "https://s-jira.cengage.com/browse/{{value}}"
+      url: "https://jira.cengage.com/browse/{{value}}"
     }
     sql: ${TABLE}.KEY_JIRA ;;
   }

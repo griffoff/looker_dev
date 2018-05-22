@@ -9,7 +9,7 @@ view: escal_2 {
         , T2.COMPONENT
         FROM JIRA.JIRA_PROCS_ISSUE T1
           INNER JOIN JIRA.RAW_JIRA_DATA T2 ON T1.ID_TICKET=T2.ID_TICKET
-        where PROCESS_NAME='filter-92672'
+        where PROCESS_NAME='filter-99476'  -- stg 92672
   )
 select
       ID_TICKET
@@ -174,7 +174,7 @@ from tickets
   dimension: salesforce_key {
     link: {
       label: "Review in Jira"
-      url: "https://s-jira.cengage.com/issues/?jql=cf%5B31335%5D%20%3D%22{{ value }}%22"
+      url: "https://jira.cengage.com/issues/?jql=cf%5B31335%5D%20%3D%22{{ value }}%22"
     }
     type: string
     sql: ${TABLE}.salesforce_key ;;
@@ -212,7 +212,7 @@ from tickets
       day_of_month,
       month_num
     ]
-    sql: ${TABLE}.CREATED ;;
+    sql:to_date(${TABLE}.CREATED) ;;
   }
 
   dimension: ID_TICKET {
@@ -229,7 +229,7 @@ from tickets
   dimension: jira_url_by_Key {
     link: {
       label: "Review in Jira"
-      url: "https://s-jira.cengage.com/browse/{{value}}"
+      url: "https://jira.cengage.com/browse/{{value}}"
     }
     sql: ${TABLE}.KEY_JIRA ;;
   }
