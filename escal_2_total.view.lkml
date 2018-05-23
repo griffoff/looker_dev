@@ -26,12 +26,13 @@ from values ('4LTR Press Online'),('Aplia'),('CengageBrain.com'),('CL Homework')
               )
 ,category_priority as (
   select
-*
+      *
   from category
   cross join priority
                       )
- , dummy as( select
-*
+ , dummy as(
+  select
+      *
   from category_priority
   cross join component )
 select
@@ -44,7 +45,7 @@ select
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolutiondate
     --, jsondata:status:name::string  AS status
     , COMPONENT
-    ,JSONDATA:customfield_21431[0]:value::string as category
+   , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434[0]:value::string end as category
 from tickets
   union
 select

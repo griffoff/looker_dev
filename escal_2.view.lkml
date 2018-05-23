@@ -32,13 +32,13 @@ select
     , COMPONENT
     , jsondata:updated::string as LAST_UPDATED
     , jsondata:issuetype:name::string as issuetype
-            ,JSONDATA:customfield_21431[0]:value::string as category
+            , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434[0]:value::string end as category
             ,JSONDATA:customfield_30130::string as sso_isbn
             ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
             ,JSONDATA:customfield_28633::string as course_key
             ,JSONDATA:customfield_31335::string as salesforce_key
-            ,array_size(JSONDATA:customfield_21431) as category_escal_count
+            -- ,array_size(JSONDATA:customfield_21431) as category_escal_count
         , round(timestampdiff(minute,created,last_resolved)/60) as resolutionTime
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
         , round(timestampdiff(minute,created,last_closed)/60) as closedTime
