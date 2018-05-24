@@ -336,7 +336,7 @@ from tickets
 
   dimension:topSystem {
     type: yesno
-    sql: ${TABLE}.COMPONENT in ('4LTR Press Online','Aplia','CengageBrain.com','CL Homework','CNOW',    'CNOW MindApp','CNOW v7','CNOW v8','CXP',
+    sql: ${component} in ('4LTR Press Online','Aplia','CengageBrain.com','CL Homework','CNOW',    'CNOW MindApp','CNOW v7','CNOW v8','CXP',
     'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia','SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
   }
 
