@@ -29,10 +29,11 @@ select
     --, jsondata:project:projectCategory:name::string as Category
     --, jsondata:customfield_31240:value::string as COMPONENT
     --,JSONDATA:components[0]:name::string as component_escal
+    ,JSONDATA:customfield_32866:value::string as escal_component
     , COMPONENT
     , jsondata:updated::string as LAST_UPDATED
     , jsondata:issuetype:name::string as issuetype
-            , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434[0]:value::string end as category
+            , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
             ,JSONDATA:customfield_30130::string as sso_isbn
             ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
@@ -51,6 +52,8 @@ from tickets
     fields: [
       jira_url_by_Key,
       priority,
+      category,
+      component,
       created_date,
       resolutionStatus,
       last_resolved_date,
@@ -86,7 +89,13 @@ from tickets
 
   dimension: component {
     type: string
-    sql: ${TABLE}.COMPONENT ;;
+    sql: case when ${TABLE}.COMPONENT is null then ${TABLE}.escal_component else ${TABLE}.COMPONENT end ;;
+  }
+
+  # Fields ESC-COMP at Jira
+  dimension: escal_component {
+    type: string
+    sql: ${TABLE}.escal_component ;;
   }
 
   #dimension: component_escal {
