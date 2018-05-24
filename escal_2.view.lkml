@@ -38,7 +38,7 @@ select
             ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
             ,JSONDATA:customfield_28633::string as course_key
-            ,JSONDATA:customfield_31335::string as salesforce_key
+            ,JSONDATA:customfield_33033::string as salesforce_key -- customfield_31335 (old)
             -- ,array_size(JSONDATA:customfield_21431) as category_escal_count
         , round(timestampdiff(minute,created,last_resolved)/60) as resolutionTime
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
