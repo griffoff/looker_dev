@@ -84,7 +84,10 @@ from tickets
 
   dimension: category {
     type: string
-    sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
+    sql: case
+            when ${TABLE}.CATEGORY is null or ${TABLE}.CATEGORY='Not set' then 'Uncategorized'
+            when ${TABLE}.CATEGORY='Content Source' then 'Content Development'
+            else ${TABLE}.CATEGORY end ;;
   }
 
   dimension: component {
