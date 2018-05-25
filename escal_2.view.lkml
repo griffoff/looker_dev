@@ -86,7 +86,7 @@ from tickets
     type: string
     sql: case
             when ${TABLE}.CATEGORY is null or ${TABLE}.CATEGORY='Not set' then 'Uncategorized'
-            when ${TABLE}.CATEGORY='Content Source' then 'Content Development'
+            when ${TABLE}.CATEGORY='Content Development' then 'Content Source'
             else ${TABLE}.CATEGORY end ;;
   }
 
