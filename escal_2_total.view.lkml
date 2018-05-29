@@ -14,7 +14,7 @@ view: escal_2_total {
   , category as (
 select
 i.COLUMN1 as category
-from values ('Content Development'),('Digital Production'),('Software'),('Uncategorized') i
+from values ('Content Source'),('Digital Production'),('Software'),('Uncategorized') i --- Content Development --> Content Source
               )
 ,priority as (select
 i.COLUMN1 as priority
@@ -44,8 +44,8 @@ select
     , jsondata:resolution:name::string  AS resolution
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolutiondate
     --, jsondata:status:name::string  AS status
-    , COMPONENT
-   , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434[0]:value::string end as category
+    , COALESCE(COMPONENT, JSONDATA:customfield_32866:value::string) as COMPONENT
+   , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
 from tickets
   union
 select
@@ -62,14 +62,30 @@ from dummy
   }
 
 
+
+  set: detalized_set_fields {
+    fields: [
+      jiraKey,
+      priority,
+      category,
+      component,
+      created_date,
+      resolutionStatus
+    ]
+  }
+
+
   dimension: category {
     type: string
-    sql: case when ${TABLE}.CATEGORY is null then 'Uncategorized' else ${TABLE}.CATEGORY end ;;
+    sql: case
+            when ${TABLE}.CATEGORY is null or ${TABLE}.CATEGORY='Not set' then 'Uncategorized'
+            when ${TABLE}.CATEGORY='Content Development' then 'Content Source'
+            else ${TABLE}.CATEGORY end ;;
   }
 
   dimension: component {
     type: string
-    sql: ${TABLE}.COMPONENT ;;
+    sql: case when ${TABLE}.COMPONENT ;;
   }
 
   dimension: component_priority {
