@@ -339,8 +339,10 @@ from tickets
 
   dimension:topSystem {
     type: yesno
-    sql: ${component} in ('4LTR Press Online','Aplia','CengageBrain.com','CL Homework','CNOW',    'CNOW MindApp','CNOW v7','CNOW v8','CXP',
-    'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia','SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
+    sql: ${component} in ('4LTR Press Online','Aplia',
+    'CengageBrain.com','CL Homework','CNOW', 'CNOW MindApp','CNOW v7','CNOW v8','CXP','CU Catalog Data',
+    'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia',
+    'SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
   }
 
   measure: count_resolved {

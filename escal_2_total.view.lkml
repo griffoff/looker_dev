@@ -22,7 +22,7 @@ from values ('P1 Escalation'),('P2 Escalation'),('P3 Escalation') i
               )
 ,component as (select
 i.COLUMN1 as component
-from values ('4LTR Press Online'),('Aplia'),('CengageBrain.com'),('CL Homework'),('CNOW'),('CNOW MindApp'),('CNOW v7'),('CNOW v8'),('CXP'),('DevMath'),('Gradebook'),('LMS Integration'),('MindTap'),('MindTap School'),('Mobile'),('MyCengage'),('OWL v2'),('Questia'),('SAM'),('SSO Account Services'),('SSO/OLR'),( 'WebAssign'),( 'www.cengage.com') i
+from values ('4LTR Press Online'),('Aplia'),('CengageBrain.com'),('CL Homework'),('CNOW'),('CNOW MindApp'),('CNOW v7'),('CNOW v8'),('CU Catalog Data'),('CXP'),('DevMath'),('Gradebook'),('LMS Integration'),('MindTap'),('MindTap School'),('Mobile'),('MyCengage'),('OWL v2'),('Questia'),('SAM'),('SSO Account Services'),('SSO/OLR'),( 'WebAssign'),( 'www.cengage.com') i
               )
 ,category_priority as (
   select
@@ -174,8 +174,10 @@ from dummy
 
   dimension:topSystem {
     type: yesno
-    sql: ${TABLE}.COMPONENT in ('4LTR Press Online','Aplia','CengageBrain.com','CL Homework','CNOW',    'CNOW MindApp','CNOW v7','CNOW v8','CXP',
-      'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia','SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
+    sql: ${TABLE}.COMPONENT in ('4LTR Press Online','Aplia',
+      'CengageBrain.com','CL Homework','CNOW','CNOW MindApp','CNOW v7','CNOW v8','CXP','CU Catalog Data',
+      'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia',
+      'SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
   }
 
 
@@ -183,15 +185,15 @@ from dummy
     label: " # Issues"
     type: count_distinct
     sql: case when  ${resolution} is null then ${KEY_JIRA} end ;;
-    drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
+    drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
   }
 
   measure: count_created_yesterday {
     label: "# Created_yesterday"
     type:  count_distinct
     sql: case when ${created_date} =TO_DATE(dateadd(day,-1,current_timestamp))  then ${KEY_JIRA} end ;;
-    drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
-    html:
+    drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
+     html:
     {% if priority._value == 'P2 Escalation' %}
     <div style="color: black; background-color: lightblue; font-size:100%; text-align:right;margin:0; padding:0 ">{{ value}}</div >
     {% else %}
@@ -204,7 +206,7 @@ from dummy
     label: "# Resolved_yesterday"
     type:  count_distinct
     sql: case when ${resolutiondate_date} =TO_DATE(dateadd(day,-1,current_timestamp)) then ${KEY_JIRA} end ;;
-    drill_fields: [jiraKey,category, component_priority, created_date, resolutionStatus]
+    drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
     html:
     {% if priority._value == 'P2 Escalation' %}
     <div style="color: black; background-color: lightgreen; font-size:100%; margin:0; padding:0 ">{{ value}}</div >
