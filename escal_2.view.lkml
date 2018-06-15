@@ -227,6 +227,15 @@ from tickets
     sql:to_date(${TABLE}.CREATED) ;;
   }
 
+  dimension: semester_calendar {
+    type: string
+    sql: case
+            when ${created_month_num} <7 then 'Spring '||${created_year}
+            when ${created_month_num} >7 then 'Fall ' ||${created_year}
+         end
+            ;;
+    }
+
   dimension: ID_TICKET {
     type: string
     primary_key: yes

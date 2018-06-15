@@ -4,7 +4,7 @@ view: vw_trust {
       sql:
       with histories as(
       select
-      jsondata:key::string as id
+        jsondata:key::string as id
       , to_timestamp_tz(JSONDATA:fields:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as created
       , to_timestamp_tz(JSONDATA:fields:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as updated
       , JSONDATA:fields:summary::string as summary
@@ -19,14 +19,14 @@ view: vw_trust {
       , split_part(split_part(i.value::string, ',startDate=', 2),',endDate=',1)::string as sprintstart
       , split_part(split_part(i.value::string, ',endDate=', 2),',completeDate=',1)::string as sprintend
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
-      ,to_date(modifyedtime) as modifyeddate
+      ,  to_date(modifyedtime) as modifyeddate
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
         where contains(jsondata:key, 'TRUST') and sprintend<>'<null>'      )
  , max_info as(
         select
-      id
+        id
       , summary
       , created
       ,updated
