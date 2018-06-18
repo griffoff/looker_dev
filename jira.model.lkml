@@ -92,7 +92,7 @@ explore: vw_trust{
     relationship: one_to_many
   }
   join: vw_trust_status_sprint {
-    sql_on: ${vw_trust.key} = ${vw_trust_status_sprint.key} ;;
+    sql_on:${vw_trust_status_sprint.key} = ${vw_trust.key}  ;;
     relationship: one_to_many
   }
 }
