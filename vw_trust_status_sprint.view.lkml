@@ -161,7 +161,8 @@ select
               when current_statuss in ('QA Ready','QA Active','Verified') then 'QA'
               else null
               end as jira_status_work
-          , TIMEDIFF(minute, begin_status, end_status)/1440 as work_delta
+          , case when end_status is null then TIMEDIFF(minute, begin_status, current_timestamp)/1440 else TIMEDIFF(minute, begin_status, end_status)/1440 end  as work_delta
+          --, TIMEDIFF(minute, begin_status, end_status)/1440 as work_delta
           --, 1000 as work_delta
     FROM new_status_changes_marked as t1
     LEFT  JOIN new_status_changes_marked as t2 ON t1.id=t2.id AND t1.number_of_row=(t2.number_of_row-1)
@@ -258,9 +259,14 @@ select
     type:  count_distinct
     sql: case when ${currentstatus_on_interval}='Reopened' then ${begin_status_raw} end;;
   }
-  measure: total_time {
+  measure: total_time_DEV {
     type: max
-    sql: ${TABLE}.total_time_table  ;;
+    sql: case when ${jira_status_work}='Dev' then ${TABLE}.total_time_table else 0 end ;;
+    value_format: "0.##"
+  }
+  measure: total_time_QA {
+    type: max
+    sql: case when ${jira_status_work}='QA' then ${TABLE}.total_time_table else 0 end  ;;
     value_format: "0.##"
   }
 
