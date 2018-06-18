@@ -91,6 +91,10 @@ explore: vw_trust{
     sql_on: ${vw_trust.key} = ${vw_trust_status_interval.key} ;;
     relationship: one_to_many
   }
+  join: vw_trust_status_sprint {
+    sql_on: ${vw_trust.key} = ${vw_trust_status_sprint.key} ;;
+    relationship: one_to_many
+  }
 }
 
 
