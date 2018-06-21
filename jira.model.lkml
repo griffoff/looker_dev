@@ -161,8 +161,12 @@ explore: escal_2_total {
   #  sql_on:  ${vw_topsystem.systemname} =${escal_2_total.component};;
   #  relationship: many_to_many
   #}
+}
 
-
+explore: escal_2_top_systems {
+  from: escal_2_top_systems
+  persist_with: escal_datagroup
+  label: "Escal-2-top-systems"
 }
 
 explore: escal_2_cloned {
