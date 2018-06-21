@@ -21,8 +21,9 @@ i.COLUMN1 as priority
 from values ('P1 Escalation'),('P2 Escalation'),('P3 Escalation') i
               )
 ,component as (select
-i.COLUMN1 as component
-from values ('4LTR Press Online'),('Aplia'),('CengageBrain.com'),('CL Homework'),('CNOW'),('CNOW MindApp'),('CNOW v7'),('CNOW v8'),('CU Catalog Data'),('CXP'),('DevMath'),('Gradebook'),('LMS Integration'),('MindTap'),('MindTap School'),('Mobile'),('MyCengage'),('OWL v2'),('Questia'),('SAM'),('SSO Account Services'),('SSO/OLR'),( 'WebAssign'),( 'www.cengage.com') i
+--i.COLUMN1 as component
+--from values ('4LTR Press Online'),('Aplia'),('CengageBrain.com'),('CL Homework'),('CNOW'),('CNOW MindApp'),('CNOW v7'),('CNOW v8'),('CU Catalog Data'),('CXP'),('DevMath'),('Gradebook'),('LMS Integration'),('MindTap'),('MindTap School'),('Mobile'),('MyCengage'),('OWL v2'),('Questia'),('SAM'),('SSO Account Services'),('SSO/OLR'),( 'WebAssign'),( 'www.cengage.com') i
+SYSTEMNAME as component FROM JIRA.TOPSYSTEM   where ISTOPSYSTEM
               )
 ,category_priority as (
   select

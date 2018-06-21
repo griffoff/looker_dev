@@ -20,7 +20,7 @@ KPI summary dashboard, showing the overall uptime/downtime for the Cenage top sy
 
 ## JIRA projects
 
-### [ESCAL](https://cengage.looker.com/dashboards/104) [(LookMLversion)](https://cengage.looker.com/dashboards/jira%3A%3Aescal)
+### [ESCAL](https://cengage.looker.com/dashboards/245) [(Summary Report by Top Platform)](https://cengage.looker.com/looks/2149?toggle=det)
 
 The basic statistics on the tickets opened and resolved in the ESCAL project during the past several months
 
@@ -42,7 +42,7 @@ The basic statistics on the tickets opened and resolved in the ESCAL project dur
 
  -   [dashboard](https://cengage.looker.com/dashboards/224) for the SSO project
 
-Currently, there are the tickets created since the start of 2014.
+Currently, there are the tickets created since the start of 2015.
 
 Note also that Looker by default only displays the first several hundred entries in a table; to get all items, click Download and select 'All results'
 

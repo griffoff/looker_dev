@@ -156,6 +156,13 @@ explore: escal_2_total {
   persist_with: escal_datagroup
   label: "Escal-2-total"
 
+  #join: vw_topsystem {
+  #  view_label: "Cengage systems"
+  #  sql_on:  ${vw_topsystem.systemname} =${escal_2_total.component};;
+  #  relationship: many_to_many
+  #}
+
+
 }
 
 explore: escal_2_cloned {

@@ -57,7 +57,7 @@ from tickets
       created_date,
       resolutionStatus,
       last_resolved_date,
-      age,
+      age_days,
       salesforce_key
     ]
   }
@@ -68,7 +68,7 @@ from tickets
     sql: ${TABLE}.ACKNOWLEDGED ;;
   }
 
-  dimension:age {
+  dimension:age_days {
     type: number
     value_format: "0.0"
     sql:  ${TABLE}.age/24 ;;
@@ -78,7 +78,7 @@ from tickets
     type: tier
     tiers: [1, 7, 14, 21, 28, 56]
     style: integer
-    sql: ${age} ;;
+    sql: ${TABLE}.age ;;
   }
 
 
