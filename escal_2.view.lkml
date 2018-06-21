@@ -78,7 +78,7 @@ from tickets
     type: tier
     tiers: [1, 7, 14, 21, 28, 56]
     style: integer
-    sql: ${TABLE}.age ;;
+    sql: ${age_days};;
   }
 
 
