@@ -387,10 +387,3 @@ explore: jira_procs_sync_v {
   label: "jira_procs_sync_v"
 
 }
-
-explore: raw_jira_issue_v {
-  from: raw_jira_issue_v
-  persist_with: escal_datagroup
-  label: "raw_jira_issue_v"
-
-}

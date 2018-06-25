@@ -66,11 +66,13 @@ select full_table.*
 
   dimension: DISPLAYORDER {
     type: number
+    description: "Rang of system from the table TOPSYSTEM"
     sql:  ${TABLE}.DISPLAYORDER ;;
   }
 
   dimension: component_priority_ORDER {
     type: number
+    description: "Rang of system depends from priority"
     sql:  case when priority ='P1 Escalation' then ${DISPLAYORDER}*10+1
                when priority ='P2 Escalation' then ${DISPLAYORDER}*10+2
                when priority ='P3 Escalation' then ${DISPLAYORDER}*10+3
@@ -80,6 +82,7 @@ select full_table.*
 
   dimension: ISTOPSYSTEM {
     type: yesno
+    description: "Boolean from the table TOPSYSTEM"
     sql: ${TABLE}.ISTOPSYSTEM ;;
   }
 
@@ -181,6 +184,13 @@ select full_table.*
     type: count_distinct
     sql: case when  ${resolution} is null then ${KEY_JIRA} else null end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
+  #  html:
+  #  {% if value >0  %}
+  #    <div style="text-align:center; color: black;  font-size:100%; margin:0; padding:0 "><font color="black">{{ value }}</font></div >
+  #  {% else %}
+  #  <div style="text-align:center; color: black; font-size:100%; margin:0; padding:0 ">{{ 55 }}</div >
+  #  {% endif %}
+  #  ;;
   }
 
   measure: count_created_yesterday {
@@ -188,13 +198,13 @@ select full_table.*
     type:  count_distinct
     sql: case when ${created_date} =TO_DATE(dateadd(day,-1,current_timestamp))  then ${KEY_JIRA} end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
- #   html:
-#    {% if priority._value == 'P2 Escalation' %}
-#    <div style="color: black; background-color: lightblue; font-size:100%; text-align:right;margin:0; padding:0 ">{{ value}}</div >
-#    {% else %}
-#     <font color="black">{{ value }}</font>
-#    {% endif %}
-#    ;;
+  #  html:
+  #  {% if  value>0  %}
+  #   <div style="text-align:center; color: black;  font-size:100%; margin:0; padding:0 "><font color="black">{{ value }}</font></div >
+  #  {% else %}
+  #  <div style="color: white;  font-size:100%; margin:0; padding:0 ">{{  }}</div >
+  #  {% endif %}
+  #  ;;
   }
 
   measure: count_resolved_yesterday {
@@ -203,10 +213,10 @@ select full_table.*
     sql: case when ${resolutiondate_date} =TO_DATE(dateadd(day,-1,current_timestamp)) then ${KEY_JIRA} end ;;
     drill_fields: [jiraKey,category, component_priority, created_date, resolutiondate_date, resolutionStatus]
  #   html:
-#    {% if priority._value == 'P2 Escalation' %}
-#    <div style="color: black; background-color: lightgreen; font-size:100%; margin:0; padding:0 ">{{ value}}</div >
+#    {% if value >0 %}
+#     <div style="text-align:center; color: black;  font-size:100%; margin:0; padding:0 "><font color="black">{{ value }}</font></div >
 #    {% else %}
-#     <font color="black">{{ value }}</font>
+#    <div style="color: white; background-color: white; font-size:100%; margin:0; padding:0 ">{{  }}</div >
 #    {% endif %}
 #    ;;
   }

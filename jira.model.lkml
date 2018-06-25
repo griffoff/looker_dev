@@ -175,3 +175,9 @@ explore: escal_2_cloned {
   label: "Escal-2-cloned"
 
 }
+
+explore: raw_jira_issue_v {
+  from: raw_jira_issue_v
+  persist_with: escal_datagroup
+  label: "raw_jira_issue_v"
+}

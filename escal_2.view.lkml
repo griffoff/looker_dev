@@ -11,7 +11,7 @@ view: escal_2 {
           INNER JOIN JIRA.RAW_JIRA_DATA T2 ON T1.ID_TICKET=T2.ID_TICKET
         where PROCESS_NAME='filter-99476'  -- stg 92672
   )
-select
+, full_table as ( select
       ID_TICKET
     , KEY_JIRA
     , TO_TIMESTAMP_TZ(jsondata:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
@@ -29,8 +29,9 @@ select
     --, jsondata:project:projectCategory:name::string as Category
     --, jsondata:customfield_31240:value::string as COMPONENT
     --,JSONDATA:components[0]:name::string as component_escal
-    ,JSONDATA:customfield_32866:value::string as escal_component
-    , COMPONENT
+    , COALESCE(COMPONENT, JSONDATA:customfield_32866:value::string) as COMPONENT
+    --,JSONDATA:customfield_32866:value::string as escal_component
+    --, COMPONENT
     , jsondata:updated::string as LAST_UPDATED
     , jsondata:issuetype:name::string as issuetype
             , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
@@ -44,7 +45,13 @@ select
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
         , round(timestampdiff(minute,created,last_closed)/60) as closedTime
         , round(timestampdiff(minute,created,current_timestamp())/60) as age
-from tickets
+from tickets )
+select full_table.*
+    , PRODUCTGROUP::string as PRODUCTGROUP
+    , DISPLAYORDER::number as DISPLAYORDER
+    , ISTOPSYSTEM::boolean as ISTOPSYSTEM
+     from full_table
+    left join JIRA.TOPSYSTEM ts on COMPONENT=SYSTEMNAME
         ;;
   }
 
@@ -62,6 +69,33 @@ from tickets
     ]
   }
 
+
+  dimension: PRODUCTGROUP {
+    type: string
+    sql: ${TABLE}.PRODUCTGROUP ;;
+  }
+
+  dimension: DISPLAYORDER {
+    type: number
+    description: "Rang of system from the table TOPSYSTEM"
+    sql:  ${TABLE}.DISPLAYORDER ;;
+  }
+
+  dimension: component_priority_ORDER {
+    type: number
+    description: "Rang of system depends from priority"
+    sql:  case when priority ='P1 Escalation' then ${DISPLAYORDER}*10+1
+               when priority ='P2 Escalation' then ${DISPLAYORDER}*10+2
+               when priority ='P3 Escalation' then ${DISPLAYORDER}*10+3
+              else ${DISPLAYORDER}*10+5 end
+    ;;
+  }
+
+  dimension: ISTOPSYSTEM {
+    type: yesno
+    description: "Boolean from the table TOPSYSTEM"
+    sql: ${TABLE}.ISTOPSYSTEM ;;
+  }
 
   dimension: acknowledged {
     type: string
@@ -92,14 +126,15 @@ from tickets
 
   dimension: component {
     type: string
-    sql: case when ${TABLE}.COMPONENT is null then ${TABLE}.escal_component else ${TABLE}.COMPONENT end ;;
+    sql: ${TABLE}.COMPONENT  ;;
+  #  sql: case when ${TABLE}.COMPONENT is null then ${TABLE}.escal_component else ${TABLE}.COMPONENT end ;;
   }
 
   # Fields ESC-COMP at Jira
-  dimension: escal_component {
-    type: string
-    sql: ${TABLE}.escal_component ;;
-  }
+#  dimension: escal_component {
+#    type: string
+#    sql: ${TABLE}.escal_component ;;
+#  }
 
   #dimension: component_escal {
   #  type: string
@@ -348,6 +383,7 @@ from tickets
 
   dimension:topSystem {
     type: yesno
+    description: "Boolean from the manually created list"
     sql: ${component} in ('4LTR Press Online','Aplia',
     'CengageBrain.com','CL Homework','CNOW', 'CNOW MindApp','CNOW v7','CNOW v8','CXP','CU Catalog Data',
     'DevMath','Gradebook','LMS Integration','MindTap','MindTap School','Mobile','MyCengage','OWL v2','Questia',
