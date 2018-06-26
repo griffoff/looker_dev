@@ -91,6 +91,12 @@ select full_table.*
     ;;
   }
 
+  dimension: component_priority_alphabetical {
+    type: string
+    description: "We can use it for alphabetical order refer to priority"
+    sql: ${TABLE}.COMPONENT || ' (' || SPLIT_PART(${TABLE}.priority,' ',1)||')' ;;
+  }
+
   dimension: ISTOPSYSTEM {
     type: yesno
     description: "Boolean from the table TOPSYSTEM"

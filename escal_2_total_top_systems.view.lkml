@@ -88,6 +88,7 @@ select full_table.*
 
   dimension: component_priority {
     type: string
+    description: "We can use it for alphabetical order refer to priority"
     sql: ${TABLE}.COMPONENT || ' (' || SPLIT_PART(${TABLE}.priority,' ',1)||')' ;;
 
   #  html:
