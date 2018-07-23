@@ -62,6 +62,8 @@ view: check_script {
             , b.pp_name as book
             , case when product_iac_isbn = true_isbn then 1 else 0 end as PROVISIONED_PRODUCT_check
             , (ennrollment_check + subscription_check1 + subscription_check2 + PROVISIONED_PRODUCT_check) * 25 as total_health
+            , b.PP_PRODUCT_TYPE as product_type
+            , case when CONTAINS(id, 'full_access') then 1 else 2 end as iddd
             , pp._hash as pp_hash
             , se._hash as se_hash
             , en._hash as en_hash
@@ -81,6 +83,7 @@ view: check_script {
       SELECT * from res_fa_ta
        ;;
   }
+
 
   measure:  count_sub {
     type: count_distinct
@@ -102,122 +105,134 @@ view: check_script {
     drill_fields: [detail*]
   }
 
-  dimension: id {
-    type: string
-    sql: ${TABLE}."ID" ;;
-  }
+ dimension: id {
+  type: string
+  sql: ${TABLE}."ID" ;;
+}
 
-  dimension: guid {
-    type: string
-    sql: ${TABLE}."GUID" ;;
-  }
+dimension: guid {
+  type: string
+  sql: ${TABLE}."GUID" ;;
+}
 
-  dimension: enrollment_course_key {
-    type: string
-    sql: ${TABLE}."ENROLLMENT_COURSE_KEY" ;;
-  }
+dimension: enrollment_course_key {
+  type: string
+  sql: ${TABLE}."ENROLLMENT_COURSE_KEY" ;;
+}
 
-  dimension: true_courese_key {
-    type: string
-    sql: ${TABLE}."TRUE_COURESE_KEY" ;;
-  }
+dimension: true_courese_key {
+  type: string
+  sql: ${TABLE}."TRUE_COURESE_KEY" ;;
+}
 
-  dimension: ennrollment_check {
-    type: number
-    sql: ${TABLE}."ENNROLLMENT_CHECK" ;;
-  }
+dimension: ennrollment_check {
+  type: number
+  sql: ${TABLE}."ENNROLLMENT_CHECK" ;;
+}
 
-  dimension: subscription_state {
-    type: string
-    sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
-  }
+dimension: subscription_state {
+  type: string
+  sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
+}
 
-  dimension: true_subscription_state {
-    type: string
-    sql: ${TABLE}."TRUE_SUBSCRIPTION_STATE" ;;
-  }
+dimension: true_subscription_state {
+  type: string
+  sql: ${TABLE}."TRUE_SUBSCRIPTION_STATE" ;;
+}
 
-  dimension: subscription_check1 {
-    type: number
-    sql: ${TABLE}."SUBSCRIPTION_CHECK1" ;;
-  }
+dimension: subscription_check1 {
+  type: number
+  sql: ${TABLE}."SUBSCRIPTION_CHECK1" ;;
+}
 
-  dimension: contrtact_id {
-    type: string
-    sql: ${TABLE}."CONTRTACT_ID" ;;
-  }
+dimension: contrtact_id {
+  type: string
+  sql: ${TABLE}."CONTRTACT_ID" ;;
+}
 
-  dimension: true_contrtact_id {
-    type: string
-    sql: ${TABLE}."TRUE_CONTRTACT_ID" ;;
-  }
+dimension: true_contrtact_id {
+  type: string
+  sql: ${TABLE}."TRUE_CONTRTACT_ID" ;;
+}
 
-  dimension: subscription_check2 {
-    type: number
-    sql: ${TABLE}."SUBSCRIPTION_CHECK2" ;;
-  }
+dimension: subscription_check2 {
+  type: number
+  sql: ${TABLE}."SUBSCRIPTION_CHECK2" ;;
+}
 
-  dimension: product_iac_isbn {
-    type: string
-    sql: ${TABLE}."PRODUCT_IAC_ISBN" ;;
-  }
+dimension: product_iac_isbn {
+  type: string
+  sql: ${TABLE}."PRODUCT_IAC_ISBN" ;;
+}
 
-  dimension: true_isbn {
-    type: string
-    sql: ${TABLE}."TRUE_ISBN" ;;
-  }
+dimension: true_isbn {
+  type: string
+  sql: ${TABLE}."TRUE_ISBN" ;;
+}
 
-  dimension: book {
-    type: string
-    sql: ${TABLE}."BOOK" ;;
-  }
+dimension: book {
+  type: string
+  sql: ${TABLE}."BOOK" ;;
+}
 
-  dimension: provisioned_product_check {
-    type: number
-    sql: ${TABLE}."PROVISIONED_PRODUCT_CHECK" ;;
-  }
+dimension: provisioned_product_check {
+  type: number
+  sql: ${TABLE}."PROVISIONED_PRODUCT_CHECK" ;;
+}
 
-  dimension: total_health {
-    type: number
-    sql: ${TABLE}."TOTAL_HEALTH" ;;
-  }
+dimension: total_health {
+  type: number
+  sql: ${TABLE}."TOTAL_HEALTH" ;;
+}
 
-  dimension: pp_hash {
-    type: string
-    sql: ${TABLE}."PP_HASH" ;;
-  }
+dimension: product_type {
+  type: string
+  sql: ${TABLE}."PRODUCT_TYPE" ;;
+}
 
-  dimension: se_hash {
-    type: string
-    sql: ${TABLE}."SE_HASH" ;;
-  }
+dimension: iddd {
+  type: number
+  sql: ${TABLE}."IDDD" ;;
+}
 
-  dimension: en_hash {
-    type: string
-    sql: ${TABLE}."EN_HASH" ;;
-  }
+dimension: pp_hash {
+  type: string
+  sql: ${TABLE}."PP_HASH" ;;
+}
 
-  set: detail {
-    fields: [
-      id,
-      guid,
-      enrollment_course_key,
-      true_courese_key,
-      ennrollment_check,
-      subscription_state,
-      true_subscription_state,
-      subscription_check1,
-      contrtact_id,
-      true_contrtact_id,
-      subscription_check2,
-      product_iac_isbn,
-      true_isbn,
-      book,
-      provisioned_product_check,
-      total_health,
-      pp_hash,
-      se_hash,
-      en_hash
-    ]
-  }
+dimension: se_hash {
+  type: string
+  sql: ${TABLE}."SE_HASH" ;;
+}
+
+dimension: en_hash {
+  type: string
+  sql: ${TABLE}."EN_HASH" ;;
+}
+
+set: detail {
+  fields: [
+    id,
+    guid,
+    enrollment_course_key,
+    true_courese_key,
+    ennrollment_check,
+    subscription_state,
+    true_subscription_state,
+    subscription_check1,
+    contrtact_id,
+    true_contrtact_id,
+    subscription_check2,
+    product_iac_isbn,
+    true_isbn,
+    book,
+    provisioned_product_check,
+    total_health,
+    product_type,
+    iddd,
+    pp_hash,
+    se_hash,
+    en_hash
+  ]
+}
 }
