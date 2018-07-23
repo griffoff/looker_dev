@@ -1,11 +1,8 @@
 view: sub_event_ {
   derived_table: {
-    sql: SELECT SUBSCRIPTION_STATE
-      , count (SUBSCRIPTION_STATE)
-      FROM UNLIMITED.RAW_SUBSCRIPTION_EVENT
-      where datediff(dd, _LDTS, current_date()) < 1
-      group by SUBSCRIPTION_STATE
-       ;;
+    sql: SELECT SUBSCRIPTION_STATE, user_sso_guid, _LDTS, SUBSCRIPTION_END
+      FROM INT.UNLIMITED.RAW_SUBSCRIPTION_EVENT
+ ;;
   }
 
   measure: count {
@@ -18,13 +15,22 @@ view: sub_event_ {
     sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
   }
 
-  dimension: count_subscription_state {
-    type: number
-    label: "COUNT (SUBSCRIPTION_STATE)"
-    sql: ${TABLE}."COUNT (SUBSCRIPTION_STATE)" ;;
+  dimension: user_sso_guid {
+    type: string
+    sql: ${TABLE}."USER_SSO_GUID" ;;
+  }
+
+  dimension_group: _ldts {
+    type: time
+    sql: ${TABLE}."_LDTS" ;;
+  }
+
+  dimension_group: subscription_end {
+    type: time
+    sql: ${TABLE}."SUBSCRIPTION_END" ;;
   }
 
   set: detail {
-    fields: [subscription_state, count_subscription_state]
+    fields: [subscription_state, user_sso_guid, _ldts_time, subscription_end_time]
   }
 }

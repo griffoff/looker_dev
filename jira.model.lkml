@@ -181,3 +181,28 @@ explore: raw_jira_issue_v {
   persist_with: escal_datagroup
   label: "raw_jira_issue_v"
 }
+
+explore: sub_event_ {
+  from: sub_event_
+  label: "sub_event_"
+}
+
+explore: vital_sourse {
+  from: vital_sourse
+  label: "vital_sourse"
+}
+
+explore: prov_prod {
+  from: prov_prod
+  label: "prov_prod"
+}
+explore: enroll {
+  from: enroll
+  label: "enroll"
+}
+
+explore: check_script {
+  from: check_script
+  label: "check_script"
+
+}
