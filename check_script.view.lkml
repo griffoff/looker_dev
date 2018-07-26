@@ -1,238 +1,339 @@
 view: check_script {
-  derived_table: {
-    sql: with fa as (
-      select guid as user_sso_guid,
-      uid as id,
-      SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u,
-      SUBSCRIPTION_CONTRACT_ID as SUBSCRIPTION_CONTRACT_ID,
-      COURSE_KEY as COURSE_KEY,
-      VS_ISBN as vbid
-      , CREATED_ON as date_c
-      from int.UNLIMITED.SCENARIO_DETAILS
-      WHERE CONTAINS(id, 'full_access')
-      and CREATED_ON = (select max(CREATED_ON) from int.UNLIMITED.SCENARIO_DETAILS)
-      )
-      , ta as (
-      select guid as user_sso_guid,
-      uid as id,
-      SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u,
-      SUBSCRIPTION_CONTRACT_ID as SUBSCRIPTION_CONTRACT_ID,
-      COURSE_KEY as COURSE_KEY,
-      VS_ISBN as vbid
-      , CREATED_ON as date_c
-      from int.UNLIMITED.SCENARIO_DETAILS
-      WHERE CONTAINS(id, 'trial_access')
-      and CREATED_ON = (select max(CREATED_ON) from int.UNLIMITED.SCENARIO_DETAILS)
-      )
-      , na as (
-      select guid as user_sso_guid,
-      uid as id,
-      SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u,
-      SUBSCRIPTION_CONTRACT_ID as SUBSCRIPTION_CONTRACT_ID,
-      COURSE_KEY as COURSE_KEY,
-      VS_ISBN as vbid
-      , CREATED_ON as date_c
-      from int.UNLIMITED.SCENARIO_DETAILS
-      WHERE CONTAINS(id, 'no_cu')
-      and CREATED_ON = (select max(CREATED_ON) from int.UNLIMITED.SCENARIO_DETAILS)
-      )
-      , res_users as(
-      select * from fa
-      union
-      select * from ta
-      union
-      select * from na
-      )
-      , res_fa_ta as (
+        derived_table: {
+          sql: with  res_users as (
+              select guid as user_sso_guid,
+              uid as id,
+              SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u,
+              SUBSCRIPTION_CONTRACT_ID as SUBSCRIPTION_CONTRACT_ID,
+              COURSE_KEY as COURSE_KEY
+              ,VS_ISBN as vbid
+              ,MTR_ISBN as MTR_ISBN
+              ,APLIA_ISBN as APLIA_ISBN
+              ,APLIA_MTR_ISBN as APLIA_MTR_ISBN
+              ,CNOW_ISBN as CNOW_ISBN
+              ,CNOW_MTR_ISBN as CNOW_MTR_ISBN
+              ,WEBASSIGN_ISBN as WEBASSIGN_ISBN
+              ,WEBASSIGN_MTR_ISBN as WEBASSIGN_MTR_ISBN
+              ,MT_ISBN as   MT_ISBN
 
-      select distinct res_users.id  as id
-      , res_users.user_sso_guid as guid
+              ,to_array(split(concat(concat(concat(concat(concat(concat(concat( concat(concat(concat(to_varchar(VS_isbn), ', '), to_varchar(case when MTR_ISBN is null then '  ' else MTR_ISBN end)),', '),to_varchar(case when APLIA_ISBN is null then '  ' else APLIA_ISBN end)), ', '), case when CNOW_ISBN is null then '  ' else CNOW_ISBN end), ', '), case when WEBASSIGN_ISBN is null then '  ' else WEBASSIGN_ISBN end), ', '), case when MT_ISBN is null then '  ' else MT_ISBN end), ', '))  as expected_ISBN
 
-            , en.course_key as enrollment_course_key
-            , res_users.COURSE_KEY as true_courese_key
-            , case when enrollment_course_key = true_courese_key then 1 else 0 end as ennrollment_check
-            , se.subscription_state as subscription_state
-            , res_users.SUBSCRIPTION_STATE_u as true_subscription_state
-            , case when subscription_state = true_subscription_state then 1 else 0 end as subscription_check1
-            , se.contract_id as contrtact_id
-            , res_users.SUBSCRIPTION_CONTRACT_ID as true_contrtact_id
-            , case when contrtact_id = true_contrtact_id then 1 else 0 end as subscription_check2
-            , pp.iac_isbn as product_iac_isbn
-            , res_users.vbid as true_isbn
-            , b.pp_name as book
-            , case when product_iac_isbn = true_isbn then 1 else 0 end as PROVISIONED_PRODUCT_check
-            , (ennrollment_check + subscription_check1 + subscription_check2 + PROVISIONED_PRODUCT_check) * 25 as total_health
-            , b.PP_PRODUCT_TYPE as product_type
-            , case when CONTAINS(id, 'full_access') then 1 else 2 end as iddd
-            , pp._hash as pp_hash
-            , se._hash as se_hash
-            , en._hash as en_hash
-            from res_users
-            , int.unlimited.RAW_OLR_ENROLLMENT as en
-            , int.unlimited.RAW_SUBSCRIPTION_EVENT as se
-            , int.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
-            , int.unlimited.RAW_OLR_EXTENDED_IAC as b
-            where
-            guid = pp.user_sso_guid and guid = se.user_sso_guid and guid = en.user_sso_guid
-            and product_iac_isbn = b.pp_isbn_13
+              , CREATED_ON as date_c
+              from int.UNLIMITED.SCENARIO_DETAILS
+              )
+              , en as
+              (
+              SELECT distinct user_sso_guid,
+              arrayagg(course_key)as course_key
+              , arrayagg(local_time)as local_time
+              FROM int.UNLIMITED.RAW_OLR_ENROLLMENT
+              group by user_sso_guid
 
-      )
+              )
+              , enrollment as
+              (
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 ,res_users.date_c as user_creation_date
+                 ,array_to_string(en.course_key, ', ') as _actual_course_key
+                 , res_users.COURSE_KEY as expected_courese_key
+                 , case when (array_size(en.course_key) < 2 and (ARRAY_CONTAINS(expected_courese_key::variant, en.course_key) or expected_courese_key is null)) then 1 else 0 end as ennrollment_health
+                 , array_to_string(en.local_time, ', ') as en_local_time
+                 from res_users
+                 ,en
+                 where user_guid = en.user_sso_guid
+
+                 union
+
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 ,res_users.date_c as user_creation_date
+                 ,null as actual_course_key
+                 , res_users.COURSE_KEY as expected_courese_key
+                 , case when (user_id like '%no_cu%') then 1 else 0 end as ennrollment_health
+                 , null as en_local_time
+                 from res_users
+                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_OLR_ENROLLMENT)
+
+              )
+
+              ,se as (
+              SELECT distinct user_sso_guid,
+              arrayagg(subscription_state)as subscription_state
+              , arrayagg(contract_id)as contract_id
+              , arrayagg(local_time)as subscription_time
+              FROM int.UNLIMITED.RAW_SUBSCRIPTION_EVENT
+              group by user_sso_guid
+              )
+
+              , subscription as
+              (
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 , res_users.date_c as user_creation_date
+                 , se.subscription_state as actual_subscription_state
+                 , res_users.SUBSCRIPTION_STATE_u as expected_subscription_state
+
+                 , case when (user_id like '%full%' and array_size(actual_subscription_state) = 2 and ARRAY_CONTAINS(expected_subscription_state::variant, actual_subscription_state)) or (user_id like '%trial%' and array_size(actual_subscription_state) = 1 and ARRAY_CONTAINS(expected_subscription_state::variant, actual_subscription_state)) then 1 else 0 end as subscription_state_health
+
+                 , se.contract_id as actual_contrtact_id
+                 , res_users.SUBSCRIPTION_CONTRACT_ID as expected_contrtact_id
+
+                 , case when subscription_state_health = 0 then 0 else case when  ARRAY_CONTAINS(expected_contrtact_id::variant, actual_contrtact_id) then 1 else 0 end  end as contract_id_health
+                 , se.subscription_time as subscription_time
+                 from res_users
+                 , se
+                 where user_guid = se.user_sso_guid
+
+                 union
+
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 , res_users.date_c as user_creation_date
+                 , null as actual_subscription_state
+                 , res_users.SUBSCRIPTION_STATE_u as expected_subscription_state
+                 , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as subscription_state_health
+                 , null as actual_contrtact_id
+                 , res_users.SUBSCRIPTION_CONTRACT_ID as expected_contrtact_id
+                 , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as contract_id_health
+                 , null as subscription_time
+                 from res_users
+                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_SUBSCRIPTION_EVENT)
+
+              )
+              ,pp as
+              (
+              SELECT distinct user_sso_guid,
+              arrayagg(iac_isbn)as aa
+              FROM int.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT
+              group by user_sso_guid
+              )
+
+              , products as
+              (
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 , res_users.date_c as user_creation_date
+                 , pp.aa as actual_isbn
+                 , res_users.vbid as VS_ISBN
+                 , res_users.expected_ISBN as expected_ISBN
+                 , res_users.MTR_ISBN as MTR_ISBN
+                 , res_users.APLIA_ISBN as APLIA_ISBN
+                 , res_users.CNOW_ISBN as CNOW_ISBN
+                 , res_users.WEBASSIGN_ISBN as WEBASSIGN_ISBN
+                 , res_users.MT_ISBN as   MT_ISBN
+                 from res_users
+                 , pp
+                 where user_guid = pp.user_sso_guid
 
 
+                 union
 
-      SELECT * from res_fa_ta
-       ;;
-  }
+                 select distinct res_users.id  as user_id
+                 , res_users.user_sso_guid as user_guid
+                 , res_users.date_c as user_creation_date
+                 , null as actual_isbn
+                 , res_users.vbid as VS_isbn
+                 , res_users.expected_ISBN as expected_ISBN
+                 , res_users.MTR_ISBN as MTR_ISBN
+                 , res_users.APLIA_ISBN as APLIA_ISBN
+                 , res_users.CNOW_ISBN as CNOW_ISBN
+                 , res_users.WEBASSIGN_ISBN as WEBASSIGN_ISBN
+                 , res_users.MT_ISBN as   MT_ISBN
+                 from res_users
+                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
+
+              )
+
+              , result as
+              (
+              select distinct  case when enrollment.user_id like '%full%' then 1 else (case when enrollment.user_id like '%trial%' then 2 else 3 end) end as idd
+              , enrollment.*
+              , array_to_string(subscription.actual_subscription_state, ', ') as actual_subscription_state
+              , subscription.expected_subscription_state
+              , subscription.subscription_state_health
+              , array_to_string(subscription.actual_contrtact_id, ', ') as actual_contrtact_id
+              , subscription.expected_contrtact_id
+              , subscription.contract_id_health
+              , array_to_string(subscription.subscription_time, ', ') as subscription_time
+              , array_to_string(products.actual_isbn, ', ') as actual_isbn
+              , array_to_string(products.expected_isbn, ', ') as expected_isbn
+              , products.VS_isbn
+              , products.MTR_ISBN
+              , products.APLIA_ISBN
+              , products.CNOW_ISBN
+              , products.WEBASSIGN_ISBN
+              , products.MT_ISBN
+              from enrollment, subscription, products
+              where enrollment.user_id = subscription.user_id
+              and enrollment.user_id = products.user_id
+              and subscription.user_id = products.user_id
+              )
 
 
-  measure:  count_sub {
-    type: count_distinct
-    sql: ${se_hash};;
-  }
+              SELECT * from result
+ ;;
+        }
 
-  measure:  count_en {
-    type: count_distinct
-    sql: ${en_hash};;
-  }
+        measure: count {
+          type: count
+          drill_fields: [detail*]
+        }
 
-  measure:  count_pp {
-    type: count_distinct
-    sql: ${pp_hash};;
-  }
+        measure: total_success {
+          type: sum
+          sql: (${contract_id_health} + ${ennrollment_health} + ${subscription_state_health}) ;;
+        }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+        measure: total_fail {
+          type: sum
+          sql: 3 - (${contract_id_health} + ${ennrollment_health} + ${subscription_state_health}) ;;
+        }
 
- dimension: id {
-  type: string
-  sql: ${TABLE}."ID" ;;
-}
+        measure: health {
+          type: sum
+          sql: 100 * ((${contract_id_health} + ${ennrollment_health} + ${subscription_state_health}) / 3);;
+        }
+        dimension: idd {
+          type: number
+          sql: ${TABLE}."IDD" ;;
+        }
 
-dimension: guid {
-  type: string
-  sql: ${TABLE}."GUID" ;;
-}
+        dimension: user_id {
+          type: string
+          sql: ${TABLE}."USER_ID" ;;
+        }
 
-dimension: enrollment_course_key {
-  type: string
-  sql: ${TABLE}."ENROLLMENT_COURSE_KEY" ;;
-}
+        dimension: user_guid {
+          type: string
+          sql: ${TABLE}."USER_GUID" ;;
+        }
 
-dimension: true_courese_key {
-  type: string
-  sql: ${TABLE}."TRUE_COURESE_KEY" ;;
-}
+        dimension: user_creation_date {
+          type: date
+          sql: ${TABLE}."USER_CREATION_DATE" ;;
+        }
 
-dimension: ennrollment_check {
-  type: number
-  sql: ${TABLE}."ENNROLLMENT_CHECK" ;;
-}
+        dimension: _actual_course_key {
+          type: string
+          sql: ${TABLE}."_ACTUAL_COURSE_KEY" ;;
+        }
 
-dimension: subscription_state {
-  type: string
-  sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
-}
+        dimension: expected_courese_key {
+          type: string
+          sql: ${TABLE}."EXPECTED_COURESE_KEY" ;;
+        }
 
-dimension: true_subscription_state {
-  type: string
-  sql: ${TABLE}."TRUE_SUBSCRIPTION_STATE" ;;
-}
+        dimension: ennrollment_health {
+          type: number
+          sql: ${TABLE}."ENNROLLMENT_HEALTH" ;;
+        }
 
-dimension: subscription_check1 {
-  type: number
-  sql: ${TABLE}."SUBSCRIPTION_CHECK1" ;;
-}
+        dimension: en_local_time {
+          type: string
+          sql: ${TABLE}."EN_LOCAL_TIME" ;;
+        }
 
-dimension: contrtact_id {
-  type: string
-  sql: ${TABLE}."CONTRTACT_ID" ;;
-}
+        dimension: actual_subscription_state {
+          type: string
+          sql: ${TABLE}."ACTUAL_SUBSCRIPTION_STATE" ;;
+        }
 
-dimension: true_contrtact_id {
-  type: string
-  sql: ${TABLE}."TRUE_CONTRTACT_ID" ;;
-}
+        dimension: expected_subscription_state {
+          type: string
+          sql: ${TABLE}."EXPECTED_SUBSCRIPTION_STATE" ;;
+        }
 
-dimension: subscription_check2 {
-  type: number
-  sql: ${TABLE}."SUBSCRIPTION_CHECK2" ;;
-}
+        dimension: subscription_state_health {
+          type: number
+          sql: ${TABLE}."SUBSCRIPTION_STATE_HEALTH" ;;
+        }
 
-dimension: product_iac_isbn {
-  type: string
-  sql: ${TABLE}."PRODUCT_IAC_ISBN" ;;
-}
+        dimension: actual_contrtact_id {
+          type: string
+          sql: ${TABLE}."ACTUAL_CONTRTACT_ID" ;;
+        }
 
-dimension: true_isbn {
-  type: string
-  sql: ${TABLE}."TRUE_ISBN" ;;
-}
+        dimension: expected_contrtact_id {
+          type: string
+          sql: ${TABLE}."EXPECTED_CONTRTACT_ID" ;;
+        }
 
-dimension: book {
-  type: string
-  sql: ${TABLE}."BOOK" ;;
-}
+        dimension: contract_id_health {
+          type: number
+          sql: ${TABLE}."CONTRACT_ID_HEALTH" ;;
+        }
 
-dimension: provisioned_product_check {
-  type: number
-  sql: ${TABLE}."PROVISIONED_PRODUCT_CHECK" ;;
-}
+        dimension: subscription_time {
+          type: string
+          sql: ${TABLE}."SUBSCRIPTION_TIME" ;;
+        }
 
-dimension: total_health {
-  type: number
-  sql: ${TABLE}."TOTAL_HEALTH" ;;
-}
+        dimension: actual_isbn {
+          type: string
+          sql: ${TABLE}."ACTUAL_ISBN" ;;
+        }
 
-dimension: product_type {
-  type: string
-  sql: ${TABLE}."PRODUCT_TYPE" ;;
-}
+        dimension: expected_isbn {
+          type: string
+          sql: ${TABLE}."EXPECTED_ISBN" ;;
+        }
 
-dimension: iddd {
-  type: number
-  sql: ${TABLE}."IDDD" ;;
-}
+        dimension: vs_isbn {
+          type: string
+          sql: ${TABLE}."VS_ISBN" ;;
+        }
 
-dimension: pp_hash {
-  type: string
-  sql: ${TABLE}."PP_HASH" ;;
-}
+        dimension: mtr_isbn {
+          type: string
+          sql: ${TABLE}."MTR_ISBN" ;;
+        }
 
-dimension: se_hash {
-  type: string
-  sql: ${TABLE}."SE_HASH" ;;
-}
+        dimension: aplia_isbn {
+          type: string
+          sql: ${TABLE}."APLIA_ISBN" ;;
+        }
 
-dimension: en_hash {
-  type: string
-  sql: ${TABLE}."EN_HASH" ;;
-}
+        dimension: cnow_isbn {
+          type: string
+          sql: ${TABLE}."CNOW_ISBN" ;;
+        }
 
-set: detail {
-  fields: [
-    id,
-    guid,
-    enrollment_course_key,
-    true_courese_key,
-    ennrollment_check,
-    subscription_state,
-    true_subscription_state,
-    subscription_check1,
-    contrtact_id,
-    true_contrtact_id,
-    subscription_check2,
-    product_iac_isbn,
-    true_isbn,
-    book,
-    provisioned_product_check,
-    total_health,
-    product_type,
-    iddd,
-    pp_hash,
-    se_hash,
-    en_hash
-  ]
-}
-}
+        dimension: webassign_isbn {
+          type: string
+          sql: ${TABLE}."WEBASSIGN_ISBN" ;;
+        }
+
+        dimension: mt_isbn {
+          type: string
+          sql: ${TABLE}."MT_ISBN" ;;
+        }
+
+        set: detail {
+          fields: [
+            idd,
+            user_id,
+            user_guid,
+            user_creation_date,
+            _actual_course_key,
+            expected_courese_key,
+            ennrollment_health,
+            en_local_time,
+            actual_subscription_state,
+            expected_subscription_state,
+            subscription_state_health,
+            actual_contrtact_id,
+            expected_contrtact_id,
+            contract_id_health,
+            subscription_time,
+            actual_isbn,
+            expected_isbn,
+            vs_isbn,
+            mtr_isbn,
+            aplia_isbn,
+            cnow_isbn,
+            webassign_isbn,
+            mt_isbn
+          ]
+        }
+      }
