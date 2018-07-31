@@ -49,7 +49,7 @@ view: check_script {
                  , res_users.user_sso_guid as user_guid
                  ,res_users.date_c as user_creation_date
                  ,null as actual_course_key
-                 , res_users.COURSE_KEY as expected_courese_key
+                 ,res_users.COURSE_KEY as expected_courese_key
                  , case when (user_id like '%no_cu%') then 1 else 0 end as ennrollment_health
                  , null as en_local_time
                  from res_users
@@ -79,7 +79,7 @@ view: check_script {
                  , se.contract_id as actual_contrtact_id
                  , res_users.SUBSCRIPTION_CONTRACT_ID as expected_contrtact_id
 
-                 , case when subscription_state_health = 0 then 0 else case when  ARRAY_CONTAINS(expected_contrtact_id::variant, actual_contrtact_id) then 1 else 0 end  end as contract_id_health
+                 , case when  ARRAY_CONTAINS(expected_contrtact_id::variant, actual_contrtact_id) then 1 else 0 end  as contract_id_health
                  , se.subscription_time as subscription_time
                  from res_users
                  , se
@@ -91,10 +91,10 @@ view: check_script {
                  , res_users.user_sso_guid as user_guid
                  , res_users.date_c as user_creation_date
                  , null as actual_subscription_state
-                 , res_users.SUBSCRIPTION_STATE_u as expected_subscription_state
+                 , case when res_users.SUBSCRIPTION_STATE_u like '%none%' then null else res_users.SUBSCRIPTION_STATE_u end as expected_subscription_state
                  , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as subscription_state_health
                  , null as actual_contrtact_id
-                 , res_users.SUBSCRIPTION_CONTRACT_ID as expected_contrtact_id
+                 , case when res_users.SUBSCRIPTION_CONTRACT_ID like 'N/A' then null else res_users.SUBSCRIPTION_CONTRACT_ID end as expected_contrtact_id
                  , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as contract_id_health
                  , null as subscription_time
                  from res_users
@@ -156,8 +156,8 @@ view: check_script {
               , subscription.expected_contrtact_id
               , subscription.contract_id_health
               , array_to_string(subscription.subscription_time, ', ') as subscription_time
-              , array_to_string(products.actual_isbn, ', ') as actual_isbn
-              , array_to_string(products.expected_isbn, ', ') as expected_isbn
+              , array_to_string(products.actual_isbn, ' ') as actual_isbn
+              , array_to_string(products.expected_isbn, ' ') as expected_isbn
               , products.VS_isbn
               , products.MTR_ISBN
               , products.APLIA_ISBN
@@ -182,11 +182,29 @@ view: check_script {
 
         measure: total_success {
           type: sum
+          drill_fields: [details*]
           sql: (${contract_id_health} + ${ennrollment_health} + ${subscription_state_health}) ;;
+        }
+
+        set: details {
+          fields: [
+            user_guid
+            , expected_courese_key
+            , _actual_course_key
+            , ennrollment_health
+            , expected_subscription_state
+            , actual_subscription_state
+            , subscription_state_health
+            , expected_contrtact_id
+            , actual_contrtact_id
+            , contract_id_health
+            , health
+          ]
         }
 
         measure: total_fail {
           type: sum
+          drill_fields: [details*]
           sql: 3 - (${contract_id_health} + ${ennrollment_health} + ${subscription_state_health}) ;;
         }
 
@@ -211,6 +229,7 @@ view: check_script {
 
         dimension: user_creation_date {
           type: date
+          drill_fields: [user_id]
           sql: ${TABLE}."USER_CREATION_DATE" ;;
         }
 

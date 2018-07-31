@@ -206,3 +206,28 @@ explore: check_script {
   label: "check_script"
 
 }
+
+explore: usage {
+  from: usage
+  label: "usage"
+
+}
+
+explore: cs_m {
+  from: cs_m
+  label: "cs_m"
+}
+
+explore: a_e {
+  from: a_e
+  label: "a_e"
+}
+explore: a_s {
+  from: a_s
+  label: "a_s"
+}
+
+explore: a_p {
+  from: a_p
+  label: "a_p"
+}
