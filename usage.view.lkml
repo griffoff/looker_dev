@@ -45,9 +45,13 @@ view: usage {
       , m._hash as mt_hash
       from cap_er.nonprod.RAW_MT_RESOURCE_INTERACTIONS as m
       , int.unlimited.RAW_OLR_EXTENDED_IAC as iac
+      , int.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
       ,int.STG_CLTS.PRODUCTS_V as t
-      where t.isbn13 = m.component_isbn
-      and iac.pp_isbn_13 = m.component_isbn
+      where (m.component_isbn = iac.cp_isbn_13 or m.component_isbn = iac.pp_isbn_13)
+      and pp.user_sso_guid =  mt_user_sso_guid
+      and iac.pp_isbn_13 = pp.iac_isbn
+      and t.isbn13 = iac.pp_isbn_13
+      --and mt_platform not in ('MindTap', 'OWL V2', 'Aplia', 'WebAssign', 'CNOW', 'MindTap Reader', 'SAM')
       )
       , u_v as (
       select res_users.*

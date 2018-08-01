@@ -231,3 +231,22 @@ explore: a_p {
   from: a_p
   label: "a_p"
 }
+
+explore: a_e_p {
+  from: a_e_p
+  label: "a_e_p"
+}
+explore: a_s_p {
+  from: a_s_p
+  label: "a_s_p"
+}
+
+explore: a_p_p {
+  from: a_p_p
+  label: "a_p_p"
+}
+
+explore: switch_state_prod {
+  from: switch_state_prod
+  label: "switch_state_prod"
+}
