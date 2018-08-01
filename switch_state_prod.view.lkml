@@ -1,166 +1,123 @@
 view: switch_state_prod {
- derived_table: {
-  sql: with trial as (
-      select user_sso_guid as t_s_user_sso_guid
-      , _hash as t_hash
-      , local_time as t_subscription_local_time
-      , subscription_state as t_subscription_state
-      , subscription_end as t_subscription_end
-      , subscription_start as t_subscription_start
+  derived_table: {
+    sql: with trial as (
+      select user_sso_guid as trial_user_sso_guid
+      , _hash as trial_hash
+      , local_time as trial_subscription_local_time
+      , subscription_state as trial_subscription_state
+      , subscription_start as trial_subscription_start
+      , subscription_end as trial_subscription_end
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
-      where t_subscription_state like '%trial%'
+      where trial_subscription_state like '%trial%'
       )
 
       , _full as (
-      select user_sso_guid as f_s_user_sso_guid
-      , _hash as f_hash
-      , local_time as f_subscription_local_time
-      , subscription_state as f_subscription_state
-      , subscription_end as f_subscription_end
-      , subscription_start as f_subscription_start
+      select user_sso_guid as full_user_sso_guid
+      , _hash as full_hash
+      , local_time as full_subscription_local_time
+      , subscription_state as full_subscription_state
+      , subscription_end as full_subscription_end
+      , subscription_start as full_subscription_start
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
-      where f_subscription_state like '%full%'
+      where full_subscription_state like '%full%'
       )
 
-      , t_f as(
-      select 'trial to full' as idd
-      , trial.*
-      , _full.*
+      , from_trial_to_full_today as(
+      select distinct 'c' as idd
+      , trial.trial_user_sso_guid as user_sso_guid
+      , _full.full_subscription_state as subscription_state
+      , _full.full_subscription_start as _start
+      , _full.full_subscription_end as _end
       from trial, _full
-      where t_s_user_sso_guid = f_s_user_sso_guid
-      --and f_subscription_start >= t_subscription_end
-      and datediff(dd, f_subscription_start, t_subscription_end) < 1
+      where trial_user_sso_guid = full_user_sso_guid
+      and full_subscription_start <= trial_subscription_end
+      --and datediff(dd, trial_subscription_end, full_subscription_start) < 1
+      and day(trial_subscription_end) = day(full_subscription_start)
       )
 
       , only_trial as (
-      select 'only trial' as idd
-      ,trial.*
-      , t_s_user_sso_guid as f_s_user_sso_guid
-      , t_hash as f_hash
-      , t_subscription_local_time as f_subscription_local_time
-      , t_subscription_state as f_subscription_state
-      , t_subscription_end as f_subscription_end
-      , t_subscription_start as f_subscription_start
+      select distinct 'a' as idd
+      , trial.trial_user_sso_guid as user_sso_guid
+      , trial.trial_subscription_state as subscription_state
+      , trial.trial_subscription_start as _start
+      , trial.trial_subscription_end as _end
       from trial
-      where trial.t_s_user_sso_guid not in (select f_s_user_sso_guid from _full)
+      where trial.trial_user_sso_guid not in (select full_user_sso_guid from _full)
       )
 
       , only_full as (
-      select 'only full' as idd
-      ,null as t_s_user_sso_guid
-      , null as t_hash
-      , null as t_subscription_local_time
-      , null as t_subscription_state
-      , null as t_subscription_end
-      , null as t_subscription_start
-      , _full.*
+      select distinct 'b' as idd
+      , _full.full_user_sso_guid as user_sso_guid
+      , _full.full_subscription_state as subscription_state
+      , _full.full_subscription_start as _start
+      , _full.full_subscription_end as _end
       from _full
-      where _full.f_s_user_sso_guid not in (select t_s_user_sso_guid from trial)
+      where _full.full_user_sso_guid not in (select trial_user_sso_guid from trial)
       )
-      ,
 
-      res as (
-      select * from t_f
+      , from_trial_to_full_long as(
+      select distinct 'd' as idd
+      , trial.trial_user_sso_guid as user_sso_guid
+      , _full.full_subscription_state as subscription_state
+      , _full.full_subscription_start as _start
+      , _full.full_subscription_end as _end
+      from trial, _full
+      where trial_user_sso_guid = full_user_sso_guid
+      and full_subscription_start <= trial_subscription_end
+      --and datediff(dd, trial_subscription_end, full_subscription_start) < 1
+      and day(trial_subscription_end) != day(full_subscription_start)
+      )
+
+      , res as (
+      select * from from_trial_to_full_today
       union
       select * from only_trial
       union
       select * from only_full
+      union
+      select * from from_trial_to_full_long
       )
 
 select * from res
  ;;
+  }
+
+measure: count {
+  type: count
+  drill_fields: [detail*]
 }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
-
-  measure: count_m {
+measure: Number_of_users {
     type: count_distinct
-    sql: ${f_hash} ;;
-  }
+    sql: ${user_sso_guid} ;;
+}
 
-  dimension: idd {
-    type: string
-    sql: ${TABLE}."IDD" ;;
-  }
+dimension: idd {
+  type: string
+  sql: ${TABLE}."IDD" ;;
+}
 
-  dimension: t_s_user_sso_guid {
-    type: string
-    sql: ${TABLE}."T_S_USER_SSO_GUID" ;;
-  }
+dimension: user_sso_guid {
+  type: string
+  sql: ${TABLE}."USER_SSO_GUID" ;;
+}
 
-  dimension: t_hash {
-    type: string
-    sql: ${TABLE}."T_HASH" ;;
-  }
+dimension: subscription_state {
+  type: string
+  sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
+}
 
-  dimension_group: t_subscription_local_time {
-    type: time
-    sql: ${TABLE}."T_SUBSCRIPTION_LOCAL_TIME" ;;
-  }
+dimension_group: _start {
+  type: time
+  sql: ${TABLE}."_START" ;;
+}
 
-  dimension: t_subscription_state {
-    type: string
-    sql: ${TABLE}."T_SUBSCRIPTION_STATE" ;;
-  }
+dimension_group: _end {
+  type: time
+  sql: ${TABLE}."_END" ;;
+}
 
-  dimension_group: t_subscription_end {
-    type: time
-    sql: ${TABLE}."T_SUBSCRIPTION_END" ;;
-  }
-
-  dimension_group: t_subscription_start {
-    type: time
-    sql: ${TABLE}."T_SUBSCRIPTION_START" ;;
-  }
-
-  dimension: f_s_user_sso_guid {
-    type: string
-    sql: ${TABLE}."F_S_USER_SSO_GUID" ;;
-  }
-
-  dimension: f_hash {
-    type: string
-    sql: ${TABLE}."F_HASH" ;;
-  }
-
-  dimension_group: f_subscription_local_time {
-    type: time
-    sql: ${TABLE}."F_SUBSCRIPTION_LOCAL_TIME" ;;
-  }
-
-  dimension: f_subscription_state {
-    type: string
-    sql: ${TABLE}."F_SUBSCRIPTION_STATE" ;;
-  }
-
-  dimension_group: f_subscription_end {
-    type: time
-    sql: ${TABLE}."F_SUBSCRIPTION_END" ;;
-  }
-
-  dimension_group: f_subscription_start {
-    type: time
-    sql: ${TABLE}."F_SUBSCRIPTION_START" ;;
-  }
-
-  set: detail {
-    fields: [
-      idd,
-      t_s_user_sso_guid,
-      t_hash,
-      t_subscription_local_time_time,
-      t_subscription_state,
-      t_subscription_end_time,
-      t_subscription_start_time,
-      f_s_user_sso_guid,
-      f_hash,
-      f_subscription_local_time_time,
-      f_subscription_state,
-      f_subscription_end_time,
-      f_subscription_start_time
-    ]
-  }
+set: detail {
+  fields: [idd, user_sso_guid, subscription_state, _start_time, _end_time]
+}
 }

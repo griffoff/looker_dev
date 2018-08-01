@@ -1,21 +1,13 @@
 view: a_p_p {
   derived_table: {
     sql: with products as (
-      select pp.user_sso_guid as p_user_sso_guid
+      select pp.user_sso_guid as user_sso_guid
       , pp._hash as hash
-      , pp.local_time as prod_local_time
-      , iac.pp_name as pp_name
-      , iac.cp_name as cp_name
-      , se.subscription_state as subscription_state
-      , se.subscription_start as subscription_start
-      , se.subscription_end as subscription_end
+      , pp.local_time as local_time
+      , pp.iac_isbn as isbn
+      , case when pp.source_id like 'TRIAL' then 'b' else case when pp.source_id is null then 'a' else 'c' end end as state
       from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
-      ,prod.unlimited.RAW_SUBSCRIPTION_EVENT as se
-      , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
-      where pp.iac_isbn = iac.pp_isbn_13
-      and se.user_sso_guid = p_user_sso_guid
-      and subscription_end > prod_local_time
-      and subscription_start < prod_local_time
+
       )
 
       select * from products
@@ -29,12 +21,12 @@ view: a_p_p {
 
   measure: count_e {
     type: count_distinct
-    sql: ${hash} ;;
+    sql: ${user_sso_guid} ;;
   }
 
-  dimension: p_user_sso_guid {
+  dimension: user_sso_guid {
     type: string
-    sql: ${TABLE}."P_USER_SSO_GUID" ;;
+    sql: ${TABLE}."USER_SSO_GUID" ;;
   }
 
   dimension: hash {
@@ -42,46 +34,22 @@ view: a_p_p {
     sql: ${TABLE}."HASH" ;;
   }
 
-  dimension_group: prod_local_time {
+  dimension_group: local_time {
     type: time
-    sql: ${TABLE}."PROD_LOCAL_TIME" ;;
+    sql: ${TABLE}."LOCAL_TIME" ;;
   }
 
-  dimension: pp_name {
+  dimension: isbn {
     type: string
-    sql: ${TABLE}."PP_NAME" ;;
+    sql: ${TABLE}."ISBN" ;;
   }
 
-  dimension: cp_name {
+  dimension: state {
     type: string
-    sql: ${TABLE}."CP_NAME" ;;
-  }
-
-  dimension: subscription_state {
-    type: string
-    sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
-  }
-
-  dimension_group: subscription_start {
-    type: time
-    sql: ${TABLE}."SUBSCRIPTION_START" ;;
-  }
-
-  dimension_group: subscription_end {
-    type: time
-    sql: ${TABLE}."SUBSCRIPTION_END" ;;
+    sql: ${TABLE}."STATE" ;;
   }
 
   set: detail {
-    fields: [
-      p_user_sso_guid,
-      hash,
-      prod_local_time_time,
-      pp_name,
-      cp_name,
-      subscription_state,
-      subscription_start_time,
-      subscription_end_time
-    ]
+    fields: [user_sso_guid, hash, local_time_time, isbn, state]
   }
 }
