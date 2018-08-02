@@ -24,7 +24,7 @@ view: switch_state_prod {
 
 
       , only_trial as (
-      select distinct 'a' as idd
+      select distinct 'a:TRIAL' as idd
       , trial.trial_user_sso_guid as user_sso_guid
       , trial.trial_subscription_state as subscription_state
       , trial.trial_subscription_start as _start
@@ -35,7 +35,7 @@ view: switch_state_prod {
       )
 
       , only_full as (
-      select distinct 'b' as idd
+      select distinct 'b:Full Access - Direct Purchase' as idd
       , _full.full_user_sso_guid as user_sso_guid
       , _full.full_subscription_state as subscription_state
       , _full.full_subscription_start as _start
@@ -45,7 +45,7 @@ view: switch_state_prod {
       )
 
       , from_trial_to_full_long as(
-      select distinct 'd' as idd
+      select distinct 'd:Full Access - Upgraded' as idd
       , trial.trial_user_sso_guid as user_sso_guid
       , _full.full_subscription_state as subscription_state
       , _full.full_subscription_start as _start
@@ -74,6 +74,7 @@ measure: count {
 }
 
 measure: Number_of_users {
+  drill_fields: [detail*]
     type: count_distinct
     sql: ${user_sso_guid} ;;
 }

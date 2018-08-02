@@ -21,6 +21,7 @@ measure: count {
 
 measure: count_m {
     type: count_distinct
+    drill_fields: [detail*]
     sql: ${hash} ;;
 }
 
