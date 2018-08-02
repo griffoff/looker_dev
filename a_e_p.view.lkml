@@ -1,7 +1,7 @@
 view: a_e_p {
  derived_table: {
   sql: with  enrollment as (
-      select user_sso_guid as e_user_sso_guid
+      select distinct user_sso_guid as e_user_sso_guid
       , _hash as hash
       , local_time as enrollment_local_time
       , access_role as enrollment_access_role
@@ -21,7 +21,7 @@ measure: count {
 
 measure: count_m {
     type: count_distinct
-    sql: ${hash} ;;
+    sql: ${e_user_sso_guid} ;;
 }
 
 dimension: e_user_sso_guid {
