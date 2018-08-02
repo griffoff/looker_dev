@@ -9,7 +9,7 @@ view: a_e_p {
       , product_platform as product_platform
       from prod.unlimited.RAW_OLR_ENROLLMENT
       )
-
+      --dsfdf
       select * from enrollment
        ;;
 }
@@ -21,7 +21,7 @@ measure: count {
 
 measure: count_m {
     type: count_distinct
-    sql: ${e_user_sso_guid} ;;
+    sql: ${hash} ;;
 }
 
 dimension: e_user_sso_guid {
