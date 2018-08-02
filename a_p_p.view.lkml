@@ -3,7 +3,7 @@ view: a_p_p {
     sql: with products as (
       select pp.user_sso_guid as user_sso_guid
       , pp._hash as hash
-      , pp.local_time as local_time
+      , pp.DATE_ADDED as local_time
       , pp.iac_isbn as isbn
       , pp."source" as sourse
       , pp.user_type as user_type
