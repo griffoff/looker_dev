@@ -22,18 +22,6 @@ view: switch_state_prod {
       where full_subscription_state like '%full%'
       )
 
-      , from_trial_to_full_today as(
-      select distinct 'c' as idd
-      , trial.trial_user_sso_guid as user_sso_guid
-      , _full.full_subscription_state as subscription_state
-      , _full.full_subscription_start as _start
-      , _full.full_subscription_end as _end
-      from trial, _full
-      where trial_user_sso_guid = full_user_sso_guid
-      and full_subscription_start <= trial_subscription_end
-      --and datediff(dd, trial_subscription_end, full_subscription_start) < 1
-      and day(trial_subscription_end) = day(full_subscription_start)
-      )
 
       , only_trial as (
       select distinct 'a' as idd
@@ -41,8 +29,9 @@ view: switch_state_prod {
       , trial.trial_subscription_state as subscription_state
       , trial.trial_subscription_start as _start
       , trial.trial_subscription_end as _end
-      from trial
+      from trial, _full
       where trial.trial_user_sso_guid not in (select full_user_sso_guid from _full)
+      --and date_part(dd, trial_subscription_start) = date_part(dd, full_subscription_start)
       )
 
       , only_full as (
@@ -63,14 +52,11 @@ view: switch_state_prod {
       , _full.full_subscription_end as _end
       from trial, _full
       where trial_user_sso_guid = full_user_sso_guid
-      and full_subscription_start <= trial_subscription_end
-      --and datediff(dd, trial_subscription_end, full_subscription_start) < 1
-      and day(trial_subscription_end) != day(full_subscription_start)
+      --and full_subscription_start <= trial_subscription_end
+      --and day(trial_subscription_end) != day(full_subscription_start)
       )
 
       , res as (
-      select * from from_trial_to_full_today
-      union
       select * from only_trial
       union
       select * from only_full

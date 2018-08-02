@@ -23,7 +23,7 @@ view: a_p_p {
 
   measure: count_e {
     type: count_distinct
-    sql: ${user_sso_guid} ;;
+    sql: ${hash} ;;
   }
 
   dimension: user_sso_guid {
