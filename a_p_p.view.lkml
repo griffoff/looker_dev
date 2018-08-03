@@ -7,7 +7,9 @@ view: a_p_p {
       , pp.iac_isbn as isbn
       , pp."source" as sourse
       , pp.user_type as user_type
-      , case when pp.source_id like 'TRIAL' then 'b:TRIAL' else case when pp.source_id is null then 'a:EMPTY' else 'c:FULL' end end as state
+      , case when (pp."source" like 'unlimited' and pp.source_id like 'TRIAL') then 'b:TRIAL'
+        else case when (pp."source" like 'unlimited' and pp.source_id not like 'TRIAL') then 'c:FULL'
+        else 'a:EMPTY' end end as state
       from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
 
       )
