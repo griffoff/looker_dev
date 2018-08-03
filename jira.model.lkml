@@ -250,3 +250,8 @@ explore: switch_state_prod {
   from: switch_state_prod
   label: "switch_state_prod"
 }
+
+explore: a_subscriptions {
+  from: a_subscriptions
+  label: "a_subscriptions"
+}
