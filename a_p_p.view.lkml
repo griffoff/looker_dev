@@ -1,27 +1,30 @@
 view: a_p_p {
-     derived_table: {
-      sql: with products as (
+      derived_table: {
+        sql: with products as (
               select pp.user_sso_guid as user_sso_guid
               , pp._hash as hash
               , pp.DATE_ADDED as local_time
               , pp.iac_isbn as isbn
-              , case when (pl.platform like '%CNOW%') then 'CNOW' else pl.platform end as platform
+              --, case when (pl.platform like '%CNOW%') then 'CNOW' else pl.platform end as platform
+              , iac.pp_product_type as platform
               , pp."source" as sourse
               , pp.user_type as user_type
               , case when (pp."source" like 'unlimited' and pp.source_id like 'TRIAL') then 'b:TRIAL'
                 else case when (pp."source" like 'unlimited' and pp.source_id not like 'TRIAL') then 'c:FULL'
                 else 'a:EMPTY' end end as state
               from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
-              , prod.STG_CLTS.PRODUCTS_V as pl
-              where isbn = pl.isbn13
+              , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
+              --, prod.STG_CLTS.PRODUCTS_V as pl
+              --where isbn = pl.isbn13
+              where iac.pp_pid = pp.product_id
               and user_type like 'student'
               and sourse like 'unlimited'
 
               )
 
-              select * from products
-         ;;
-    }
+select * from products
+ ;;
+      }
 
   measure: count {
     type: count

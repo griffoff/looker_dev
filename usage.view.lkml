@@ -284,6 +284,20 @@ view: usage {
 
   }
 
+  measure: p_t_success
+  {
+    type: number
+    sql: (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
+
+  }
+
+  measure: p_t_fail
+  {
+    type: number
+    sql: 6 - (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
+
+  }
+
  dimension: user_sso_guid {
   type: string
   sql: ${TABLE}."USER_SSO_GUID" ;;

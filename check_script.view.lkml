@@ -53,7 +53,7 @@ view: check_script {
                  , case when (user_id like '%no_cu%') then 1 else 0 end as ennrollment_health
                  , null as en_local_time
                  from res_users
-                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_OLR_ENROLLMENT)
+                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_OLR_ENROLLMENT)
 
               )
 
@@ -98,7 +98,7 @@ view: check_script {
                  , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as contract_id_health
                  , null as subscription_time
                  from res_users
-                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_SUBSCRIPTION_EVENT)
+                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_SUBSCRIPTION_EVENT)
 
               )
               ,pp as
@@ -141,7 +141,7 @@ view: check_script {
                  , res_users.WEBASSIGN_ISBN as WEBASSIGN_ISBN
                  , res_users.MT_ISBN as   MT_ISBN
                  from res_users
-                 where user_guid not in ( select user_sso_guid from int.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
+                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
 
               )
 
