@@ -19,14 +19,14 @@ view: check_script {
               ,to_array(split(concat(concat(concat(concat(concat(concat(concat( concat(concat(concat(to_varchar(VS_isbn), ', '), to_varchar(case when MTR_ISBN is null then '  ' else MTR_ISBN end)),', '),to_varchar(case when APLIA_ISBN is null then '  ' else APLIA_ISBN end)), ', '), case when CNOW_ISBN is null then '  ' else CNOW_ISBN end), ', '), case when WEBASSIGN_ISBN is null then '  ' else WEBASSIGN_ISBN end), ', '), case when MT_ISBN is null then '  ' else MT_ISBN end), ', '))  as expected_ISBN
 
               , CREATED_ON as date_c
-              from int.UNLIMITED.SCENARIO_DETAILS
+              from prod.UNLIMITED.SCENARIO_DETAILS
               )
               , en as
               (
               SELECT distinct user_sso_guid,
               arrayagg(course_key)as course_key
               , arrayagg(local_time)as local_time
-              FROM int.UNLIMITED.RAW_OLR_ENROLLMENT
+              FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT
               group by user_sso_guid
 
               )
@@ -62,7 +62,7 @@ view: check_script {
               arrayagg(subscription_state)as subscription_state
               , arrayagg(contract_id)as contract_id
               , arrayagg(local_time)as subscription_time
-              FROM int.UNLIMITED.RAW_SUBSCRIPTION_EVENT
+              FROM prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT
               group by user_sso_guid
               )
 
@@ -105,7 +105,7 @@ view: check_script {
               (
               SELECT distinct user_sso_guid,
               arrayagg(iac_isbn)as aa
-              FROM int.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT
+              FROM prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT
               group by user_sso_guid
               )
 

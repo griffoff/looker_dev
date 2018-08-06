@@ -18,7 +18,7 @@ view: prov_prod {
         ,to_array(split(concat(concat(concat(concat(concat(concat(concat( concat(concat(concat(to_varchar(VS_isbn), ', '), to_varchar(case when MTR_ISBN is null then '  ' else MTR_ISBN end)),', '),to_varchar(case when APLIA_ISBN is null then '  ' else APLIA_ISBN end)), ', '), case when CNOW_ISBN is null then '  ' else CNOW_ISBN end), ', '), case when WEBASSIGN_ISBN is null then '  ' else WEBASSIGN_ISBN end), ', '), case when MT_ISBN is null then '  ' else MT_ISBN end), ', '))  as expected_ISBN
 
         , CREATED_ON as date_c
-        from int.UNLIMITED.SCENARIO_DETAILS
+        from prod.UNLIMITED.SCENARIO_DETAILS
         where id not like '%no_cu%'
         )
 
@@ -26,7 +26,7 @@ view: prov_prod {
          (
          SELECT distinct user_sso_guid,
          arrayagg(course_key)as course_key
-         FROM int.UNLIMITED.RAW_OLR_ENROLLMENT
+         FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT
          group by user_sso_guid
          )
 
@@ -53,19 +53,19 @@ view: prov_prod {
          ,res_users.COURSE_KEY as expected_courese_key
          , case when (user_id like '%no_cu%') then 1 else 0 end as ennrollment_health
          from res_users
-         where user_guid not in ( select user_sso_guid from int.unlimited.RAW_OLR_ENROLLMENT)
+         where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_OLR_ENROLLMENT)
 
         )
         , plat as
         (
         SELECT platform, isbn13
-        FROM int.STG_CLTS.PRODUCTS_V
+        FROM prod.STG_CLTS.PRODUCTS_V
         )
 
         ,iac as (
         SELECT distinct PP_ISBN_13  as pp_isbn_13
         , array_agg(distinct CP_ISBN_13) as cp_isbn_13
-        FROM int.UNLIMITED.RAW_OLR_EXTENDED_IAC
+        FROM prod.UNLIMITED.RAW_OLR_EXTENDED_IAC
         group by PP_ISBN_13
         )
 
@@ -111,7 +111,7 @@ view: prov_prod {
 
         , plat.platform as platform
         from res_users
-        , int.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
+        , prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
         , plat
         , iac as b
         where user_guid = pp.user_sso_guid
@@ -138,7 +138,7 @@ view: prov_prod {
 
         , null
         from res_users
-        where user_guid not in  ( select user_sso_guid from int.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
+        where user_guid not in  ( select user_sso_guid from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
 
         )
 
