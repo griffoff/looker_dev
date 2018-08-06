@@ -101,6 +101,15 @@ view: a_subscriptions {
     drill_fields: [detail*]
   }
 
+  measure: count_trial {
+    type: count_distinct
+    sql: ${user_sso_guid} ;;
+    filters: {
+      field: subscription_state
+      value: "trial_access"
+    }
+    drill_fields: [detail*]
+  }
 
 
 
