@@ -1,6 +1,6 @@
 view: a_p_p {
-          derived_table: {
-            sql: with types as (
+  derived_table: {
+    sql: with types as (
                     select pp_pid
                     , pp_product_type
                     , array_agg(distinct cp_product_type) as cppt
@@ -16,6 +16,20 @@ view: a_p_p {
                                   , pp.DATE_ADDED as local_time
                                   , pp.iac_isbn as isbn
                                   , pp.product_id as product_id
+                                  , _ldts
+                                  , code_type
+                                  , context_id
+                                  , core_text_isbn
+                                  , date_added
+                                  , expiration_date
+                                  , institution_id
+                                  , local_time as local_time_time
+                                  , message_format_version
+                                  , platform_environment
+                                  , product_platform
+                                  , region
+                                  , source_id
+                                  , user_environment
                                   , case when pp_product_type not like 'SMART' then pp_product_type else
                                   case when ARRAY_CONTAINS('MTC'::variant, cppt) then 'MTC' else
                                       case when ARRAY_CONTAINS('CSFI'::variant, cppt) then 'CSFI' else
@@ -62,8 +76,8 @@ view: a_p_p {
                                   )
 
                     select * from products
-                     ;;
-          }
+ ;;
+  }
 
   measure: count {
     type: count
@@ -101,6 +115,76 @@ dimension: product_id {
   sql: ${TABLE}."PRODUCT_ID" ;;
 }
 
+dimension_group: _ldts {
+  type: time
+  sql: ${TABLE}."_LDTS" ;;
+}
+
+dimension: code_type {
+  type: string
+  sql: ${TABLE}."CODE_TYPE" ;;
+}
+
+dimension: context_id {
+  type: string
+  sql: ${TABLE}."CONTEXT_ID" ;;
+}
+
+dimension: core_text_isbn {
+  type: string
+  sql: ${TABLE}."CORE_TEXT_ISBN" ;;
+}
+
+dimension_group: date_added {
+  type: time
+  sql: ${TABLE}."DATE_ADDED" ;;
+}
+
+dimension_group: expiration_date {
+  type: time
+  sql: ${TABLE}."EXPIRATION_DATE" ;;
+}
+
+dimension: institution_id {
+  type: string
+  sql: ${TABLE}."INSTITUTION_ID" ;;
+}
+
+dimension_group: local_time_time {
+  type: time
+  sql: ${TABLE}."LOCAL_TIME_TIME" ;;
+}
+
+dimension: message_format_version {
+  type: number
+  sql: ${TABLE}."MESSAGE_FORMAT_VERSION" ;;
+}
+
+dimension: platform_environment {
+  type: string
+  sql: ${TABLE}."PLATFORM_ENVIRONMENT" ;;
+}
+
+dimension: product_platform {
+  type: string
+  sql: ${TABLE}."PRODUCT_PLATFORM" ;;
+}
+
+dimension: region {
+  type: string
+  sql: ${TABLE}."REGION" ;;
+}
+
+dimension: source_id {
+  type: string
+  sql: ${TABLE}."SOURCE_ID" ;;
+}
+
+dimension: user_environment {
+  type: string
+  sql: ${TABLE}."USER_ENVIRONMENT" ;;
+}
+
 dimension: platform {
   type: string
   sql: ${TABLE}."PLATFORM" ;;
@@ -128,6 +212,20 @@ set: detail {
     local_time_time,
     isbn,
     product_id,
+    _ldts_time,
+    code_type,
+    context_id,
+    core_text_isbn,
+    date_added_time,
+    expiration_date_time,
+    institution_id,
+    local_time_time_time,
+    message_format_version,
+    platform_environment,
+    product_platform,
+    region,
+    source_id,
+    user_environment,
     platform,
     sourse,
     user_type,
