@@ -169,10 +169,12 @@ view: prov_prod {
   }
   measure: success {
     type: sum
+    drill_fields: [detail*]
     sql: (${book_health} + ${course_health}) ;;
   }
   measure: fail {
     type: sum
+    drill_fields: [detail*]
     sql: 2 - (${book_health} + ${course_health}) ;;
   }
   dimension: idd {

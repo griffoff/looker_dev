@@ -287,6 +287,7 @@ view: usage {
   measure: p_t_success
   {
     type: number
+    drill_fields: [detail*]
     sql: (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
 
   }
@@ -294,6 +295,7 @@ view: usage {
   measure: p_t_fail
   {
     type: number
+    drill_fields: [detail*]
     sql: 6 - (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
 
   }
