@@ -1,5 +1,5 @@
 view: switch_state_prod {
-  derived_table: {
+   derived_table: {
     sql: with trial as (
       select user_sso_guid as trial_user_sso_guid
       , _hash as trial_hash
@@ -7,6 +7,14 @@ view: switch_state_prod {
       , subscription_state as trial_subscription_state
       , subscription_start as trial_subscription_start
       , subscription_end as trial_subscription_end
+      , _ldts
+      , _rsrc
+      , contract_id
+      , message_format_version
+      , message_type
+      , platform_environment
+      , product_platform
+      , user_environment
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
       where trial_subscription_state like '%trial%'
       )
@@ -18,6 +26,14 @@ view: switch_state_prod {
       , subscription_state as full_subscription_state
       , subscription_end as full_subscription_end
       , subscription_start as full_subscription_start
+      , _ldts
+      , _rsrc
+      , contract_id
+      , message_format_version
+      , message_type
+      , platform_environment
+      , product_platform
+      , user_environment
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
       where full_subscription_state like '%full%'
       )
@@ -29,6 +45,14 @@ view: switch_state_prod {
       , trial.trial_subscription_state as subscription_state
       , trial.trial_subscription_start as _start
       , trial.trial_subscription_end as _end
+      , trial._ldts
+      , trial._rsrc
+      , trial.contract_id
+      , trial.message_format_version
+      , trial.message_type
+      , trial.platform_environment
+      , trial.product_platform
+      , trial.user_environment
       from trial, _full
       where trial.trial_user_sso_guid not in (select full_user_sso_guid from _full)
       --and date_part(dd, trial_subscription_start) = date_part(dd, full_subscription_start)
@@ -40,6 +64,14 @@ view: switch_state_prod {
       , _full.full_subscription_state as subscription_state
       , _full.full_subscription_start as _start
       , _full.full_subscription_end as _end
+      , _ldts
+      , _rsrc
+      , contract_id
+      , message_format_version
+      , message_type
+      , platform_environment
+      , product_platform
+      , user_environment
       from _full
       where _full.full_user_sso_guid not in (select trial_user_sso_guid from trial)
       )
@@ -50,6 +82,14 @@ view: switch_state_prod {
       , _full.full_subscription_state as subscription_state
       , _full.full_subscription_start as _start
       , _full.full_subscription_end as _end
+      , _full._ldts
+      , _full._rsrc
+      , _full.contract_id
+      , _full.message_format_version
+      , _full.message_type
+      , _full.platform_environment
+      , _full.product_platform
+      , _full.user_environment
       from trial, _full
       where trial_user_sso_guid = full_user_sso_guid
       --and full_subscription_start <= trial_subscription_end
@@ -67,7 +107,6 @@ view: switch_state_prod {
 select * from res
  ;;
   }
-
 measure: count {
   type: count
   drill_fields: [detail*]
@@ -104,7 +143,61 @@ dimension_group: _end {
   sql: ${TABLE}."_END" ;;
 }
 
+dimension_group: _ldts {
+  type: time
+  sql: ${TABLE}."_LDTS" ;;
+}
+
+dimension: _rsrc {
+  type: string
+  sql: ${TABLE}."_RSRC" ;;
+}
+
+dimension: contract_id {
+  type: string
+  sql: ${TABLE}."CONTRACT_ID" ;;
+}
+
+dimension: message_format_version {
+  type: number
+  sql: ${TABLE}."MESSAGE_FORMAT_VERSION" ;;
+}
+
+dimension: message_type {
+  type: string
+  sql: ${TABLE}."MESSAGE_TYPE" ;;
+}
+
+dimension: platform_environment {
+  type: string
+  sql: ${TABLE}."PLATFORM_ENVIRONMENT" ;;
+}
+
+dimension: product_platform {
+  type: string
+  sql: ${TABLE}."PRODUCT_PLATFORM" ;;
+}
+
+dimension: user_environment {
+  type: string
+  sql: ${TABLE}."USER_ENVIRONMENT" ;;
+}
+
 set: detail {
-  fields: [idd, user_sso_guid, subscription_state, _start_time, _end_time]
+  fields: [
+    idd,
+    user_sso_guid,
+    subscription_state,
+    _start_time,
+    _end_time,
+    _ldts_time,
+    _rsrc,
+    contract_id,
+    message_format_version,
+    message_type,
+    platform_environment,
+    product_platform,
+    user_environment
+  ]
 }
 }
