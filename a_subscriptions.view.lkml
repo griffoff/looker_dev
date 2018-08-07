@@ -77,6 +77,14 @@ view: a_subscriptions {
       , se.contract_id as contract_id
       , se.subscription_start as subscription_start
       , se.subscription_end as subscription_end
+      , se._ldts
+      , se._rsrc
+      , se.message_format_version
+      , se.message_type
+      , se.platform_environment
+      , se.product_platform
+      , se.user_environment
+      , se._hash
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT as se , actual_sub, days
       where actual_sub.user_sso_guid = se.user_sso_guid
       and actual_sub.subscription_start = se.subscription_start
@@ -87,7 +95,7 @@ view: a_subscriptions {
 
 
       select * from sub
-       ;;
+ ;;
   }
 
   measure: count {
@@ -143,6 +151,46 @@ view: a_subscriptions {
     sql: ${TABLE}."SUBSCRIPTION_END" ;;
   }
 
+  dimension_group: _ldts {
+    type: time
+    sql: ${TABLE}."_LDTS" ;;
+  }
+
+  dimension: _rsrc {
+    type: string
+    sql: ${TABLE}."_RSRC" ;;
+  }
+
+  dimension: message_format_version {
+    type: number
+    sql: ${TABLE}."MESSAGE_FORMAT_VERSION" ;;
+  }
+
+  dimension: message_type {
+    type: string
+    sql: ${TABLE}."MESSAGE_TYPE" ;;
+  }
+
+  dimension: platform_environment {
+    type: string
+    sql: ${TABLE}."PLATFORM_ENVIRONMENT" ;;
+  }
+
+  dimension: product_platform {
+    type: string
+    sql: ${TABLE}."PRODUCT_PLATFORM" ;;
+  }
+
+  dimension: user_environment {
+    type: string
+    sql: ${TABLE}."USER_ENVIRONMENT" ;;
+  }
+
+  dimension: _hash {
+    type: string
+    sql: ${TABLE}."_HASH" ;;
+  }
+
   set: detail {
     fields: [
       day,
@@ -150,7 +198,15 @@ view: a_subscriptions {
       subscription_state,
       contract_id,
       subscription_start_time,
-      subscription_end_time
+      subscription_end_time,
+      _ldts_time,
+      _rsrc,
+      message_format_version,
+      message_type,
+      platform_environment,
+      product_platform,
+      user_environment,
+      _hash
     ]
   }
 }
