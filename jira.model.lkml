@@ -247,3 +247,12 @@ explore: a_enrollent {
   from: a_enrollent
   label: "a_enrollent"
 }
+
+explore: aaa {
+  from: aaa
+  label: "aaa"
+}
+explore: a {
+  from: a
+  label: "a"
+}

@@ -90,6 +90,7 @@ view: a_p_p {
     sql: ${hash} ;;
   }
 
+
 dimension: user_sso_guid {
   type: string
   sql: ${TABLE}."USER_SSO_GUID" ;;
