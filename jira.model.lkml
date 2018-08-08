@@ -218,19 +218,6 @@ explore: cs_m {
   label: "cs_m"
 }
 
-explore: a_e {
-  from: a_e
-  label: "a_e"
-}
-explore: a_s {
-  from: a_s
-  label: "a_s"
-}
-
-explore: a_p {
-  from: a_p
-  label: "a_p"
-}
 
 explore: a_e_p {
   from: a_e_p
@@ -254,4 +241,9 @@ explore: switch_state_prod {
 explore: a_subscriptions {
   from: a_subscriptions
   label: "a_subscriptions"
+}
+
+explore: a_enrollent {
+  from: a_enrollent
+  label: "a_enrollent"
 }
