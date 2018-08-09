@@ -9,7 +9,7 @@ view: a_enrollent {
               )
 
 
-              ,paid as( SELECT
+              ,paid as( SELECT distinct
                             'Paid' as status
                             , e._hash as enroll_hash
                             , e._ldts as enroll_ldts
@@ -23,25 +23,6 @@ view: a_enrollent {
                             , e.product_platform as enroll_product_platform
                             , e.user_environment as enroll_user_environment
                             , e.user_sso_guid as user_sso_guid
-                            , pp._hash as prod_hash
-                            , pp._ldts as prod_ldts
-                            , pp._rsrc as prod_rsrc
-                            , pp.code_type as prod_code_type
-                            , pp.core_text_isbn as prod_core_text_isbn
-                            , pp.date_added as prod_date_added
-                            , pp.expiration_date as prod_expiration_date
-                            , pp.iac_isbn as prod_iac_isbn
-                            , pp.institution_id as prod_institution_id
-                            , pp.local_time as prod_local_time
-                            , pp.message_type as prod_message_type
-                            , pp.platform_environment as prod_platform_environment
-                            , pp.product_id as prod_product_id
-                            , pp.product_platform as prod_product_platform
-                            , pp.region as prod_region
-                            , pp."source" as prod_source
-                            , pp.source_id as prod_source_id
-                            , pp.user_environment as prod_user_environment
-                            , pp.user_type as prod_user_type
                             FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp, enroll
                             where e.user_sso_guid = pp.user_sso_guid
                             and e.course_key = pp.context_id
@@ -52,7 +33,7 @@ view: a_enrollent {
                             )
 
                             , unpaid as(
-                            SELECT
+                            SELECT distinct
                             'Unpaid' as status
                             , e._hash as enroll_hash
                             , e._ldts as enroll_ldts
@@ -66,25 +47,6 @@ view: a_enrollent {
                             , e.product_platform as enroll_product_platform
                             , e.user_environment as enroll_user_environment
                             , e.user_sso_guid as user_sso_guid
-                            , null as prod_hash
-                            , null as prod_ldts
-                            , null as prod_rsrc
-                            , null as prod_code_type
-                            , null as prod_core_text_isbn
-                            , null as prod_date_added
-                            , null as prod_expiration_date
-                            , null as prod_iac_isbn
-                            , null as prod_institution_id
-                            , null as prod_local_time
-                            , null as prod_message_type
-                            , null as prod_platform_environment
-                            , null as prod_product_id
-                            , null as prod_product_platform
-                            , null as prod_region
-                            , null as prod_source
-                            , null as prod_source_id
-                            , null as prod_user_environment
-                            , null as prod_user_type
                             FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e, enroll
                             where e.user_sso_guid not in (select user_sso_guid from paid)
                             and enroll.user = e.user_sso_guid
@@ -122,6 +84,12 @@ view: a_enrollent {
     type: count_distinct
     drill_fields: [detail*]
     sql: ${user_sso_guid} ;;
+  }
+
+  measure: count_users {
+    type: count_distinct
+    drill_fields: [detail*]
+    sql: ${enroll_hash} ;;
   }
 
     dimension: day {

@@ -256,3 +256,23 @@ explore: a {
   from: a
   label: "a"
 }
+
+explore: a_enroll_problem {
+  from: a_enroll_problem
+  label: "a_enroll_problem"
+}
+
+explore: a_no_cu_pay {
+  from: a_no_cu_pay
+  label: "a_no_cu_pay"
+}
+
+explore: a_prov_problem {
+  from: a_prov_problem
+  label: "a_prov_problem"
+}
+
+explore: a_actv_problem {
+  from: a_actv_problem
+  label: "a_actv_problem"
+}
