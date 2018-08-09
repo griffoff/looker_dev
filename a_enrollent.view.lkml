@@ -1,159 +1,115 @@
 view: a_enrollent {
     derived_table: {
-      sql: with paid as( SELECT
-              'Paid' as status
-              , e._hash as enroll_hash
-              , e._ldts as enroll_ldts
-              , e._rsrc as enroll_rsrc
-              , e.access_role as enroll_access_role
-              , e.course_key as course_key
-              , e.local_time as enroll_local_time
-              , e.message_format_version as enroll_message_format_version
-              , e.message_type as enroll_message_type
-              , e.platform_environment as enroll_platform_environment
-              , e.product_platform as enroll_product_platform
-              , e.user_environment as enroll_user_environment
-              , e.user_sso_guid as user_sso_guid
-              , pp._hash as prod_hash
-              , pp._ldts as prod_ldts
-              , pp._rsrc as prod_rsrc
-              , pp.code_type as prod_code_type
-              , pp.core_text_isbn as prod_core_text_isbn
-              , pp.date_added as prod_date_added
-              , pp.expiration_date as prod_expiration_date
-              , pp.iac_isbn as prod_iac_isbn
-              , pp.institution_id as prod_institution_id
-              , pp.local_time as prod_local_time
-              , pp.message_type as prod_message_type
-              , pp.platform_environment as prod_platform_environment
-              , pp.product_id as prod_product_id
-              , pp.product_platform as prod_product_platform
-              , pp.region as prod_region
-              , pp."source" as prod_source
-              , pp.source_id as prod_source_id
-              , pp.user_environment as prod_user_environment
-              , pp.user_type as prod_user_type
-              FROM UNLIMITED.RAW_OLR_ENROLLMENT as e,  UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp
-              where e.user_sso_guid = pp.user_sso_guid
-              and e.course_key = pp.context_id
-              and pp."source" = 'unlimited'
-              AND pp.SOURCE_ID <> 'Something'
-              )
-
-              , unpaid as(
-              SELECT
-              'Unpaid' as status
-              , e._hash as enroll_hash
-              , e._ldts as enroll_ldts
-              , e._rsrc as enroll_rsrc
-              , e.access_role as enroll_access_role
-              , e.course_key as course_key
-              , e.local_time as enroll_local_time
-              , e.message_format_version as enroll_message_format_version
-              , e.message_type as enroll_message_type
-              , e.platform_environment as enroll_platform_environment
-              , e.product_platform as enroll_product_platform
-              , e.user_environment as enroll_user_environment
-              , e.user_sso_guid as user_sso_guid
-              , null as prod_hash
-              , null as prod_ldts
-              , null as prod_rsrc
-              , null as prod_code_type
-              , null as prod_core_text_isbn
-              , null as prod_date_added
-              , null as prod_expiration_date
-              , null as prod_iac_isbn
-              , null as prod_institution_id
-              , null as prod_local_time
-              , null as prod_message_type
-              , null as prod_platform_environment
-              , null as prod_product_id
-              , null as prod_product_platform
-              , null as prod_region
-              , null as prod_source
-              , null as prod_source_id
-              , null as prod_user_environment
-              , null as prod_user_type
-              FROM UNLIMITED.RAW_OLR_ENROLLMENT as e
-              where e.user_sso_guid not in (select user_sso_guid from paid)
-              )
-              , days as (SELECT current_date() as day
-                    union
-                    select dateadd(dd, -1, current_date()) as day
-                    union
-                    select dateadd(dd, -2, current_date()) as day
-                    union
-                    select dateadd(dd, -3, current_date()) as day
-                    union
-                    select dateadd(dd, -4, current_date()) as day
-                    union
-                    select dateadd(dd, -5, current_date()) as day
-                    union
-                    select dateadd(dd, -6, current_date()) as day
-                    union
-                    select dateadd(dd, -7, current_date()) as day
-                    union
-                    select dateadd(dd, -8, current_date()) as day
-                    union
-                    select dateadd(dd, -9, current_date()) as day
-                    union
-                    select dateadd(dd, -10, current_date()) as day
-                    union
-                    select dateadd(dd, -11, current_date()) as day
-                    union
-                    select dateadd(dd, -12, current_date()) as day
-                    union
-                    select dateadd(dd, -13, current_date()) as day
-                    union
-                    select dateadd(dd, -14, current_date()) as day
-                    union
-                    select dateadd(dd, -15, current_date()) as day
-                    union
-                    select dateadd(dd, -16, current_date()) as day
-                    union
-                    select dateadd(dd, -17, current_date()) as day
-                    union
-                    select dateadd(dd, -18, current_date()) as day
-                    union
-                    select dateadd(dd, -19, current_date()) as day
-                    union
-                    select dateadd(dd, -20, current_date()) as day
-                    union
-                    select dateadd(dd, -21, current_date()) as day
-                    union
-                    select dateadd(dd, -22, current_date()) as day
-                    union
-                    select dateadd(dd, -23, current_date()) as day
-                    union
-                    select dateadd(dd, -24, current_date()) as day
-                    union
-                    select dateadd(dd, -25, current_date()) as day
-                    union
-                    select dateadd(dd, -26, current_date()) as day
-                    union
-                    select dateadd(dd, -27, current_date()) as day
-                    union
-                    select dateadd(dd, -28, current_date()) as day
-                    union
-                    select dateadd(dd, -29, current_date()) as day
-                    union
-                    select dateadd(dd, -30, current_date()) as day
-                    )
-
-              , _all as (
-              select * from paid
-              union
-              select * from unpaid
+      sql: with
+              enroll as (
+              select user_sso_guid  as user
+              , max(local_time) as time
+              from  prod.UNLIMITED.RAW_OLR_ENROLLMENT
+              group by user
               )
 
 
-              , res as (
-              select days.day
-              , _all.*
-              from _all, days
-              where enroll_local_time <= days.day
-              )
-              select  * from res
+              ,paid as( SELECT
+                            'Paid' as status
+                            , e._hash as enroll_hash
+                            , e._ldts as enroll_ldts
+                            , e._rsrc as enroll_rsrc
+                            , e.access_role as enroll_access_role
+                            , e.course_key as course_key
+                            , e.local_time as enroll_local_time
+                            , e.message_format_version as enroll_message_format_version
+                            , e.message_type as enroll_message_type
+                            , e.platform_environment as enroll_platform_environment
+                            , e.product_platform as enroll_product_platform
+                            , e.user_environment as enroll_user_environment
+                            , e.user_sso_guid as user_sso_guid
+                            , pp._hash as prod_hash
+                            , pp._ldts as prod_ldts
+                            , pp._rsrc as prod_rsrc
+                            , pp.code_type as prod_code_type
+                            , pp.core_text_isbn as prod_core_text_isbn
+                            , pp.date_added as prod_date_added
+                            , pp.expiration_date as prod_expiration_date
+                            , pp.iac_isbn as prod_iac_isbn
+                            , pp.institution_id as prod_institution_id
+                            , pp.local_time as prod_local_time
+                            , pp.message_type as prod_message_type
+                            , pp.platform_environment as prod_platform_environment
+                            , pp.product_id as prod_product_id
+                            , pp.product_platform as prod_product_platform
+                            , pp.region as prod_region
+                            , pp."source" as prod_source
+                            , pp.source_id as prod_source_id
+                            , pp.user_environment as prod_user_environment
+                            , pp.user_type as prod_user_type
+                            FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp, enroll
+                            where e.user_sso_guid = pp.user_sso_guid
+                            and e.course_key = pp.context_id
+                            and pp."source" = 'unlimited'
+                            AND pp.SOURCE_ID <> 'Something'
+                            and enroll.user = e.user_sso_guid
+                            and enroll_local_time = enroll.time
+                            )
+
+                            , unpaid as(
+                            SELECT
+                            'Unpaid' as status
+                            , e._hash as enroll_hash
+                            , e._ldts as enroll_ldts
+                            , e._rsrc as enroll_rsrc
+                            , e.access_role as enroll_access_role
+                            , e.course_key as course_key
+                            , e.local_time as enroll_local_time
+                            , e.message_format_version as enroll_message_format_version
+                            , e.message_type as enroll_message_type
+                            , e.platform_environment as enroll_platform_environment
+                            , e.product_platform as enroll_product_platform
+                            , e.user_environment as enroll_user_environment
+                            , e.user_sso_guid as user_sso_guid
+                            , null as prod_hash
+                            , null as prod_ldts
+                            , null as prod_rsrc
+                            , null as prod_code_type
+                            , null as prod_core_text_isbn
+                            , null as prod_date_added
+                            , null as prod_expiration_date
+                            , null as prod_iac_isbn
+                            , null as prod_institution_id
+                            , null as prod_local_time
+                            , null as prod_message_type
+                            , null as prod_platform_environment
+                            , null as prod_product_id
+                            , null as prod_product_platform
+                            , null as prod_region
+                            , null as prod_source
+                            , null as prod_source_id
+                            , null as prod_user_environment
+                            , null as prod_user_type
+                            FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e, enroll
+                            where e.user_sso_guid not in (select user_sso_guid from paid)
+                            and enroll.user = e.user_sso_guid
+                            and enroll_local_time = enroll.time
+                            )
+                            , days as (
+                            select distinct to_date(local_time) as day
+                            from prod.UNLIMITED.RAW_OLR_ENROLLMENT
+                            )
+                            , _all as (
+                            select * from paid
+                            union
+                            select * from unpaid
+                            )
+
+
+                            , res as (
+                            select days.day
+                            , _all.*
+                            from _all, days
+                            where enroll_local_time <= days.day
+                            )
+
+
+                            select  * from res
                ;;
     }
 
@@ -165,7 +121,7 @@ view: a_enrollent {
   measure: count_e {
     type: count_distinct
     drill_fields: [detail*]
-    sql: ${enroll_hash} ;;
+    sql: ${user_sso_guid} ;;
   }
 
     dimension: day {
