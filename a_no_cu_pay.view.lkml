@@ -32,6 +32,7 @@ view: a_no_cu_pay {
 
       ,paid as( SELECT distinct
       'CU Paid' as status
+      , 'CU Paid' as status_2
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
       , e._rsrc as enroll_rsrc
@@ -56,6 +57,7 @@ view: a_no_cu_pay {
             , paid_no_cu as (
             SELECT distinct
             case when a.code_type like 'PAC' then 'Paid no CU PAC' else case when a.code_type like 'IAC' then 'Paid no CU IAC' else 'Paid no CU other' end end as status
+            , 'Paid no CU' as status_2
             , e._hash as enroll_hash
             , e._ldts as enroll_ldts
             , e._rsrc as enroll_rsrc
@@ -78,6 +80,7 @@ view: a_no_cu_pay {
             , unpaid as (
             SELECT distinct
             'Unpaid' as status
+            , 'Unpaid' as status_2
             , e._hash as enroll_hash
             , e._ldts as enroll_ldts
             , e._rsrc as enroll_rsrc
@@ -144,6 +147,10 @@ dimension: enroll_hash {
   type: string
   sql: ${TABLE}."ENROLL_HASH" ;;
 }
+dimension: status_2 {
+    type: string
+    sql: ${TABLE}."STATUS_2" ;;
+  }
 
 dimension_group: enroll_ldts {
   type: time
