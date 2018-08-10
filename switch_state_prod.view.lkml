@@ -1,6 +1,6 @@
 view: switch_state_prod {
    derived_table: {
-    sql: with trial as (
+    sql:with trial as (
       select user_sso_guid as trial_user_sso_guid
       , _hash as trial_hash
       , local_time as trial_subscription_local_time
@@ -17,6 +17,8 @@ view: switch_state_prod {
       , user_environment
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
       where trial_subscription_state like '%trial%'
+      and contract_id not in ('stuff', 'Testuser')
+
       )
 
       , _full as (
@@ -36,6 +38,7 @@ view: switch_state_prod {
       , user_environment
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT
       where full_subscription_state like '%full%'
+      and contract_id not in ('stuff', 'Testuser')
       )
 
 

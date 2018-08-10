@@ -1,7 +1,6 @@
 view: a_subscriptions {
   derived_table: {
-    sql: with days as (SELECT current_date() as day
-      union
+    sql: with days as (
       select dateadd(dd, -1, current_date()) as day
       union
       select dateadd(dd, -2, current_date()) as day

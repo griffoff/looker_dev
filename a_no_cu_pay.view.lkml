@@ -1,39 +1,37 @@
 view: a_no_cu_pay {
-  derived_table: {
+   derived_table: {
     sql: with
       enroll as (
-      select user_sso_guid  as user
-      , max(local_time) as time
-      from  prod.UNLIMITED.RAW_OLR_ENROLLMENT
-      group by user
+            select distinct user_sso_guid as user
+            , max(local_time) as time
+            from  prod.UNLIMITED.RAW_OLR_ENROLLMENT
+            group by user
+            )
+
+      , en as (
+      select distinct
+      e._hash
+      , e._ldts
+      , e._rsrc
+      , e.access_role
+      , e.course_key
+      , e.local_time
+      , e.message_format_version
+      , e.message_type
+      , e.platform_environment
+      , e.product_platform
+      , e.user_environment
+      , e.user_sso_guid
+      FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  enroll, prod.STG_CLTS.OLR_COURSES c
+      where  enroll.user = e.user_sso_guid
+      and e.local_time = enroll.time
+      and c."#CONTEXT_ID" = e.course_key
+      and c.COURSE_INTERNAL_FLG <> 'true'
+      and e.access_role like 'STUDENT'
       )
 
       ,paid as( SELECT distinct
       'CU Paid' as status
-, e._hash as enroll_hash
-, e._ldts as enroll_ldts
-, e._rsrc as enroll_rsrc
-, e.access_role as enroll_access_role
-, e.course_key as course_key
-, e.local_time as enroll_local_time
-, e.message_format_version as enroll_message_format_version
-, e.message_type as enroll_message_type
-, e.platform_environment as enroll_platform_environment
-, e.product_platform as enroll_product_platform
-, e.user_environment as enroll_user_environment
-, e.user_sso_guid as user_sso_guid
-FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp, enroll
-where e.user_sso_guid = pp.user_sso_guid
-and e.course_key = pp.context_id
-and pp."source" = 'unlimited'
-AND pp.SOURCE_ID <> 'Something'
-and enroll.user = e.user_sso_guid
-and enroll_local_time = enroll.time
-)
-
-      , paid_no_cu as (
-      SELECT
-      'No CU Paid' as status
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
       , e._rsrc as enroll_rsrc
@@ -46,61 +44,81 @@ and enroll_local_time = enroll.time
       , e.product_platform as enroll_product_platform
       , e.user_environment as enroll_user_environment
       , e.user_sso_guid as user_sso_guid
-      FROM prod.STG_CLTS.ACTIVATIONS_OLR_V a,  prod.unlimited.RAW_OLR_ENROLLMENT e, enroll
-      where a.user_guid = e.user_sso_guid
-      and e.course_key = a.context_id
-      and enroll.user = e.user_sso_guid
-      and enroll_local_time = enroll.time
-      and enroll_access_role like 'STUDENT'
+      FROM en as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp
+      where e.user_sso_guid = pp.user_sso_guid
+      and e.course_key = pp.context_id
+      and pp."source" = 'unlimited'
+      AND pp.SOURCE_ID <> 'Something'
+      and pp.USER_ENVIRONMENT like 'production'
+      and pp.PLATFORM_ENVIRONMENT like 'production'
       )
 
-      , unpaid as (
-      SELECT
-      'Unpaid' as status
-      , e._hash as enroll_hash
-      , e._ldts as enroll_ldts
-      , e._rsrc as enroll_rsrc
-      , e.access_role as enroll_access_role
-      , e.course_key as course_key
-      , e.local_time as enroll_local_time
-      , e.message_format_version as enroll_message_format_version
-      , e.message_type as enroll_message_type
-      , e.platform_environment as enroll_platform_environment
-      , e.product_platform as enroll_product_platform
-      , e.user_environment as enroll_user_environment
-      , e.user_sso_guid as user_sso_guid
-      FROM prod.unlimited.RAW_OLR_ENROLLMENT e, enroll
-      where e.user_sso_guid not in (select user_sso_guid from paid_no_cu)
-      and e.user_sso_guid not in (select user_sso_guid from paid)
-      and enroll.user = e.user_sso_guid
-      and enroll_local_time = enroll.time
-      and enroll_access_role like 'STUDENT'
-      )
+            , paid_no_cu as (
+            SELECT distinct
+            'No CU Paid' as status
+            , e._hash as enroll_hash
+            , e._ldts as enroll_ldts
+            , e._rsrc as enroll_rsrc
+            , e.access_role as enroll_access_role
+            , e.course_key as course_key
+            , e.local_time as enroll_local_time
+            , e.message_format_version as enroll_message_format_version
+            , e.message_type as enroll_message_type
+            , e.platform_environment as enroll_platform_environment
+            , e.product_platform as enroll_product_platform
+            , e.user_environment as enroll_user_environment
+            , e.user_sso_guid as user_sso_guid
+            FROM prod.STG_CLTS.ACTIVATIONS_OLR_V a,  en e
+            where a.user_guid = e.user_sso_guid
+            and e.course_key = a.context_id
+
+            )
+
+            , unpaid as (
+            SELECT distinct
+            'Unpaid' as status
+            , e._hash as enroll_hash
+            , e._ldts as enroll_ldts
+            , e._rsrc as enroll_rsrc
+            , e.access_role as enroll_access_role
+            , e.course_key as course_key
+            , e.local_time as enroll_local_time
+            , e.message_format_version as enroll_message_format_version
+            , e.message_type as enroll_message_type
+            , e.platform_environment as enroll_platform_environment
+            , e.product_platform as enroll_product_platform
+            , e.user_environment as enroll_user_environment
+            , e.user_sso_guid as user_sso_guid
+            FROM en e
+            where e.user_sso_guid not in (select user_sso_guid from paid_no_cu)
+            and e.user_sso_guid not in (select user_sso_guid from paid)
+            )
 
 
-      , days as (
-      select distinct to_date(local_time) as day
-      from prod.UNLIMITED.RAW_OLR_ENROLLMENT
-      )
-      , _all as (
-      select * from paid
-      union
-      select * from unpaid
-      union
-      select * from paid_no_cu
-      )
+            , days as (
+            select distinct to_date(local_time) as day
+            from prod.UNLIMITED.RAW_OLR_ENROLLMENT
+            where day <> current_date()
+            )
+            , _all as (
+            select * from paid
+            union
+            select * from unpaid
+            union
+            select * from paid_no_cu
+            )
 
 
-      , res as (
-      select days.day
-      , _all.*
-      from _all, days
-      where enroll_local_time <= days.day
-      )
+            , res as (
+            select days.day
+            , _all.*
+            from _all, days
+            where to_date(enroll_local_time) <= days.day
+            )
 
 
-      select  * from res
- ;;
+            select * from res
+       ;;
   }
 measure: count {
   type: count
