@@ -62,8 +62,8 @@ view: a_p_p {
                                   end as platform
                                   , pp."source" as sourse
                                   , pp.user_type as user_type
-                                  , case when (pp."source" like 'unlimited' and pp.source_id like 'TRIAL') then 'b:TRIAL'
-                                    else case when (pp."source" like 'unlimited' and pp.source_id not like 'TRIAL') then 'c:FULL'
+                                  , case when ( pp.source_id like 'TRIAL') then 'b:TRIAL'
+                                    else case when (is_double(TRY_TO_DOUBLE(pp.source_id))) then 'c:FULL'
                                     else 'a:EMPTY' end end as state
                                   from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
                                   , types

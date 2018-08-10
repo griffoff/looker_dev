@@ -1,6 +1,6 @@
 view: switch_state_prod {
    derived_table: {
-    sql:with trial as (
+    sql: with trial as (
       select user_sso_guid as trial_user_sso_guid
       , _hash as trial_hash
       , local_time as trial_subscription_local_time
@@ -99,12 +99,25 @@ view: switch_state_prod {
       --and day(trial_subscription_end) != day(full_subscription_start)
       )
 
-      , res as (
+      ,days as (
+      select distinct to_date(local_time) as day
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT
+      where day <> current_date()
+      )
+      , _all as (
       select * from only_trial
       union
       select * from only_full
       union
       select * from from_trial_to_full_long
+      )
+
+      , res as (
+      select days.day
+      , _all.*
+      from _all, days
+      where to_date(_start) <= days.day
+      and to_date(_end) >= days.day
       )
 
 select * from res
@@ -119,6 +132,11 @@ measure: Number_of_users {
   drill_fields: [detail*]
     type: count_distinct
     sql: ${user_sso_guid} ;;
+}
+
+dimension: day {
+  type: date
+  sql: ${TABLE}."DAY" ;;
 }
 
 dimension: idd {
@@ -188,6 +206,7 @@ dimension: user_environment {
 
 set: detail {
   fields: [
+    day,
     idd,
     user_sso_guid,
     subscription_state,

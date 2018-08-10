@@ -71,6 +71,7 @@ view: a_no_cu_pay {
             FROM prod.STG_CLTS.ACTIVATIONS_OLR_V a,  en e
             where a.user_guid = e.user_sso_guid
             and e.course_key = a.context_id
+            and user_sso_guid not in (select user_sso_guid from paid)
 
             )
 
