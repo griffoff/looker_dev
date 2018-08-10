@@ -55,7 +55,7 @@ view: a_no_cu_pay {
 
             , paid_no_cu as (
             SELECT distinct
-            'No CU Paid' as status
+            case when a.code_type like 'PAC' then 'Paid no CU PAC' else case when a.code_type like 'IAC' then 'Paid no CU IAC' else 'Paid no CU other' end end as status
             , e._hash as enroll_hash
             , e._ldts as enroll_ldts
             , e._rsrc as enroll_rsrc
