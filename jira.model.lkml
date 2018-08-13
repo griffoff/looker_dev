@@ -276,3 +276,8 @@ explore: a_actv_problem {
   from: a_actv_problem
   label: "a_actv_problem"
 }
+
+explore: a_temporary_problem {
+  from: a_temporary_problem
+  label: "a_temporary_problem"
+}
