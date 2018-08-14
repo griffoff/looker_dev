@@ -41,7 +41,7 @@ view: a_p_p {
                                                               case when ARRAY_CONTAINS('MT4'::variant, cppt) then 'MT4' else
                                                                   case when ARRAY_CONTAINS('4LTV1'::variant, cppt) then '4LTV1' else
                                                                       case when ARRAY_CONTAINS('DEV-MATH'::variant, cppt) then 'DEV-MATH' else
-                                                                          case when ARRAY_CONTAINS('OWLV8'::variant, cppt) then 'OWLV8' else
+                                                                          case when ARRAY_CONTAINS('OWL'::variant, cppt) or ARRAY_CONTAINS('OWLV8'::variant, cppt) then 'OWL' else
                                                                               case when ARRAY_CONTAINS('MTS'::variant, cppt) then 'MTS' else
                                                                                   case when ARRAY_CONTAINS('WA'::variant, cppt) then 'WA' else
                                                                                       case when ARRAY_CONTAINS('WA3P'::variant, cppt) then 'WA3P' else 'other' end

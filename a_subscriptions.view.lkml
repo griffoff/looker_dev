@@ -1,6 +1,8 @@
 view: a_subscriptions {
   derived_table: {
     sql: with days as (
+      select current_date() as day
+      union
       select dateadd(dd, -1, current_date()) as day
       union
       select dateadd(dd, -2, current_date()) as day
@@ -70,12 +72,12 @@ view: a_subscriptions {
       group by user_sso_guid
       )
       , sub as (
-      select days.day as day
+      select distinct days.day as day
       , actual_sub.user_sso_guid as user_sso_guid
       , se.subscription_state as subscription_state
       , se.contract_id as contract_id
-      , se.subscription_start as subscription_start
-      , se.subscription_end as subscription_end
+      , actual_sub.subscription_start as subscription_start
+      , actual_sub.subscription_end as subscription_end
       , se._ldts
       , se._rsrc
       , se.message_format_version
@@ -88,8 +90,8 @@ view: a_subscriptions {
       where actual_sub.user_sso_guid = se.user_sso_guid
       and actual_sub.subscription_start = se.subscription_start
       and actual_sub.subscription_end = se.subscription_end
-      and actual_sub.subscription_start < days.day
-      and actual_sub.subscription_end > days.day
+      and actual_sub.subscription_start <= days.day
+      and actual_sub.subscription_end >= days.day
       )
 
 
