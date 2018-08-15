@@ -4,7 +4,7 @@ view: a_no_cu_pay {
       enroll as (
             select distinct sub.user_sso_guid as user
             , sub.course_key
-            , max(sub.local_time) as time
+            , min(sub.local_time) as time
             from prod.UNLIMITED.RAW_OLR_ENROLLMENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
             where exc.user_sso_guid is null
             group by user, sub.course_key
