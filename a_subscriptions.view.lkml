@@ -1,83 +1,22 @@
 view: a_subscriptions {
   derived_table: {
-    sql: with days as (
-      select current_date() as day
-      union
-      select dateadd(dd, -1, current_date()) as day
-      union
-      select dateadd(dd, -2, current_date()) as day
-      union
-      select dateadd(dd, -3, current_date()) as day
-      union
-      select dateadd(dd, -4, current_date()) as day
-      union
-      select dateadd(dd, -5, current_date()) as day
-      union
-      select dateadd(dd, -6, current_date()) as day
-      union
-      select dateadd(dd, -7, current_date()) as day
-      union
-      select dateadd(dd, -8, current_date()) as day
-      union
-      select dateadd(dd, -9, current_date()) as day
-      union
-      select dateadd(dd, -10, current_date()) as day
-      union
-      select dateadd(dd, -11, current_date()) as day
-      union
-      select dateadd(dd, -12, current_date()) as day
-      union
-      select dateadd(dd, -13, current_date()) as day
-      union
-      select dateadd(dd, -14, current_date()) as day
-      union
-      select dateadd(dd, -15, current_date()) as day
-      union
-      select dateadd(dd, -16, current_date()) as day
-      union
-      select dateadd(dd, -17, current_date()) as day
-      union
-      select dateadd(dd, -18, current_date()) as day
-      union
-      select dateadd(dd, -19, current_date()) as day
-      union
-      select dateadd(dd, -20, current_date()) as day
-      union
-      select dateadd(dd, -21, current_date()) as day
-      union
-      select dateadd(dd, -22, current_date()) as day
-      union
-      select dateadd(dd, -23, current_date()) as day
-      union
-      select dateadd(dd, -24, current_date()) as day
-      union
-      select dateadd(dd, -25, current_date()) as day
-      union
-      select dateadd(dd, -26, current_date()) as day
-      union
-      select dateadd(dd, -27, current_date()) as day
-      union
-      select dateadd(dd, -28, current_date()) as day
-      union
-      select dateadd(dd, -29, current_date()) as day
-      union
-      select dateadd(dd, -30, current_date()) as day
-      )
-
+    sql:with days as (
+SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
+            )
       , actual_sub as (
-      select user_sso_guid
-      , max(subscription_start) as subscription_start
-      , max(subscription_end) as subscription_end
-      from prod.unlimited.RAW_SUBSCRIPTION_EVENT
-      group by user_sso_guid
+      select sub.user_sso_guid
+      , max(sub.local_time) as local_time
+      from prod.unlimited.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
+      where exc.user_sso_guid is null
+      group by sub.user_sso_guid
       )
       , sub as (
       select distinct days.day as day
       , actual_sub.user_sso_guid as user_sso_guid
       , se.subscription_state as subscription_state
       , se.contract_id as contract_id
-      , actual_sub.subscription_start as subscription_start
-      , actual_sub.subscription_end as subscription_end
+      , se.subscription_start as subscription_start
+      , se.subscription_end as subscription_end
       , se._ldts
       , se._rsrc
       , se.message_format_version
@@ -88,10 +27,9 @@ view: a_subscriptions {
       , se._hash
       from prod.unlimited.RAW_SUBSCRIPTION_EVENT as se , actual_sub, days
       where actual_sub.user_sso_guid = se.user_sso_guid
-      and actual_sub.subscription_start = se.subscription_start
-      and actual_sub.subscription_end = se.subscription_end
-      and actual_sub.subscription_start <= days.day
-      and actual_sub.subscription_end >= days.day
+      and actual_sub.local_time = se.local_time
+      and se.subscription_start <= days.day
+      and se.subscription_end >= days.day
       )
 
 

@@ -1,11 +1,13 @@
 view: a_no_cu_pay {
    derived_table: {
-    sql: with
+    sql:  with
       enroll as (
-            select distinct user_sso_guid as user
-            , max(local_time) as time
-            from  prod.UNLIMITED.RAW_OLR_ENROLLMENT
-            group by user
+            select distinct sub.user_sso_guid as user
+            , sub.course_key
+            , max(sub.local_time) as time
+            from prod.UNLIMITED.RAW_OLR_ENROLLMENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
+            where exc.user_sso_guid is null
+            group by user, sub.course_key
             )
 
       , en as (
@@ -25,8 +27,9 @@ view: a_no_cu_pay {
       FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  enroll, prod.STG_CLTS.OLR_COURSES c
       where  enroll.user = e.user_sso_guid
       and e.local_time = enroll.time
+      and e.course_key = enroll.course_key
       and c."#CONTEXT_ID" = e.course_key
-      and c.COURSE_INTERNAL_FLG <> 'true'
+      --and c.COURSE_INTERNAL_FLG like 'false'
       and e.access_role like 'STUDENT'
       )
 
@@ -100,9 +103,7 @@ view: a_no_cu_pay {
 
 
             , days as (
-            select distinct to_date(local_time) as day
-            from prod.UNLIMITED.RAW_OLR_ENROLLMENT
-            where day <> current_date()
+SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
             )
             , _all as (
             select * from paid

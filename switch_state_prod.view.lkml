@@ -100,9 +100,7 @@ view: switch_state_prod {
       )
 
       ,days as (
-      select distinct to_date(local_time) as day
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT
-      where day <> current_date()
+SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
       )
       , _all as (
       select * from only_trial
