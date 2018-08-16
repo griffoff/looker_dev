@@ -10,10 +10,11 @@ view: a {
 
 
       , c as (
-      select user_sso_guid
-      , count(distinct iac_isbn) as cc
-      from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT
-      group by user_sso_guid
+      select pp.user_sso_guid
+      , count(distinct pp.iac_isbn) as cc
+      from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT pp
+      where pp.user_sso_guid not in (select user_sso_guid from prod.unlimited.CLTS_EXCLUDED_USERS)
+      group by pp.user_sso_guid
       )
 
       ,products as (
@@ -85,6 +86,12 @@ view: a {
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  measure: top {
+    type: max
+    sql: ${cc} ;;
+
   }
 
   dimension: user_sso_guid {

@@ -33,8 +33,13 @@ view: a_no_cu_pay {
       and e.access_role like 'STUDENT'
       )
 
+
       ,paid as( SELECT distinct
-      'CU Paid' as status
+
+      case  when e.user_sso_guid in (select user_sso_guid from prod.unlimited.RAW_SUBSCRIPTION_EVENT where subscription_state like 'full_access')  and  e.user_sso_guid in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'PAC' else
+                  case when e.user_sso_guid in (select user_sso_guid from prod.unlimited.RAW_SUBSCRIPTION_EVENT where subscription_state like 'full_access') and  e.user_sso_guid not in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'Commerce'
+                  end
+      end as status
       , 'CU Paid' as status_2
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
@@ -59,7 +64,7 @@ view: a_no_cu_pay {
 
             , paid_no_cu as (
             SELECT distinct
-            case when a.code_type like 'PAC' then 'Paid no CU PAC' else case when a.code_type like 'IAC' then 'Paid no CU IAC' else 'Paid no CU other' end end as status
+            'Paid no CU' as status
             , 'Paid no CU' as status_2
             , e._hash as enroll_hash
             , e._ldts as enroll_ldts
