@@ -100,7 +100,7 @@ view: aaa {
 
   dimension: pp_tier {
     type: tier
-    tiers: [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26]
+    tiers: [1, 51, 101, 151, 201, 251, 301, 351, 401, 451, 501, 551, 601, 651, 701, 751, 801, 851, 901, 951, 1001]
     style: integer   # the default value, could be excluded
     sql: ${cc} ;;
   }
