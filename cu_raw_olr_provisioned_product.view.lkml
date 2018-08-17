@@ -1,4 +1,4 @@
-view: raw_olr_provisioned_product {
+view: cu_raw_olr_provisioned_product {
   sql_table_name: UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT ;;
 
   dimension: _hash {

@@ -1,4 +1,4 @@
-view: raw_subscription_event {
+view: cu_raw_subscription_event {
   sql_table_name: UNLIMITED.RAW_SUBSCRIPTION_EVENT ;;
 
   dimension: _hash {
