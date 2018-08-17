@@ -2,10 +2,8 @@
   title: Cengage Unlimited Metrics (Modified)
   layout: newspaper
   elements:
-  - name: C1. Number of provisioned products for all users, for each day, by subscription
-      state
-    title: C1. Number of provisioned products for all users, for each day, by subscription
-      state
+  - name: NumberofProvisionedProducts
+    title: NumberofProvisionedProducts
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -100,8 +98,8 @@
     col: 0
     width: 24
     height: 8
-  - name: Number of CU users subscribed per day, by state
-    title: Number of CU users subscribed per day, by state
+  - name: NumberofProvisionedProductsOne
+    title: NumberofProvisionedProducts
     model: cu_statistics
     explore: switch_state_prod
     type: looker_column
@@ -314,8 +312,8 @@
     col: 0
     width: 24
     height: 9
-  - name: C3. Provisioned to full access users, by product type
-    title: C3. Provisioned to full access users, by product type
+  - name: Provisionedtofullaccessusersbyproducttype
+    title: Provisionedtofullaccessusersbyproducttype
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -417,8 +415,8 @@
     col: 0
     width: 24
     height: 9
-  - name: C2. Provisioned to trial access users, by product type
-    title: C2. Provisioned to trial access users, by product type
+  - name: Provisionedtotrialaccessusersbyproducttype
+    title: Provisionedtotrialaccessusersbyproducttype
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -519,25 +517,25 @@
     col: 0
     width: 24
     height: 9
-  - name: C. Number of provisioned products
+  - name: Numberofprovisionedproducts
     type: text
-    title_text: C. Number of provisioned products
+    title_text: Numberofprovisionedproducts
     subtitle_text: in the last 30 days
     row: 95
     col: 0
     width: 24
     height: 2
-  - name: A. Information about user enrollments
+  - name: Informationaboutuserenrollments
     type: text
-    title_text: A. Information about user enrollments
+    title_text: Informationaboutuserenrollments
     subtitle_text: in the last 30 days
     body_text: ''
     row: 0
     col: 0
     width: 24
     height: 2
-  - name: D1. Distribution of products over the number of their provisions to users
-    title: D1. Distribution of products over the number of their provisions to users
+  - name: Distributionofproductsoverthenumberoftheirprovisionstousers
+    title: Distributionofproductsoverthenumberoftheirprovisionstousers
     model: cu_statistics
     explore: aaa
     type: looker_column
@@ -600,7 +598,7 @@
     col: 0
     width: 24
     height: 9
-  - name: B. Information about users' subscriptions
+  - name: Informationaboutuserssubscriptions
     type: text
     title_text: B. Information about users' subscriptions
     subtitle_text: during last 30 days
@@ -608,7 +606,7 @@
     col: 0
     width: 24
     height: 2
-  - name: A2. Total number of enrollments, by payment type
+  - name: Totalnumberofenrollmentsbypaymenttype
     title: A2. Total number of enrollments, by payment type
     model: cu_statistics
     explore: a_no_cu_pay
@@ -696,8 +694,8 @@
     col: 0
     width: 24
     height: 9
-  - name: A1. Number of new enrollments, for each day, by payment type
-    title: A1. Number of new enrollments, for each day, by payment type
+  - name: Numberofnewenrollmentsforeachdaybypaymenttype
+    title: Numberofnewenrollmentsforeachdaybypaymenttype
     model: cu_statistics
     explore: a_no_cu_pay
     type: looker_column
@@ -785,9 +783,9 @@
     col: 0
     width: 24
     height: 8
-  - name: D. Distributions of products and users
+  - name: Distributionsofproductsandusers
     type: text
-    title_text: D. Distributions of products and users
+    title_text: Distributions of products and users
     subtitle_text: by the number of provisions
     body_text: |-
       The distribution of users by the number of provisioned products shows how many users are being provisioned a given number of products. So, the first point on the graph gives the number of users that have been provisioned just a single product, the second point shows how many users have been provisioned two products, and so on. The most active users will be on the right.
@@ -797,8 +795,8 @@
     col: 0
     width: 24
     height: 7
-  - name: C4. Table of the most popular products
-    title: C4. Table of the most popular products
+  - name: Tableofthemostpopularproducts
+    title: Tableofthemostpopularproducts
     model: cu_statistics
     explore: a_p_p
     type: table
@@ -904,7 +902,7 @@
     width: 24
     height: 11
   - title: B1 OLD. Number of CU users subscribed per day, by state
-    name: B1 OLD. Number of CU users subscribed per day, by state
+    name: OLDNumberofCUuserssubscribedperdaybystate
     model: cu_statistics
     explore: a_sub_m
     type: looker_column
@@ -983,7 +981,7 @@
     width: 24
     height: 9
   - title: B2. Total number of active CU users, by state
-    name: B2. Total number of active CU users, by state
+    name: TotalnumberofactiveCUusersbystate
     model: cu_statistics
     explore: a_sub_m
     type: looker_column
@@ -1061,7 +1059,7 @@
     width: 24
     height: 9
   - title: B2b. Total count of active and inactive users
-    name: B2b. Total count of active and inactive users
+    name: Totalcountofactiveandinactiveusers
     model: cu_statistics
     explore: a_sub_m_ckecker
     type: looker_column
@@ -1142,7 +1140,7 @@
     width: 24
     height: 8
   - title: B3. Total number of active full access CU users, by payment source
-    name: B3. Total number of active full access CU users, by payment source
+    name: TotalnumberofactivefullaccessCUusersbypaymentsource
     model: cu_statistics
     explore: a_sub_m
     type: looker_column
@@ -1223,7 +1221,7 @@
     col: 0
     width: 24
     height: 8
-  - name: B1. Number of CU users subscribed per day, by state
+  - name: NumberofCUuserssubscribedperdaybystate
     title: B1. Number of CU users subscribed per day, by state
     model: royalties_audit
     explore: number_of_sub_per_day
