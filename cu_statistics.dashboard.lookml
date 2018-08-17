@@ -1,9 +1,11 @@
-- dashboard: cengage_unlimited_metrics_copy
-  title: Cengage Unlimited Metrics (Modified)
+- dashboard: cu_statistics
+  title: Cengage Unlimited Metrics
   layout: newspaper
   elements:
-  - name: NumberofProvisionedProducts
-    title: NumberofProvisionedProducts
+  - name: Products_Daily_ByState
+      state
+    title: C1. Number of provisioned products for all users, for each day, by subscription
+      state
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -94,12 +96,12 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 87
+    row: 34
     col: 0
     width: 24
     height: 8
-  - name: NumberofProvisionedProductsOne
-    title: NumberofProvisionedProducts
+  - name: Subscribers_Daily_ByState
+    title: Number of CU users subscribed per day, by state
     model: cu_statistics
     explore: switch_state_prod
     type: looker_column
@@ -206,10 +208,10 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 77
+    row: 25
     col: 0
-    width: 24
-    height: 10
+    width: 20
+    height: 7
   - name: Legend
     type: text
     title_text: Legend
@@ -218,11 +220,11 @@
       Full Access - Direct Purchase - the users with full access which never had trial access
 
       Full Access - Upgraded - the users with full access which upgraded from trial access subscription
-    row: 21
-    col: 0
-    width: 24
-    height: 4
-  - name: Total number of active CU users,  by state
+    row: 25
+    col: 20
+    width: 4
+    height: 7
+  - name: CUMULATIVE_Active_ByState
     title: Total number of active CU users,  by state
     model: cu_statistics
     explore: a_subscriptions
@@ -308,12 +310,12 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 68
+    row: 49
     col: 0
     width: 24
     height: 9
-  - name: Provisionedtofullaccessusersbyproducttype
-    title: Provisionedtofullaccessusersbyproducttype
+  - name: Products_FullAccess_ByProductType
+    title: C3. Provisioned to full access users, by product type
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -411,12 +413,12 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 106
-    col: 0
-    width: 24
-    height: 9
-  - name: Provisionedtotrialaccessusersbyproducttype
-    title: Provisionedtotrialaccessusersbyproducttype
+    row: 42
+    col: 12
+    width: 12
+    height: 7
+  - name: Products_TrialAccess_ByProductType
+    title: C2. Provisioned to trial access users, by product type
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -513,100 +515,27 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 97
+    row: 42
     col: 0
-    width: 24
-    height: 9
-  - name: Numberofprovisionedproducts
+    width: 12
+    height: 7
+  - name: Products_Header
     type: text
-    title_text: Numberofprovisionedproducts
+    title_text: Number of provisioned products
     subtitle_text: in the last 30 days
-    row: 95
+    row: 32
     col: 0
     width: 24
     height: 2
-  - name: Informationaboutuserenrollments
+  - name: Enrollments_Header
     type: text
-    title_text: Informationaboutuserenrollments
+    title_text: Information about user enrollments
     subtitle_text: in the last 30 days
-    body_text: ''
     row: 0
     col: 0
     width: 24
     height: 2
-  - name: Distributionofproductsoverthenumberoftheirprovisionstousers
-    title: Distributionofproductsoverthenumberoftheirprovisionstousers
-    model: cu_statistics
-    explore: aaa
-    type: looker_column
-    fields:
-    - aaa.count
-    - aaa.pp_tier
-    fill_fields:
-    - aaa.pp_tier
-    sorts:
-    - aaa.pp_tier
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: ''
-    show_value_labels: false
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: circle
-    series_colors:
-      aaa.count: "#8ed9f4"
-    series_types:
-      aaa.count: area
-    limit_displayed_rows: false
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of ISBNs provisioned given number of times
-      orientation: left
-      series:
-      - id: aaa.count
-        name: Aaa Count
-        axisId: aaa.count
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: log
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Number of provisions of a product
-    show_x_axis_ticks: true
-    x_axis_scale: auto
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: false
-    show_silhouette: false
-    totals_color: "#808080"
-    row: 133
-    col: 0
-    width: 24
-    height: 9
-  - name: Informationaboutuserssubscriptions
-    type: text
-    title_text: B. Information about users' subscriptions
-    subtitle_text: during last 30 days
-    row: 19
-    col: 0
-    width: 24
-    height: 2
-  - name: Totalnumberofenrollmentsbypaymenttype
+  - name: Enrollments_Total_ByPaymentType
     title: A2. Total number of enrollments, by payment type
     model: cu_statistics
     explore: a_no_cu_pay
@@ -620,7 +549,6 @@
     fill_fields:
     - a_no_cu_pay.day
     filters:
-      a_no_cu_pay.day: 30 days
       a_no_cu_pay.enroll_user_environment: production
       a_no_cu_pay.enroll_platform_environment: production
     sorts:
@@ -690,12 +618,14 @@
     show_totals_labels: true
     show_silhouette: false
     totals_color: "#808080"
-    row: 10
+    listen:
+      Time range: a_no_cu_pay.day
+    row: 13
     col: 0
     width: 24
-    height: 9
-  - name: Numberofnewenrollmentsforeachdaybypaymenttype
-    title: A1. Number of new enrollments for each day by payment type
+    height: 12
+  - name: Enrollments_Daily_ByPaymentType
+    title: A1. Number of new enrollments, for each day, by payment type
     model: cu_statistics
     explore: a_no_cu_pay
     type: looker_column
@@ -710,7 +640,6 @@
     filters:
       a_no_cu_pay.enroll_platform_environment: production
       a_no_cu_pay.enroll_user_environment: production
-      a_no_cu_pay.enroll_local_time_date: 30 days
     sorts:
     - a_no_cu_pay.enroll_local_time_date
     - a_no_cu_pay.status_2 desc
@@ -779,524 +708,20 @@
     show_totals_labels: true
     show_silhouette: false
     totals_color: "#808080"
+    listen:
+      Time range: a_no_cu_pay.enroll_local_time_date
     row: 2
     col: 0
     width: 24
-    height: 8
-  - name: Distributionsofproductsandusers
-    type: text
-    title_text: Distributions of products and users
-    subtitle_text: by the number of provisions
-    body_text: |-
-      The distribution of users by the number of provisioned products shows how many users are being provisioned a given number of products. So, the first point on the graph gives the number of users that have been provisioned just a single product, the second point shows how many users have been provisioned two products, and so on. The most active users will be on the right.
-
-      The distribution of products shows the same thing but from the product perspective: the first point gives us the number of products which were provisioned only onсe, to just one user; the second point shows how many products there are that were provisioned to only two users, and so on. The most popular products will be on the right.
-    row: 126
-    col: 0
-    width: 24
-    height: 7
-  - name: Tableofthemostpopularproducts
-    title: Tableofthemostpopularproducts
-    model: cu_statistics
-    explore: a_p_p
-    type: table
-    fields:
-    - a_p_p.name
-    - a_p_p.isbn
-    - a_p_p.cc
-    filters:
-      a_p_p.sourse: unlimited
-      a_p_p.user_type: student
-    sorts:
-    - a_p_p.cc desc
-    limit: 500
-    query_timezone: America/Los_Angeles
-    show_view_names: false
-    show_row_numbers: true
-    truncate_column_names: false
-    hide_totals: false
-    hide_row_totals: false
-    series_labels:
-      a - a_p_p.count_e: Other users
-      b - a_p_p.count_e: Trial access users
-      c - a_p_p.count_e: Full access users
-      a:EMPTY - a_p_p.count_e: Other users
-      b:TRIAL - a_p_p.count_e: Trial access users
-      c:FULL - a_p_p.count_e: Full access users
-      a_p_p.count_e: Number of provisions
-      a_p_p.cc: Number of provisions
-    table_theme: gray
-    limit_displayed_rows: false
-    enable_conditional_formatting: true
-    conditional_formatting:
-    - type: low to high
-      value:
-      background_color:
-      font_color:
-      palette:
-        name: Custom
-        colors:
-        - "#FFFFFF"
-        - "#f8cc35"
-      bold: false
-      italic: false
-      strikethrough: false
-      fields:
-    conditional_formatting_include_totals: false
-    conditional_formatting_include_nulls: false
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    point_style: none
-    series_colors:
-      full_access - a_p_p.count_e: "#66BB6A"
-      trial_access - a_p_p.count_e: "#FFA726"
-      a - a_p_p.count_e: "#8ed9f4"
-      b - a_p_p.count_e: "#003865"
-      c - a_p_p.count_e: "#c61d23"
-      a:EMPTY - a_p_p.count_e: "#8ed9f4"
-      b:TRIAL - a_p_p.count_e: "#003865"
-      c:FULL - a_p_p.count_e: "#c61d23"
-    series_types: {}
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of provisioned products
-      orientation: left
-      series:
-      - id: full_access - a_p_p.count_e
-        name: full_access
-        axisId: a_p_p.count_e
-      - id: trial_access - a_p_p.count_e
-        name: trial_access
-        axisId: a_p_p.count_e
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: auto
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    row: 115
-    col: 0
-    width: 24
     height: 11
-  - title: B1 OLD. Number of CU users subscribed per day, by state
-    name: OLDNumberofCUuserssubscribedperdaybystate
+  filters:
+  - name: Time range
+    title: Time range
+    type: field_filter
+    default_value: 30 days
+    allow_multiple_values: true
+    required: true
     model: cu_statistics
-    explore: a_sub_m
-    type: looker_column
-    fields:
-    - a_sub_m._start
-    - a_sub_m.Number_of_users
-    - a_sub_m.status
-    pivots:
-    - a_sub_m.status
-    fill_fields:
-    - a_sub_m._start
-    filters:
-      a_sub_m._start: 30 days
-    sorts:
-    - a_sub_m._start
-    - a_sub_m.status desc
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Trial access users - a_sub_m.Number_of_users: "#003865"
-      Full Access - Upgraded - a_sub_m.Number_of_users: "#f8cc35"
-      Full Access - Direct Purchase - a_sub_m.Number_of_users: "#fc4c02"
-    series_types: {}
-    limit_displayed_rows: false
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of subscriptions
-      orientation: left
-      series:
-      - id: Trial access users - a_sub_m.Number_of_users
-        name: Trial access users
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Upgraded - a_sub_m.Number_of_users
-        name: Full Access - Upgraded
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Direct Purchase - a_sub_m.Number_of_users
-        name: Full Access - Direct Purchase
-        axisId: a_sub_m.Number_of_users
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    column_group_spacing_ratio: 0.05
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen: {}
-    row: 25
-    col: 0
-    width: 24
-    height: 9
-  - title: B2. Total number of active CU users, by state
-    name: TotalnumberofactiveCUusersbystate
-    model: cu_statistics
-    explore: a_sub_m
-    type: looker_column
-    fields:
-    - a_sub_m.Number_of_users
-    - a_sub_m.status
-    - a_sub_m.day
-    pivots:
-    - a_sub_m.status
-    fill_fields:
-    - a_sub_m.day
-    filters:
-      a_sub_m.day: 30 days
-    sorts:
-    - a_sub_m.status desc 0
-    - a_sub_m.day
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Trial access users - a_sub_m.Number_of_users: "#003865"
-      Full Access - Upgraded - a_sub_m.Number_of_users: "#f8cc35"
-      Full Access - Direct Purchase - a_sub_m.Number_of_users: "#fc4c02"
-    series_types: {}
-    limit_displayed_rows: false
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of active users
-      orientation: left
-      series:
-      - id: Trial access users - a_sub_m.Number_of_users
-        name: Trial access users
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Upgraded - a_sub_m.Number_of_users
-        name: Full Access - Upgraded
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Direct Purchase - a_sub_m.Number_of_users
-        name: Full Access - Direct Purchase
-        axisId: a_sub_m.Number_of_users
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Day
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen: {}
-    row: 51
-    col: 0
-    width: 24
-    height: 9
-  - title: B2b. Total count of active and inactive users
-    name: Totalcountofactiveandinactiveusers
-    model: cu_statistics
-    explore: a_sub_m_ckecker
-    type: looker_column
-    fields:
-    - a_sub_m_ckecker.day
-    - a_sub_m_ckecker.st
-    - a_sub_m_ckecker.Number_of_users
-    pivots:
-    - a_sub_m_ckecker.st
-    fill_fields:
-    - a_sub_m_ckecker.day
-    filters:
-      a_sub_m_ckecker.day: 30 days
-      a_sub_m_ckecker.st: "-NULL"
-    sorts:
-    - a_sub_m_ckecker.day
-    - a_sub_m_ckecker.st 0
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      active - a_sub_m_ckecker.Number_of_users: "#8ed9f4"
-      expired - a_sub_m_ckecker.Number_of_users: "#c39fe0"
-    series_labels:
-      expired - a_sub_m_ckecker.Number_of_users: Expired users
-      active - a_sub_m_ckecker.Number_of_users: Active users
-    series_types: {}
-    limit_displayed_rows: false
-    hidden_series:
-    - a_sub_m_ckecker.st___null - a_sub_m_ckecker.Number_of_users
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of users
-      orientation: left
-      series:
-      - id: active - a_sub_m_ckecker.Number_of_users
-        name: Active users
-        axisId: a_sub_m_ckecker.Number_of_users
-      - id: expired - a_sub_m_ckecker.Number_of_users
-        name: Expired users
-        axisId: a_sub_m_ckecker.Number_of_users
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    column_group_spacing_ratio: 0.05
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen: {}
-    row: 34
-    col: 0
-    width: 24
-    height: 8
-  - title: B3. Total number of active full access CU users, by payment source
-    name: TotalnumberofactivefullaccessCUusersbypaymentsource
-    model: cu_statistics
-    explore: a_sub_m
-    type: looker_column
-    fields:
-    - a_sub_m.Number_of_users
-    - a_sub_m.day
-    - a_sub_m.paid_status
-    pivots:
-    - a_sub_m.paid_status
-    fill_fields:
-    - a_sub_m.day
-    filters:
-      a_sub_m.day: 30 days
-      a_sub_m.status: "-Trial access users"
-    sorts:
-    - a_sub_m.day
-    - a_sub_m.paid_status
-    limit: 500
-    column_limit: 50
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Trial access users - a_sub_m.Number_of_users: "#003865"
-      Full Access - Upgraded - a_sub_m.Number_of_users: "#f8cc35"
-      Full Access - Direct Purchase - a_sub_m.Number_of_users: "#fc4c02"
-      Commerce - a_sub_m.Number_of_users: "#8ed9f4"
-      PAC - a_sub_m.Number_of_users: "#f8cc35"
-    series_types: {}
-    limit_displayed_rows: false
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of active users
-      orientation: left
-      series:
-      - id: Trial access users - a_sub_m.Number_of_users
-        name: Trial access users
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Upgraded - a_sub_m.Number_of_users
-        name: Full Access - Upgraded
-        axisId: a_sub_m.Number_of_users
-      - id: Full Access - Direct Purchase - a_sub_m.Number_of_users
-        name: Full Access - Direct Purchase
-        axisId: a_sub_m.Number_of_users
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Day
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen: {}
-    row: 60
-    col: 0
-    width: 24
-    height: 8
-  - name: NumberofCUuserssubscribedperdaybystate
-    title: B1. Number of CU users subscribed per day, by state
-    model: royalties_audit
-    explore: number_of_sub_per_day
-    type: looker_column
-    fields:
-    - number_of_sub_per_day.time
-    - number_of_sub_per_day.status
-    - number_of_sub_per_day.Number_of_users
-    pivots:
-    - number_of_sub_per_day.status
-    fill_fields:
-    - number_of_sub_per_day.time
-    filters:
-      number_of_sub_per_day.time: 30 days
-    sorts:
-    - number_of_sub_per_day.time
-    - number_of_sub_per_day.status desc 0
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Trial access users - number_of_sub_per_day.Number_of_users: "#003865"
-      Full Access - Upgraded - number_of_sub_per_day.Number_of_users: "#f8cc35"
-      Full Access - Direct Purchase - number_of_sub_per_day.Number_of_users: "#fc4c02"
-    series_labels: {}
-    series_types: {}
-    limit_displayed_rows: false
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of subscriptions
-      orientation: left
-      series:
-      - id: Trial access users - number_of_sub_per_day.Number_of_users
-        name: Trial access users
-        axisId: number_of_sub_per_day.Number_of_users
-      - id: Full Access - Upgraded - number_of_sub_per_day.Number_of_users
-        name: Full Access - Upgraded
-        axisId: number_of_sub_per_day.Number_of_users
-      - id: Full Access - Direct Purchase - number_of_sub_per_day.Number_of_users
-        name: Full Access - Direct Purchase
-        axisId: number_of_sub_per_day.Number_of_users
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    column_group_spacing_ratio: 0.05
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    row: 42
-    col: 0
-    width: 24
-    height: 9
+    explore: a_no_cu_pay
+    listens_to_filters: []
+    field: a_no_cu_pay.day

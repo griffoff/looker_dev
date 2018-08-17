@@ -2,7 +2,7 @@ connection: "snowflake_prod"
 
 include: "/bnoc/*.view.lkml"         # include all CU views in this project
 include: "dim_date.view.lkml"
-include: "/bnoc/cu_stats.dashboard.lookml"  # include all CU dashboards in this project
+include: "/bnoc/cu*.dashboard.lookml"  # include all CU dashboards in this project
 
 explore: sub_event_ {
   # from: sub_event_
