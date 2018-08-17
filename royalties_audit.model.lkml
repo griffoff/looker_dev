@@ -1,6 +1,11 @@
-connection: "snowflake_dev"
+connection: "snowflake_prod"
+label: "Royalties Audit and Unlimited"
 
-#include: "*.view.lkml"         # include all views in this project
+# include all the CU views
+include: "*.view.lkml"
+include: "dim_date.view"
+
+# include all the dashboards
 #include: "*.dashboard.lookml"  # include all dashboards in this project
 
 # # Select the views that should be a part of this model,
@@ -17,3 +22,5 @@ connection: "snowflake_dev"
 #     sql_on: ${users.id} = ${orders.user_id} ;;
 #   }
 # }
+
+explore: dim_date {}
