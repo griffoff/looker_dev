@@ -1,4 +1,4 @@
-- dashboard: cu_statistics
+- dashboard: cu_daily_summary
   title: Cengage Unlimited Metrics
   layout: newspaper
   elements:
