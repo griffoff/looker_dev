@@ -281,3 +281,8 @@ explore: a_temporary_problem {
   from: a_temporary_problem
   label: "a_temporary_problem"
 }
+
+explore: a_sub_m {
+  from: a_sub_m
+  label: "a_sub_m"
+}
