@@ -57,6 +57,7 @@ derived_table: {
       , trial.SUBSCRIPTION_STATE
       , trial.CONTRACT_ID
       ,'Trial access users' as  status
+      , 'Unpaid' as paid_status
       from trial
       left outer join _full f on trial.user_sso_guid = f.user_sso_guid
       where f.user_sso_guid is null
@@ -70,6 +71,7 @@ derived_table: {
       , _full.SUBSCRIPTION_STATE
       , _full.CONTRACT_ID
       , 'Full Access - Direct Purchase' as status
+      , case when _full.user_sso_guid in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'PAC' else 'Commerce' end as paid_status
       from _full
       left outer join trial t on _full.user_sso_guid = t.user_sso_guid
       where t.user_sso_guid is null
@@ -83,6 +85,7 @@ derived_table: {
       , _full.SUBSCRIPTION_STATE
       , _full.CONTRACT_ID
       , 'Full Access - Upgraded' as status
+      , case when _full.user_sso_guid in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'PAC' else 'Commerce' end as paid_status
       from _full
       inner join trial t on t.User_sso_guid = _full.user_sso_guid
       )
@@ -109,8 +112,9 @@ derived_table: {
       )
 
       select * from res
-       ;;
+ ;;
 }
+
 
 measure: count {
   type: count
@@ -163,6 +167,11 @@ dimension: status {
   sql: ${TABLE}."STATUS" ;;
 }
 
+dimension: paid_status {
+  type: string
+  sql: ${TABLE}."PAID_STATUS" ;;
+}
+
 set: detail {
   fields: [
     day,
@@ -172,7 +181,8 @@ set: detail {
     _end,
     subscription_state,
     contract_id,
-    status
+    status,
+    paid_status
   ]
 }
 }
