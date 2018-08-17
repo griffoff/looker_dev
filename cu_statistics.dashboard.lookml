@@ -2,6 +2,104 @@
   title: Cengage Unlimited Metrics
   layout: newspaper
   elements:
+  - name: Enrollments_Header
+    type: text
+    title_text: Information about user enrollments
+    subtitle_text: in the last 30 days
+    row: 0
+    col: 0
+    width: 24
+    height: 2
+  - name: Enrollments_Daily_ByPaymentType
+    title: A1. Number of new enrollments, for each day, by payment type
+    model: cu_statistics
+    explore: a_no_cu_pay
+    type: looker_column
+    fields:
+    - a_no_cu_pay.enroll_local_time_date
+    - a_no_cu_pay.count_e
+    - a_no_cu_pay.status_2
+    pivots:
+    - a_no_cu_pay.status_2
+    fill_fields:
+    - a_no_cu_pay.enroll_local_time_date
+    filters:
+      a_no_cu_pay.enroll_platform_environment: production
+      a_no_cu_pay.enroll_user_environment: production
+    sorts:
+    - a_no_cu_pay.enroll_local_time_date
+    - a_no_cu_pay.status_2 desc
+    limit: 500
+    query_timezone: America/Los_Angeles
+    stacking: normal
+    show_value_labels: true
+    label_density: 25
+    legend_position: center
+    hide_legend: false
+    x_axis_gridlines: true
+    y_axis_gridlines: true
+    show_view_names: true
+    point_style: none
+    series_colors:
+      Paid - a_no_cu_pay.count_e: "#f8cc35"
+      Unpaid - a_no_cu_pay.count_e: "#003865"
+      CU Paid - a_no_cu_pay.count_e: "#f8cc35"
+      No CU Paid - a_no_cu_pay.count_e: "#fc4c02"
+      Paid no CU PAC - a_no_cu_pay.count_e: "#8ed9f4"
+      Paid no CU other - a_no_cu_pay.count_e: "#c61d23"
+      Paid no CU IAC - a_no_cu_pay.count_e: "#929292"
+      Paid no CU - a_no_cu_pay.count_e: "#fc4c02"
+    series_labels:
+      No CU Paid - a_no_cu_pay.count_e: Paid without CU (regular payment)
+      CU Paid - a_no_cu_pay.count_e: Paid, via CU
+      Paid no CU - a_no_cu_pay.count_e: Paid, without CU
+    series_types: {}
+    limit_displayed_rows: false
+    hidden_series: []
+    x_padding_left: 25
+    x_padding_right: 25
+    y_axes:
+    - label: Number of enrollment
+      orientation: left
+      series:
+      - id: Unpaid - a_no_cu_pay.count_e
+        name: Unpaid
+        axisId: a_no_cu_pay.count_e
+      - id: Paid - a_no_cu_pay.count_e
+        name: Paid
+        axisId: a_no_cu_pay.count_e
+      showLabels: true
+      showValues: true
+      unpinAxis: false
+      tickDensity: default
+      tickDensityCustom: 5
+      type: linear
+    y_axis_combined: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    x_axis_label: Date
+    show_x_axis_ticks: true
+    x_axis_datetime_label: ''
+    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    ordering: none
+    show_null_labels: false
+    column_group_spacing_ratio: 0.05
+    show_totals_labels: true
+    show_silhouette: false
+    totals_color: "#808080"
+    listen:
+      Time range: a_no_cu_pay.enroll_local_time_date
+    row: 2
+    col: 0
+    width: 24
+    height: 11
   - name: Products_Daily_ByState
       state
     title: C1. Number of provisioned products for all users, for each day, by subscription
@@ -527,14 +625,6 @@
     col: 0
     width: 24
     height: 2
-  - name: Enrollments_Header
-    type: text
-    title_text: Information about user enrollments
-    subtitle_text: in the last 30 days
-    row: 0
-    col: 0
-    width: 24
-    height: 2
   - name: Enrollments_Total_ByPaymentType
     title: A2. Total number of enrollments, by payment type
     model: cu_statistics
@@ -624,96 +714,6 @@
     col: 0
     width: 24
     height: 12
-  - name: Enrollments_Daily_ByPaymentType
-    title: A1. Number of new enrollments, for each day, by payment type
-    model: cu_statistics
-    explore: a_no_cu_pay
-    type: looker_column
-    fields:
-    - a_no_cu_pay.enroll_local_time_date
-    - a_no_cu_pay.count_e
-    - a_no_cu_pay.status_2
-    pivots:
-    - a_no_cu_pay.status_2
-    fill_fields:
-    - a_no_cu_pay.enroll_local_time_date
-    filters:
-      a_no_cu_pay.enroll_platform_environment: production
-      a_no_cu_pay.enroll_user_environment: production
-    sorts:
-    - a_no_cu_pay.enroll_local_time_date
-    - a_no_cu_pay.status_2 desc
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    hide_legend: false
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Paid - a_no_cu_pay.count_e: "#f8cc35"
-      Unpaid - a_no_cu_pay.count_e: "#003865"
-      CU Paid - a_no_cu_pay.count_e: "#f8cc35"
-      No CU Paid - a_no_cu_pay.count_e: "#fc4c02"
-      Paid no CU PAC - a_no_cu_pay.count_e: "#8ed9f4"
-      Paid no CU other - a_no_cu_pay.count_e: "#c61d23"
-      Paid no CU IAC - a_no_cu_pay.count_e: "#929292"
-      Paid no CU - a_no_cu_pay.count_e: "#fc4c02"
-    series_labels:
-      No CU Paid - a_no_cu_pay.count_e: Paid without CU (regular payment)
-      CU Paid - a_no_cu_pay.count_e: Paid, via CU
-      Paid no CU - a_no_cu_pay.count_e: Paid, without CU
-    series_types: {}
-    limit_displayed_rows: false
-    hidden_series: []
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of enrollment
-      orientation: left
-      series:
-      - id: Unpaid - a_no_cu_pay.count_e
-        name: Unpaid
-        axisId: a_no_cu_pay.count_e
-      - id: Paid - a_no_cu_pay.count_e
-        name: Paid
-        axisId: a_no_cu_pay.count_e
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_datetime_label: ''
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    column_group_spacing_ratio: 0.05
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen:
-      Time range: a_no_cu_pay.enroll_local_time_date
-    row: 2
-    col: 0
-    width: 24
-    height: 11
   filters:
   - name: Time range
     title: Time range
