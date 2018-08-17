@@ -286,3 +286,8 @@ explore: a_sub_m {
   from: a_sub_m
   label: "a_sub_m"
 }
+
+explore: a_sub_m_ckecker {
+  from: a_sub_m_ckecker
+  label: "a_sub_m_ckecker"
+}
