@@ -1,6 +1,6 @@
-view: a_sub_m {
-derived_table: {
-  sql: with true_users as (
+view: number_of_sub_per_day {
+  derived_table: {
+    sql: with true_users as (
       select distinct sub.user_sso_guid as user
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
       where exc.user_sso_guid is null
@@ -14,7 +14,7 @@ derived_table: {
       , min_dates as(
       select user_sso_guid
       , subscription_state
-      , max(local_time)  as  local_time
+      , min(local_time)  as  local_time
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt
       inner join true_users t on t.user = user_sso_guid
       group by user_sso_guid, subscription_state
@@ -51,7 +51,7 @@ derived_table: {
       )
       , only_trial as (
       select distinct trial.user_sso_guid
-      , trial.local_time
+      , to_date(trial.local_time) as time
       , to_date(trial.SUBSCRIPTION_START) as _start
       , to_date(trial.SUBSCRIPTION_END) as _end
       , trial.SUBSCRIPTION_STATE
@@ -65,7 +65,7 @@ derived_table: {
 
       , only_full as (
       select distinct _full.user_sso_guid
-      , _full.local_time
+      , to_date(_full.local_time) as time
       , to_date(_full.SUBSCRIPTION_START) as _start
       , to_date(_full.SUBSCRIPTION_END) as _end
       , _full.SUBSCRIPTION_STATE
@@ -79,7 +79,7 @@ derived_table: {
 
       , two_state as (
       select distinct _full.user_sso_guid
-      , _full.local_time
+      , to_date(_full.local_time) as time
       , to_date(_full.SUBSCRIPTION_START) as _start
       , to_date(_full.SUBSCRIPTION_END) as _end
       , _full.SUBSCRIPTION_STATE
@@ -88,10 +88,6 @@ derived_table: {
       , case when _full.user_sso_guid in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'PAC' else 'Commerce' end as paid_status
       from _full
       inner join trial t on t.User_sso_guid = _full.user_sso_guid
-      )
-
-      , days as (
-      SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
       )
 
 
@@ -103,86 +99,69 @@ derived_table: {
       select * from two_state
       )
 
-      , res as (
-      select days.day
-      , _all.*
-      from _all, days
-      where _start <= days.day
-      and _end >= days.day
-      )
-
-      select * from res
+select   * from _all
  ;;
-}
+  }
 
-
-measure: count {
-  type: count
-  drill_fields: [detail*]
-}
-
+  measure: count {
+    type: count
+    drill_fields: [detail*]
+  }
   measure: Number_of_users {
     drill_fields: [detail*]
     type: count_distinct
     sql: ${user_sso_guid} ;;
   }
+  dimension: user_sso_guid {
+    type: string
+    sql: ${TABLE}."USER_SSO_GUID" ;;
+  }
 
-dimension: day {
-  type: date
-  sql: ${TABLE}."DAY" ;;
-}
+  dimension: time {
+    type: date
+    sql: ${TABLE}."TIME" ;;
+  }
 
-dimension: user_sso_guid {
-  type: string
-  sql: ${TABLE}."USER_SSO_GUID" ;;
-}
+  dimension: _start {
+    type: date
+    sql: ${TABLE}."_START" ;;
+  }
 
-dimension_group: local_time {
-  type: time
-  sql: ${TABLE}."LOCAL_TIME" ;;
-}
+  dimension: _end {
+    type: date
+    sql: ${TABLE}."_END" ;;
+  }
 
-dimension: _start {
-  type: date
-  sql: ${TABLE}."_START" ;;
-}
+  dimension: subscription_state {
+    type: string
+    sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
+  }
 
-dimension: _end {
-  type: date
-  sql: ${TABLE}."_END" ;;
-}
+  dimension: contract_id {
+    type: string
+    sql: ${TABLE}."CONTRACT_ID" ;;
+  }
 
-dimension: subscription_state {
-  type: string
-  sql: ${TABLE}."SUBSCRIPTION_STATE" ;;
-}
+  dimension: status {
+    type: string
+    sql: ${TABLE}."STATUS" ;;
+  }
 
-dimension: contract_id {
-  type: string
-  sql: ${TABLE}."CONTRACT_ID" ;;
-}
+  dimension: paid_status {
+    type: string
+    sql: ${TABLE}."PAID_STATUS" ;;
+  }
 
-dimension: status {
-  type: string
-  sql: ${TABLE}."STATUS" ;;
-}
-
-dimension: paid_status {
-  type: string
-  sql: ${TABLE}."PAID_STATUS" ;;
-}
-
-set: detail {
-  fields: [
-    day,
-    user_sso_guid,
-    local_time_time,
-    _start,
-    _end,
-    subscription_state,
-    contract_id,
-    status,
-    paid_status
-  ]
-}
+  set: detail {
+    fields: [
+      user_sso_guid,
+      time,
+      _start,
+      _end,
+      subscription_state,
+      contract_id,
+      status,
+      paid_status
+    ]
+  }
 }

@@ -24,3 +24,9 @@ include: "dim_date.view"
 # }
 
 explore: dim_date {}
+
+explore: number_of_sub_per_day {
+  from: number_of_sub_per_day
+  label: "number_of_sub_per_day"
+
+}
