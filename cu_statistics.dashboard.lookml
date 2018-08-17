@@ -100,68 +100,64 @@
     col: 0
     width: 24
     height: 11
-  - name: Products_Daily_ByState
-      state
-    title: C1. Number of provisioned products for all users, for each day, by subscription
-      state
+  - name: Enrollments_Total_ByPaymentType
+    title: A2. Total number of enrollments, by payment type
     model: cu_statistics
-    explore: a_p_p
+    explore: a_no_cu_pay
     type: looker_column
     fields:
-    - a_p_p.count_e
-    - a_p_p.state
-    - a_p_p.local_time_date
+    - a_no_cu_pay.day
+    - a_no_cu_pay.count_e
+    - a_no_cu_pay.status_2
     pivots:
-    - a_p_p.state
+    - a_no_cu_pay.status_2
     fill_fields:
-    - a_p_p.local_time_date
+    - a_no_cu_pay.day
     filters:
-      a_p_p.local_time_date: 30 days
-      a_p_p.sourse: unlimited
-      a_p_p.user_type: student
+      a_no_cu_pay.enroll_user_environment: production
+      a_no_cu_pay.enroll_platform_environment: production
     sorts:
-    - a_p_p.local_time_date
-    - a_p_p.state 0
+    - a_no_cu_pay.day
+    - a_no_cu_pay.status_2 desc
     limit: 500
     query_timezone: America/Los_Angeles
     stacking: normal
     show_value_labels: true
     label_density: 25
+    font_size: '10'
     legend_position: center
-    x_axis_gridlines: false
+    x_axis_gridlines: true
     y_axis_gridlines: true
     show_view_names: true
     point_style: none
     series_colors:
-      full_access - a_p_p.count_e: "#66BB6A"
-      trial_access - a_p_p.count_e: "#FFA726"
-      a - a_p_p.count_e: "#8ed9f4"
-      b - a_p_p.count_e: "#003865"
-      c - a_p_p.count_e: "#c61d23"
-      a:EMPTY - a_p_p.count_e: "#8ed9f4"
-      b:TRIAL - a_p_p.count_e: "#003865"
-      c:FULL - a_p_p.count_e: "#c61d23"
+      Unpaid - a_no_cu_pay.count_e: "#003865"
+      Paid - a_no_cu_pay.count_e: "#f8cc35"
+      No CU Paid - a_no_cu_pay.count_e: "#fc4c02"
+      CU Paid - a_no_cu_pay.count_e: "#f8cc35"
+      Paid no CU PAC - a_no_cu_pay.count_e: "#8ed9f4"
+      Paid no CU other - a_no_cu_pay.count_e: "#c61d23"
+      Paid no CU IAC - a_no_cu_pay.count_e: "#929292"
+      Paid no CU - a_no_cu_pay.count_e: "#fc4c02"
     series_labels:
-      a - a_p_p.count_e: Other users
-      b - a_p_p.count_e: Trial access users
-      c - a_p_p.count_e: Full access users
-      a:EMPTY - a_p_p.count_e: Other users
-      b:TRIAL - a_p_p.count_e: Trial access users
-      c:FULL - a_p_p.count_e: Full access users
+      No CU Paid - a_no_cu_pay.count_e: Paid without CU (regular payment)
+      CU Paid - a_no_cu_pay.count_e: Paid via CU
+      Paid no CU - a_no_cu_pay.count_e: Paid without CU
     series_types: {}
     limit_displayed_rows: false
+    hidden_series: []
     x_padding_left: 25
     x_padding_right: 25
     y_axes:
-    - label: Number of provisioned products
+    - label: Number of enrollment
       orientation: left
       series:
-      - id: full_access - a_p_p.count_e
-        name: full_access
-        axisId: a_p_p.count_e
-      - id: trial_access - a_p_p.count_e
-        name: trial_access
-        axisId: a_p_p.count_e
+      - id: Unpaid - a_no_cu_pay.count_e
+        name: Unpaid
+        axisId: a_no_cu_pay.count_e
+      - id: Paid - a_no_cu_pay.count_e
+        name: Paid
+        axisId: a_no_cu_pay.count_e
       showLabels: true
       showValues: true
       unpinAxis: false
@@ -183,21 +179,24 @@
     plot_size_by_field: false
     ordering: none
     show_null_labels: false
+    column_group_spacing_ratio: 0.05
     show_totals_labels: true
     show_silhouette: false
     totals_color: "#808080"
-    show_row_numbers: true
-    truncate_column_names: false
-    hide_totals: false
-    hide_row_totals: false
-    table_theme: editable
-    enable_conditional_formatting: false
-    conditional_formatting_include_totals: false
-    conditional_formatting_include_nulls: false
-    row: 34
+    listen:
+      Time range: a_no_cu_pay.day
+    row: 13
     col: 0
     width: 24
-    height: 8
+    height: 12
+  - name: Subscribers_Header
+    type: text
+    title_text: Information about user enrollments
+    subtitle_text: in the last 30 days
+    row: 25
+    col: 0
+    width: 24
+    height: 2
   - name: Subscribers_Daily_ByState
     title: Number of CU users subscribed per day, by state
     model: cu_statistics
@@ -306,11 +305,11 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 25
+    row: 27
     col: 0
     width: 20
     height: 7
-  - name: Legend
+  - name: Subscribers_Legend
     type: text
     title_text: Legend
     subtitle_text: Types of full access users
@@ -318,7 +317,7 @@
       Full Access - Direct Purchase - the users with full access which never had trial access
 
       Full Access - Upgraded - the users with full access which upgraded from trial access subscription
-    row: 25
+    row: 27
     col: 20
     width: 4
     height: 7
@@ -408,10 +407,116 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 49
+    row: 34
     col: 0
     width: 24
     height: 9
+  - name: Products_Header
+    type: text
+    title_text: Number of provisioned products
+    subtitle_text: in the last 30 days
+    row: 43
+    col: 0
+    width: 24
+    height: 2
+  - name: Products_Daily_ByState
+      state
+    title: C1. Number of provisioned products for all users, for each day, by subscription
+      state
+    model: cu_statistics
+    explore: a_p_p
+    type: looker_column
+    fields:
+    - a_p_p.count_e
+    - a_p_p.state
+    - a_p_p.local_time_date
+    pivots:
+    - a_p_p.state
+    fill_fields:
+    - a_p_p.local_time_date
+    filters:
+      a_p_p.local_time_date: 30 days
+      a_p_p.sourse: unlimited
+      a_p_p.user_type: student
+    sorts:
+    - a_p_p.local_time_date
+    - a_p_p.state 0
+    limit: 500
+    query_timezone: America/Los_Angeles
+    stacking: normal
+    show_value_labels: true
+    label_density: 25
+    legend_position: center
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: true
+    point_style: none
+    series_colors:
+      full_access - a_p_p.count_e: "#66BB6A"
+      trial_access - a_p_p.count_e: "#FFA726"
+      a - a_p_p.count_e: "#8ed9f4"
+      b - a_p_p.count_e: "#003865"
+      c - a_p_p.count_e: "#c61d23"
+      a:EMPTY - a_p_p.count_e: "#8ed9f4"
+      b:TRIAL - a_p_p.count_e: "#003865"
+      c:FULL - a_p_p.count_e: "#c61d23"
+    series_labels:
+      a - a_p_p.count_e: Other users
+      b - a_p_p.count_e: Trial access users
+      c - a_p_p.count_e: Full access users
+      a:EMPTY - a_p_p.count_e: Other users
+      b:TRIAL - a_p_p.count_e: Trial access users
+      c:FULL - a_p_p.count_e: Full access users
+    series_types: {}
+    limit_displayed_rows: false
+    x_padding_left: 25
+    x_padding_right: 25
+    y_axes:
+    - label: Number of provisioned products
+      orientation: left
+      series:
+      - id: full_access - a_p_p.count_e
+        name: full_access
+        axisId: a_p_p.count_e
+      - id: trial_access - a_p_p.count_e
+        name: trial_access
+        axisId: a_p_p.count_e
+      showLabels: true
+      showValues: true
+      unpinAxis: false
+      tickDensity: default
+      tickDensityCustom: 5
+      type: linear
+    y_axis_combined: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    x_axis_label: Date
+    show_x_axis_ticks: true
+    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: true
+    show_silhouette: false
+    totals_color: "#808080"
+    show_row_numbers: true
+    truncate_column_names: false
+    hide_totals: false
+    hide_row_totals: false
+    table_theme: editable
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    row: 45
+    col: 0
+    width: 24
+    height: 8
   - name: Products_FullAccess_ByProductType
     title: C3. Provisioned to full access users, by product type
     model: cu_statistics
@@ -511,7 +616,7 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 42
+    row: 53
     col: 12
     width: 12
     height: 7
@@ -613,107 +718,11 @@
     enable_conditional_formatting: false
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
-    row: 42
+    row: 60
     col: 0
     width: 12
     height: 7
-  - name: Products_Header
-    type: text
-    title_text: Number of provisioned products
-    subtitle_text: in the last 30 days
-    row: 32
-    col: 0
-    width: 24
-    height: 2
-  - name: Enrollments_Total_ByPaymentType
-    title: A2. Total number of enrollments, by payment type
-    model: cu_statistics
-    explore: a_no_cu_pay
-    type: looker_column
-    fields:
-    - a_no_cu_pay.day
-    - a_no_cu_pay.count_e
-    - a_no_cu_pay.status_2
-    pivots:
-    - a_no_cu_pay.status_2
-    fill_fields:
-    - a_no_cu_pay.day
-    filters:
-      a_no_cu_pay.enroll_user_environment: production
-      a_no_cu_pay.enroll_platform_environment: production
-    sorts:
-    - a_no_cu_pay.day
-    - a_no_cu_pay.status_2 desc
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    show_value_labels: true
-    label_density: 25
-    font_size: '10'
-    legend_position: center
-    x_axis_gridlines: true
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      Unpaid - a_no_cu_pay.count_e: "#003865"
-      Paid - a_no_cu_pay.count_e: "#f8cc35"
-      No CU Paid - a_no_cu_pay.count_e: "#fc4c02"
-      CU Paid - a_no_cu_pay.count_e: "#f8cc35"
-      Paid no CU PAC - a_no_cu_pay.count_e: "#8ed9f4"
-      Paid no CU other - a_no_cu_pay.count_e: "#c61d23"
-      Paid no CU IAC - a_no_cu_pay.count_e: "#929292"
-      Paid no CU - a_no_cu_pay.count_e: "#fc4c02"
-    series_labels:
-      No CU Paid - a_no_cu_pay.count_e: Paid without CU (regular payment)
-      CU Paid - a_no_cu_pay.count_e: Paid via CU
-      Paid no CU - a_no_cu_pay.count_e: Paid without CU
-    series_types: {}
-    limit_displayed_rows: false
-    hidden_series: []
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of enrollment
-      orientation: left
-      series:
-      - id: Unpaid - a_no_cu_pay.count_e
-        name: Unpaid
-        axisId: a_no_cu_pay.count_e
-      - id: Paid - a_no_cu_pay.count_e
-        name: Paid
-        axisId: a_no_cu_pay.count_e
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    column_group_spacing_ratio: 0.05
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    listen:
-      Time range: a_no_cu_pay.day
-    row: 13
-    col: 0
-    width: 24
-    height: 12
+
   filters:
   - name: Time range
     title: Time range
