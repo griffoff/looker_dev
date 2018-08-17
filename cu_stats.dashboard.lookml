@@ -695,7 +695,7 @@
     width: 24
     height: 9
   - name: Numberofnewenrollmentsforeachdaybypaymenttype
-    title: Numberofnewenrollmentsforeachdaybypaymenttype
+    title: A1. Number of new enrollments for each day by payment type
     model: cu_statistics
     explore: a_no_cu_pay
     type: looker_column
