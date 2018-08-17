@@ -4,14 +4,14 @@
   elements:
   - name: Enrollments_Header
     type: text
-    title_text: Information about user enrollments
+    title_text: Daily statistics for User Enrollments
     subtitle_text: in the last 30 days
     row: 0
     col: 0
     width: 24
     height: 2
   - name: Enrollments_Daily_ByPaymentType
-    title: A1. Number of new enrollments, for each day, by payment type
+    title: A1. New Enrollments - Daily - By Payment Type
     model: cu_statistics
     explore: a_no_cu_pay
     type: looker_column
@@ -101,7 +101,7 @@
     width: 24
     height: 11
   - name: Enrollments_Total_ByPaymentType
-    title: A2. Total number of enrollments, by payment type
+    title: A2. Total Enrollments - Daily - By Payment Type
     model: cu_statistics
     explore: a_no_cu_pay
     type: looker_column
@@ -191,14 +191,14 @@
     height: 12
   - name: Subscribers_Header
     type: text
-    title_text: Information about user enrollments
+    title_text: Daily statistics for Unlimited Subscriptions
     subtitle_text: in the last 30 days
     row: 25
     col: 0
     width: 24
     height: 2
   - name: Subscribers_Daily_ByState
-    title: Number of CU users subscribed per day, by state
+    title: B1. Subscriptions - Daily - By Subscription State
     model: cu_statistics
     explore: switch_state_prod
     type: looker_column
@@ -322,7 +322,7 @@
     width: 4
     height: 7
   - name: CUMULATIVE_Active_ByState
-    title: Total number of active CU users,  by state
+    title: B2. Total Active Unlimited Subscriptions - By Subscription State
     model: cu_statistics
     explore: a_subscriptions
     type: looker_column
@@ -413,7 +413,7 @@
     height: 9
   - name: Products_Header
     type: text
-    title_text: Number of provisioned products
+    title_text: Number of Provisioned Products
     subtitle_text: in the last 30 days
     row: 43
     col: 0
@@ -421,7 +421,7 @@
     height: 2
   - name: Products_Daily_ByState
       state
-    title: C1. Number of provisioned products for all users, for each day, by subscription
+    title: C1. Provisioned Products - Daily - All Users
       state
     model: cu_statistics
     explore: a_p_p
@@ -517,8 +517,110 @@
     col: 0
     width: 24
     height: 8
+  - name: Products_TrialAccess_ByProductType
+    title: C2. Trial Access User Products - Daily - By Product Type
+    model: cu_statistics
+    explore: a_p_p
+    type: looker_column
+    fields:
+    - a_p_p.count_e
+    - a_p_p.local_time_date
+    - a_p_p.platform
+    pivots:
+    - a_p_p.platform
+    fill_fields:
+    - a_p_p.local_time_date
+    filters:
+      a_p_p.local_time_date: 30 days
+      a_p_p.sourse: unlimited
+      a_p_p.user_type: student
+      a_p_p.state: b:TRIAL
+    sorts:
+    - a_p_p.local_time_date
+    - a_p_p.platform 0
+    limit: 500
+    query_timezone: America/Los_Angeles
+    stacking: normal
+    colors:
+    - 'palette: Looker Classic'
+    show_value_labels: true
+    label_density: 25
+    legend_position: center
+    x_axis_gridlines: false
+    y_axis_gridlines: true
+    show_view_names: true
+    point_style: none
+    series_colors:
+      MTC - a_p_p.count_e: "#e0004d"
+      MTR - a_p_p.count_e: " #92278f"
+      SAMCU - a_p_p.count_e: "#198ec4"
+      SMART - a_p_p.count_e: "#8ed9f4"
+      SMEB - a_p_p.count_e: "#e4422b"
+      APLIA - a_p_p.count_e: "#e8ac25"
+      other - a_p_p.count_e: "#928fb4"
+      SAM - a_p_p.count_e: "#9fc190"
+      WA - a_p_p.count_e: "#bebebe"
+      OWL - a_p_p.count_e: "#3add47"
+    series_labels:
+      a - a_p_p.count_e: Other users
+      b - a_p_p.count_e: Trial access users
+      c - a_p_p.count_e: Full access users
+      a:EMPTY - a_p_p.count_e: Other users
+      b:TRIAL - a_p_p.count_e: Trial access users
+      c:FULL - a_p_p.count_e: Full access users
+    series_types: {}
+    limit_displayed_rows: false
+    hidden_series: []
+    x_padding_left: 25
+    x_padding_right: 25
+    y_axes:
+    - label: Number of provisioned products
+      orientation: left
+      series:
+      - id: full_access - a_p_p.count_e
+        name: full_access
+        axisId: a_p_p.count_e
+      - id: trial_access - a_p_p.count_e
+        name: trial_access
+        axisId: a_p_p.count_e
+      showLabels: true
+      showValues: true
+      unpinAxis: false
+      tickDensity: default
+      tickDensityCustom: 5
+      type: linear
+    y_axis_combined: true
+    show_y_axis_labels: true
+    show_y_axis_ticks: true
+    y_axis_tick_density: default
+    y_axis_tick_density_custom: 5
+    show_x_axis_label: true
+    x_axis_label: Date
+    show_x_axis_ticks: true
+    x_axis_scale: ordinal
+    y_axis_scale_mode: linear
+    x_axis_reversed: false
+    y_axis_reversed: false
+    plot_size_by_field: false
+    ordering: none
+    show_null_labels: false
+    show_totals_labels: true
+    show_silhouette: false
+    totals_color: "#808080"
+    show_row_numbers: true
+    truncate_column_names: false
+    hide_totals: false
+    hide_row_totals: false
+    table_theme: editable
+    enable_conditional_formatting: false
+    conditional_formatting_include_totals: false
+    conditional_formatting_include_nulls: false
+    row: 53
+    col: 0
+    width: 12
+    height: 7
   - name: Products_FullAccess_ByProductType
-    title: C3. Provisioned to full access users, by product type
+    title: C3. Full Access User Products - Daily - By Product Type
     model: cu_statistics
     explore: a_p_p
     type: looker_column
@@ -620,109 +722,6 @@
     col: 12
     width: 12
     height: 7
-  - name: Products_TrialAccess_ByProductType
-    title: C2. Provisioned to trial access users, by product type
-    model: cu_statistics
-    explore: a_p_p
-    type: looker_column
-    fields:
-    - a_p_p.count_e
-    - a_p_p.local_time_date
-    - a_p_p.platform
-    pivots:
-    - a_p_p.platform
-    fill_fields:
-    - a_p_p.local_time_date
-    filters:
-      a_p_p.local_time_date: 30 days
-      a_p_p.sourse: unlimited
-      a_p_p.user_type: student
-      a_p_p.state: b:TRIAL
-    sorts:
-    - a_p_p.local_time_date
-    - a_p_p.platform 0
-    limit: 500
-    query_timezone: America/Los_Angeles
-    stacking: normal
-    colors:
-    - 'palette: Looker Classic'
-    show_value_labels: true
-    label_density: 25
-    legend_position: center
-    x_axis_gridlines: false
-    y_axis_gridlines: true
-    show_view_names: true
-    point_style: none
-    series_colors:
-      MTC - a_p_p.count_e: "#e0004d"
-      MTR - a_p_p.count_e: " #92278f"
-      SAMCU - a_p_p.count_e: "#198ec4"
-      SMART - a_p_p.count_e: "#8ed9f4"
-      SMEB - a_p_p.count_e: "#e4422b"
-      APLIA - a_p_p.count_e: "#e8ac25"
-      other - a_p_p.count_e: "#928fb4"
-      SAM - a_p_p.count_e: "#9fc190"
-      WA - a_p_p.count_e: "#bebebe"
-      OWL - a_p_p.count_e: "#3add47"
-    series_labels:
-      a - a_p_p.count_e: Other users
-      b - a_p_p.count_e: Trial access users
-      c - a_p_p.count_e: Full access users
-      a:EMPTY - a_p_p.count_e: Other users
-      b:TRIAL - a_p_p.count_e: Trial access users
-      c:FULL - a_p_p.count_e: Full access users
-    series_types: {}
-    limit_displayed_rows: false
-    hidden_series: []
-    x_padding_left: 25
-    x_padding_right: 25
-    y_axes:
-    - label: Number of provisioned products
-      orientation: left
-      series:
-      - id: full_access - a_p_p.count_e
-        name: full_access
-        axisId: a_p_p.count_e
-      - id: trial_access - a_p_p.count_e
-        name: trial_access
-        axisId: a_p_p.count_e
-      showLabels: true
-      showValues: true
-      unpinAxis: false
-      tickDensity: default
-      tickDensityCustom: 5
-      type: linear
-    y_axis_combined: true
-    show_y_axis_labels: true
-    show_y_axis_ticks: true
-    y_axis_tick_density: default
-    y_axis_tick_density_custom: 5
-    show_x_axis_label: true
-    x_axis_label: Date
-    show_x_axis_ticks: true
-    x_axis_scale: ordinal
-    y_axis_scale_mode: linear
-    x_axis_reversed: false
-    y_axis_reversed: false
-    plot_size_by_field: false
-    ordering: none
-    show_null_labels: false
-    show_totals_labels: true
-    show_silhouette: false
-    totals_color: "#808080"
-    show_row_numbers: true
-    truncate_column_names: false
-    hide_totals: false
-    hide_row_totals: false
-    table_theme: editable
-    enable_conditional_formatting: false
-    conditional_formatting_include_totals: false
-    conditional_formatting_include_nulls: false
-    row: 60
-    col: 0
-    width: 12
-    height: 7
-
   filters:
   - name: Time range
     title: Time range
