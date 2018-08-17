@@ -1,6 +1,6 @@
 view: a_no_cu_pay {
    derived_table: {
-    sql:  with
+    sql: with
       enroll as (
             select distinct sub.user_sso_guid as user
             , sub.course_key
@@ -17,7 +17,7 @@ view: a_no_cu_pay {
       , e._rsrc
       , e.access_role
       , e.course_key
-      , e.local_time
+      , to_date(e.local_time) as local_time
       , e.message_format_version
       , e.message_type
       , e.platform_environment
@@ -121,15 +121,18 @@ SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(
 
             , res as (
             select days.day
+            ,to_date(ENROLL_LOCAL_TIME)
             , _all.*
             from _all, days
             where to_date(enroll_local_time) <= days.day
             )
 
 
+            --select status_2, count(distinct enroll_hash) from res where day = to_date('2018-08-16') group by status_2
             select * from res
-       ;;
+ ;;
   }
+
 measure: count {
   type: count
   drill_fields: [detail*]
@@ -137,7 +140,7 @@ measure: count {
 measure: count_e {
     type: count_distinct
     drill_fields: [detail*]
-    sql: ${user_sso_guid} ;;
+    sql: ${enroll_hash} ;;
 }
 dimension: day {
   type: date
