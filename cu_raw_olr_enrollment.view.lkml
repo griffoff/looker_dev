@@ -1,4 +1,4 @@
-view: raw_olr_enrollment {
+view: cu_raw_olr_enrollment {
   sql_table_name: UNLIMITED.RAW_OLR_ENROLLMENT ;;
 
   dimension: _hash {

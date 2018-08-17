@@ -1,4 +1,4 @@
-view: raw_olr_extended_iac {
+view: cu_raw_olr_extended_iac {
   sql_table_name: UNLIMITED.RAW_OLR_EXTENDED_IAC ;;
 
   dimension_group: _ldts {

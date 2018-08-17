@@ -1,4 +1,4 @@
-view: clts_excluded_users {
+view: cu_clts_excluded_users {
   sql_table_name: UNLIMITED.CLTS_EXCLUDED_USERS ;;
 
   dimension_group: _ldts {
