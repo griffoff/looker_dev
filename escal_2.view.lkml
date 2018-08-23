@@ -396,6 +396,21 @@ select full_table.*
     'SAM','SSO Account Services','SSO/OLR', 'WebAssign', 'www.cengage.com') ;;
   }
 
+
+  measure: count_opened{
+    type:  count_distinct
+    sql: case when ${status} not like 'Close' then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+  measure: count_closed{
+    type:  count_distinct
+    sql: case when ${status} like 'Close' then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+
+
   measure: count_resolved {
     label: "# Resolved"
     type:  count_distinct

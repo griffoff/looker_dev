@@ -13,7 +13,11 @@ datagroup: escal_datagroup {
   max_cache_age: "12 hours"
 }
 
+explore: escal_2_new_copy {
+  from: escal_2_new_copy
+  label: "escal_2_new_copy"
 
+}
 explore: vw_escal_detail {
   label: "Escals"
 #used in dashboard-19. Will be deleted.
