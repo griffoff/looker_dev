@@ -27,4 +27,3 @@
     "#c5c6a6", "#82c2ca", "#cee0a0", "#928fb4", "#9fc190"]
   series_colors: {}
   series_types: {}
-
