@@ -7,8 +7,9 @@ view: escal_2_new_copy {
         , T2.COMPONENT
         FROM JIRA.JIRA_PROCS_ISSUE T1
           INNER JOIN JIRA.RAW_JIRA_DATA T2 ON T1.ID_TICKET=T2.ID_TICKET
-        where PROCESS_NAME='filter-99476'  -- stg 92672
+       where PROCESS_NAME='filter-99476'  -- stg 92672
   )
+
 , full_table as ( select
       ID_TICKET
     , KEY_JIRA
@@ -43,15 +44,26 @@ view: escal_2_new_copy {
         , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
         , round(timestampdiff(minute,created,last_closed)/60) as closedTime
         , round(timestampdiff(minute,created,current_timestamp())/60) as age
-from tickets )
+, jsondata:changelog::string as cl
+--, value:items as items
+from tickets
+--, lateral flatten ( input => JSONDATA:changelog:histories)
+)
+, days as (
+SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
+            )
 
-select full_table.*
-    , case when to_date(updated) = to_date(created) and status not like 'Closed' then 'Opened' else case when status like 'Closed' then 'Closed'end  end as opening_status
-    , PRODUCTGROUP::string as PRODUCTGROUP
-    , DISPLAYORDER::number as DISPLAYORDER
-    , ISTOPSYSTEM::boolean as ISTOPSYSTEM
-     from full_table
-    left join JIRA.TOPSYSTEM ts on COMPONENT=SYSTEMNAME
+, res as(
+select
+ days.day
+, case when to_date(created) = day then 'true' end as created_today
+, case when to_date(split_part(LAST_UPDATED, 'T', 1)) = day and status like 'Closed' then 'true' end as closed_today
+, case when to_date(split_part(LAST_UPDATED, 'T', 1)) = day and status like 'Reopened' then 'true' end as reopened_today
+, full_table.*
+from full_table, days
+)
+
+select * from res
  ;;
   }
 
@@ -59,6 +71,60 @@ select full_table.*
     type: count_distinct
     sql: ${id_ticket} ;;
     drill_fields: [detail*]
+  }
+
+  measure: created
+  {
+    type: count_distinct
+    filters: {
+      field: created_today
+      value: "true"
+    }
+    sql: ${id_ticket} ;;
+    drill_fields: [detail*]
+  }
+
+  measure: closed
+  {
+    type: count_distinct
+    filters: {
+      field: closed_today
+      value: "true"
+    }
+    sql: ${id_ticket} ;;
+    drill_fields: [detail*]
+  }
+
+  measure: reopen
+  {
+    type: count_distinct
+    filters: {
+      field: reopened_today
+      value: "true"
+    }
+    sql: ${id_ticket} ;;
+    drill_fields: [detail*]
+  }
+
+
+  dimension: day {
+    type: date
+    sql: ${TABLE}."DAY" ;;
+  }
+
+  dimension: created_today {
+    type: string
+    sql: ${TABLE}."CREATED_TODAY" ;;
+  }
+
+  dimension: closed_today {
+    type: string
+    sql: ${TABLE}."CLOSED_TODAY" ;;
+  }
+
+  dimension: reopened_today {
+    type: string
+    sql: ${TABLE}."REOPENED_TODAY" ;;
   }
 
   dimension: id_ticket {
@@ -196,28 +262,17 @@ select full_table.*
     sql: ${TABLE}."AGE" ;;
   }
 
-  dimension: opening_status {
+  dimension: cl {
     type: string
-    sql: ${TABLE}."OPENING_STATUS" ;;
-  }
-
-  dimension: productgroup {
-    type: string
-    sql: ${TABLE}."PRODUCTGROUP" ;;
-  }
-
-  dimension: displayorder {
-    type: number
-    sql: ${TABLE}."DISPLAYORDER" ;;
-  }
-
-  dimension: istopsystem {
-    type: string
-    sql: ${TABLE}."ISTOPSYSTEM" ;;
+    sql: ${TABLE}."CL" ;;
   }
 
   set: detail {
     fields: [
+      day,
+      created_today,
+      closed_today,
+      reopened_today,
       id_ticket,
       key_jira,
       created_time,
@@ -245,10 +300,7 @@ select full_table.*
       acknowledgedtime,
       closedtime,
       age,
-      opening_status,
-      productgroup,
-      displayorder,
-      istopsystem
+      cl
     ]
   }
 }
