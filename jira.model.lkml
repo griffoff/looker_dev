@@ -18,6 +18,12 @@ explore: escal_2_new_copy {
   label: "escal_2_new_copy"
 
 }
+
+explore: escal_2_new_copy_2 {
+  from: escal_2_new_copy_2
+  label: "escal_2_new_copy_2"
+
+}
 explore: vw_escal_detail {
   label: "Escals"
 #used in dashboard-19. Will be deleted.

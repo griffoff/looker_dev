@@ -1,6 +1,6 @@
-view: escal_2_new_copy {
-     derived_table: {
-      sql: WITH tickets as(
+view: escal_2_new_copy_2 {
+  derived_table: {
+    sql: WITH tickets as(
         SELECT T1.ID_TICKET
         , TO_TIMESTAMP_TZ(T2.JSONDATA:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
         , T2.JSONDATA
@@ -22,42 +22,19 @@ from tickets t
 , lateral flatten ( input => changeLog:changelog:histories)
 )
 
-, st as (
+, _status as (
 select
-ID_TICKET
-, KEY_JIRA
+ID_TICKET as ID
+, KEY_JIRA as KEY
 --, value:fromString::string as prev_status
 , to_date(date_changed) as day_changed
-, max(date_changed) as dc
---, value:toString::string as new_status
-from
-history
-, lateral flatten ( input => history.items )
-where value:field = 'status'
-group by ID_TICKET, KEY_JIRA, day_changed
-)
-
-, bs as(
-select
-ID_TICKET
-, KEY_JIRA
---, value:fromString::string as prev_status
-, date_changed
 , case when value:fromString::string like 'Closed' then 'Reopened' else value:toString::string end as new_status
 from
 history
 , lateral flatten ( input => history.items )
 where value:field = 'status'
-)
 
-, _status as (
-select s1.ID_TICKET as ID
-, s1.KEY_JIRA as KEY
-, s1.day_changed
-, s2.new_status
-from st s1 inner join bs s2 on s1.ID_TICKET = s2.ID_TICKET and s1.KEY_JIRA = s2.KEY_JIRA and s1.dc = s2.date_changed
 )
-
 , with_change as ( select
       tickets.ID_TICKET
     , tickets.KEY_JIRA
@@ -160,7 +137,8 @@ from full_table, days
 
 select * from res
  ;;
-    }
+  }
+
   measure: count {
     type: count_distinct
     sql: ${id_ticket} ;;
@@ -201,218 +179,218 @@ select * from res
   }
 
 
-dimension: day {
-  type: date
-  sql: ${TABLE}."DAY" ;;
-}
+  dimension: day {
+    type: date
+    sql: ${TABLE}."DAY" ;;
+  }
 
-dimension: created_today {
-  type: string
-  sql: ${TABLE}."CREATED_TODAY" ;;
-}
+  dimension: created_today {
+    type: string
+    sql: ${TABLE}."CREATED_TODAY" ;;
+  }
 
-dimension: closed_today {
-  type: string
-  sql: ${TABLE}."CLOSED_TODAY" ;;
-}
+  dimension: closed_today {
+    type: string
+    sql: ${TABLE}."CLOSED_TODAY" ;;
+  }
 
-dimension: reopened_today {
-  type: string
-  sql: ${TABLE}."REOPENED_TODAY" ;;
-}
+  dimension: reopened_today {
+    type: string
+    sql: ${TABLE}."REOPENED_TODAY" ;;
+  }
 
-dimension: id_ticket {
-  type: string
-  sql: ${TABLE}."ID_TICKET" ;;
-}
+  dimension: id_ticket {
+    type: string
+    sql: ${TABLE}."ID_TICKET" ;;
+  }
 
-dimension: key_jira {
-  type: string
-  sql: ${TABLE}."KEY_JIRA" ;;
-}
+  dimension: key_jira {
+    type: string
+    sql: ${TABLE}."KEY_JIRA" ;;
+  }
 
-dimension: day_changed {
-  type: date
-  sql: ${TABLE}."DAY_CHANGED" ;;
-}
+  dimension: day_changed {
+    type: date
+    sql: ${TABLE}."DAY_CHANGED" ;;
+  }
 
-dimension: new_status {
-  type: string
-  sql: ${TABLE}."NEW_STATUS" ;;
-}
+  dimension: new_status {
+    type: string
+    sql: ${TABLE}."NEW_STATUS" ;;
+  }
 
-dimension_group: created {
-  type: time
-  sql: ${TABLE}."CREATED" ;;
-}
+  dimension_group: created {
+    type: time
+    sql: ${TABLE}."CREATED" ;;
+  }
 
-dimension: changelog {
-  type: string
-  sql: ${TABLE}."CHANGELOG" ;;
-}
+  dimension: changelog {
+    type: string
+    sql: ${TABLE}."CHANGELOG" ;;
+  }
 
-dimension_group: acknowledged {
-  type: time
-  sql: ${TABLE}."ACKNOWLEDGED" ;;
-}
+  dimension_group: acknowledged {
+    type: time
+    sql: ${TABLE}."ACKNOWLEDGED" ;;
+  }
 
-dimension_group: resolved {
-  type: time
-  sql: ${TABLE}."RESOLVED" ;;
-}
+  dimension_group: resolved {
+    type: time
+    sql: ${TABLE}."RESOLVED" ;;
+  }
 
-dimension_group: updated {
-  type: time
-  sql: ${TABLE}."UPDATED" ;;
-}
+  dimension_group: updated {
+    type: time
+    sql: ${TABLE}."UPDATED" ;;
+  }
 
-dimension_group: last_resolved {
-  type: time
-  sql: ${TABLE}."LAST_RESOLVED" ;;
-}
+  dimension_group: last_resolved {
+    type: time
+    sql: ${TABLE}."LAST_RESOLVED" ;;
+  }
 
-dimension_group: last_closed {
-  type: time
-  sql: ${TABLE}."LAST_CLOSED" ;;
-}
+  dimension_group: last_closed {
+    type: time
+    sql: ${TABLE}."LAST_CLOSED" ;;
+  }
 
-dimension: priority {
-  type: string
-  sql: ${TABLE}."PRIORITY" ;;
-}
+  dimension: priority {
+    type: string
+    sql: ${TABLE}."PRIORITY" ;;
+  }
 
-dimension: description {
-  type: string
-  sql: ${TABLE}."DESCRIPTION" ;;
-}
+  dimension: description {
+    type: string
+    sql: ${TABLE}."DESCRIPTION" ;;
+  }
 
-dimension: severity {
-  type: string
-  sql: ${TABLE}."SEVERITY" ;;
-}
+  dimension: severity {
+    type: string
+    sql: ${TABLE}."SEVERITY" ;;
+  }
 
-dimension: resolution {
-  type: string
-  sql: ${TABLE}."RESOLUTION" ;;
-}
+  dimension: resolution {
+    type: string
+    sql: ${TABLE}."RESOLUTION" ;;
+  }
 
-dimension: status {
-  type: string
-  sql: ${TABLE}."STATUS" ;;
-}
+  dimension: status {
+    type: string
+    sql: ${TABLE}."STATUS" ;;
+  }
 
-dimension: summary {
-  type: string
-  sql: ${TABLE}."SUMMARY" ;;
-}
+  dimension: summary {
+    type: string
+    sql: ${TABLE}."SUMMARY" ;;
+  }
 
-dimension: component {
-  type: string
-  sql: ${TABLE}."COMPONENT" ;;
-}
+  dimension: component {
+    type: string
+    sql: ${TABLE}."COMPONENT" ;;
+  }
 
-dimension: last_updated {
-  type: string
-  sql: ${TABLE}."LAST_UPDATED" ;;
-}
+  dimension: last_updated {
+    type: string
+    sql: ${TABLE}."LAST_UPDATED" ;;
+  }
 
-dimension: issuetype {
-  type: string
-  sql: ${TABLE}."ISSUETYPE" ;;
-}
+  dimension: issuetype {
+    type: string
+    sql: ${TABLE}."ISSUETYPE" ;;
+  }
 
-dimension: category {
-  type: string
-  sql: ${TABLE}."CATEGORY" ;;
-}
+  dimension: category {
+    type: string
+    sql: ${TABLE}."CATEGORY" ;;
+  }
 
-dimension: sso_isbn {
-  type: string
-  sql: ${TABLE}."SSO_ISBN" ;;
-}
+  dimension: sso_isbn {
+    type: string
+    sql: ${TABLE}."SSO_ISBN" ;;
+  }
 
-dimension: discipline {
-  type: string
-  sql: ${TABLE}."DISCIPLINE" ;;
-}
+  dimension: discipline {
+    type: string
+    sql: ${TABLE}."DISCIPLINE" ;;
+  }
 
-dimension: customer_institution {
-  type: string
-  sql: ${TABLE}."CUSTOMER_INSTITUTION" ;;
-}
+  dimension: customer_institution {
+    type: string
+    sql: ${TABLE}."CUSTOMER_INSTITUTION" ;;
+  }
 
-dimension: course_key {
-  type: string
-  sql: ${TABLE}."COURSE_KEY" ;;
-}
+  dimension: course_key {
+    type: string
+    sql: ${TABLE}."COURSE_KEY" ;;
+  }
 
-dimension: salesforce_key {
-  type: string
-  sql: ${TABLE}."SALESFORCE_KEY" ;;
-}
+  dimension: salesforce_key {
+    type: string
+    sql: ${TABLE}."SALESFORCE_KEY" ;;
+  }
 
-dimension: resolutiontime {
-  type: number
-  sql: ${TABLE}."RESOLUTIONTIME" ;;
-}
+  dimension: resolutiontime {
+    type: number
+    sql: ${TABLE}."RESOLUTIONTIME" ;;
+  }
 
-dimension: acknowledgedtime {
-  type: number
-  sql: ${TABLE}."ACKNOWLEDGEDTIME" ;;
-}
+  dimension: acknowledgedtime {
+    type: number
+    sql: ${TABLE}."ACKNOWLEDGEDTIME" ;;
+  }
 
-dimension: closedtime {
-  type: number
-  sql: ${TABLE}."CLOSEDTIME" ;;
-}
+  dimension: closedtime {
+    type: number
+    sql: ${TABLE}."CLOSEDTIME" ;;
+  }
 
-dimension: age {
-  type: number
-  sql: ${TABLE}."AGE" ;;
-}
+  dimension: age {
+    type: number
+    sql: ${TABLE}."AGE" ;;
+  }
 
-dimension: cl {
-  type: string
-  sql: ${TABLE}."CL" ;;
-}
+  dimension: cl {
+    type: string
+    sql: ${TABLE}."CL" ;;
+  }
 
-set: detail {
-  fields: [
-    day,
-    created_today,
-    closed_today,
-    reopened_today,
-    id_ticket,
-    key_jira,
-    day_changed,
-    new_status,
-    created_time,
-    changelog,
-    acknowledged_time,
-    resolved_time,
-    updated_time,
-    last_resolved_time,
-    last_closed_time,
-    priority,
-    description,
-    severity,
-    resolution,
-    status,
-    summary,
-    component,
-    last_updated,
-    issuetype,
-    category,
-    sso_isbn,
-    discipline,
-    customer_institution,
-    course_key,
-    salesforce_key,
-    resolutiontime,
-    acknowledgedtime,
-    closedtime,
-    age,
-    cl
-  ]
-}
+  set: detail {
+    fields: [
+      day,
+      created_today,
+      closed_today,
+      reopened_today,
+      id_ticket,
+      key_jira,
+      day_changed,
+      new_status,
+      created_time,
+      changelog,
+      acknowledged_time,
+      resolved_time,
+      updated_time,
+      last_resolved_time,
+      last_closed_time,
+      priority,
+      description,
+      severity,
+      resolution,
+      status,
+      summary,
+      component,
+      last_updated,
+      issuetype,
+      category,
+      sso_isbn,
+      discipline,
+      customer_institution,
+      course_key,
+      salesforce_key,
+      resolutiontime,
+      acknowledgedtime,
+      closedtime,
+      age,
+      cl
+    ]
+  }
 }
