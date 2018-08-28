@@ -1,5 +1,5 @@
 view: escal_2_new_copy {
-    derived_table: {
+     derived_table: {
       sql: WITH tickets as(
         SELECT T1.ID_TICKET
         , TO_TIMESTAMP_TZ(T2.JSONDATA:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
@@ -64,6 +64,7 @@ from st s1 inner join bs s2 on s1.ID_TICKET = s2.ID_TICKET and s1.KEY_JIRA = s2.
     , _status.day_changed
     , _status.new_status
     , tickets.CREATED as CREATED
+    , tickets.changelog
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
     , case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
     , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
@@ -102,6 +103,7 @@ from tickets inner join _status on tickets.ID_TICKET = _status.ID and tickets.KE
     , null as day_changed
     , null as new_status
     , tickets.CREATED as CREATED
+    , tickets.changelog
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
     , case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
     , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
@@ -159,7 +161,6 @@ from full_table, days
 select * from res
  ;;
     }
-
   measure: count {
     type: count_distinct
     sql: ${id_ticket} ;;
@@ -200,7 +201,7 @@ select * from res
   }
 
 
- dimension: day {
+dimension: day {
   type: date
   sql: ${TABLE}."DAY" ;;
 }
@@ -243,6 +244,11 @@ dimension: new_status {
 dimension_group: created {
   type: time
   sql: ${TABLE}."CREATED" ;;
+}
+
+dimension: changelog {
+  type: string
+  sql: ${TABLE}."CHANGELOG" ;;
 }
 
 dimension_group: acknowledged {
@@ -381,6 +387,7 @@ set: detail {
     day_changed,
     new_status,
     created_time,
+    changelog,
     acknowledged_time,
     resolved_time,
     updated_time,
