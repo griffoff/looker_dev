@@ -2,6 +2,7 @@ view: escal_2_new_copy {
     derived_table: {
       sql: WITH tickets as(
         SELECT T1.ID_TICKET
+        , TO_TIMESTAMP_TZ(T2.JSONDATA:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
         , T2.JSONDATA
         , T2.KEY_JIRA
         , T2.COMPONENT
@@ -14,6 +15,7 @@ view: escal_2_new_copy {
 , history as( select
 ID_TICKET
 , KEY_JIRA
+, created
 , value:items as items
 ,to_timestamp_tz(value:created::string, 'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as date_changed
 from tickets t
@@ -56,12 +58,12 @@ select s1.ID_TICKET as ID
 from st s1 inner join bs s2 on s1.ID_TICKET = s2.ID_TICKET and s1.KEY_JIRA = s2.KEY_JIRA and s1.dc = s2.date_changed
 )
 
-, full_table as ( select
+, with_change as ( select
       tickets.ID_TICKET
     , tickets.KEY_JIRA
     , _status.day_changed
     , _status.new_status
-    , TO_TIMESTAMP_TZ(jsondata:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
+    , tickets.CREATED as CREATED
     , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
     , case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
     , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
@@ -92,6 +94,53 @@ from tickets inner join _status on tickets.ID_TICKET = _status.ID and tickets.KE
 
 
 )
+
+
+, without_change as ( select
+      tickets.ID_TICKET
+    , tickets.KEY_JIRA
+    , null as day_changed
+    , null as new_status
+    , tickets.CREATED as CREATED
+    , case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
+    , case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
+    , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
+    , case when JSONDATA:customfield_13438='null' then null else to_timestamp(as_number(JSONDATA:customfield_13438), 3) end as last_resolved
+    , case when JSONDATA:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:customfield_13430), 3) end as last_closed
+    , JSONDATA:priority:name::string as priority
+    , JSONDATA:description::string as description
+    , JSONDATA:customfield_23432:value::string as severity
+    , jsondata:resolution:name::string  AS resolution
+    , jsondata:status:name::string  AS status
+    , jsondata:summary::string  AS summary
+    , COALESCE(COMPONENT, JSONDATA:customfield_32866:value::string) as COMPONENT
+    , jsondata:updated::string as LAST_UPDATED
+    , jsondata:issuetype:name::string as issuetype
+            , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
+            ,JSONDATA:customfield_30130::string as sso_isbn
+            ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
+            ,JSONDATA:customfield_11248::string as customer_institution
+            ,JSONDATA:customfield_28633::string as course_key
+            ,JSONDATA:customfield_33033::string as salesforce_key -- customfield_31335 (old)
+            -- ,array_size(JSONDATA:customfield_21431) as category_escal_count
+        , round(timestampdiff(minute,created,last_resolved)/60) as resolutionTime
+        , round(timestampdiff(minute,created,acknowledged)/60) as acknowledgedTime
+        , round(timestampdiff(minute,created,last_closed)/60) as closedTime
+        , round(timestampdiff(minute,created,current_timestamp())/60) as age
+, jsondata:changelog::string as cl
+from tickets
+where tickets.CHANGELOG is null
+)
+
+, full_table as
+(
+select * from with_change
+union
+select * from without_change
+
+
+)
+
 , days as (
 SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
             )
