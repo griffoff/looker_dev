@@ -152,29 +152,28 @@ select * from res
       field: created_today
       value: "true"
     }
-    sql: ${key_jira};;
+    sql: ${id_ticket} ;;
     drill_fields: [detail*]
   }
 
   measure: closed
   {
-    type: count_distinct
+    type: count
     filters: {
       field: closed_today
       value: "true"
     }
-    sql: ${id_ticket} ;;
     drill_fields: [detail*]
   }
 
   measure: reopen
   {
-    type: count_distinct
+    type: count
     filters: {
       field: reopened_today
       value: "true"
     }
-    sql: ${id_ticket} ;;
+
     drill_fields: [detail*]
   }
 
