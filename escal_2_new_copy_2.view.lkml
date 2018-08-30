@@ -108,7 +108,7 @@ from tickets inner join _status on tickets.ID_TICKET = _status.ID and tickets.KE
         , round(timestampdiff(minute,created,current_timestamp())/60) as age
 , jsondata:changelog::string as cl
 from tickets
-where tickets.CHANGELOG is null
+where tickets.ID_TICKET not in (select distinct ID_TICKET from with_change)
 )
 
 , full_table as
