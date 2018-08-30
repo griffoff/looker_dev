@@ -127,6 +127,7 @@ SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(
 , res as(
 select
  days.day
+, case when component in (SELECT distinct systemname  FROM JIRA.TOPSYSTEM) then 'yes' else 'no' end as istopsystem
 , case when to_date(created) = day then 'true' end as created_today
 , case when day_changed = day and new_status like 'Closed' then 'true' end as closed_today
 , case when day_changed = day and new_status like 'Reopened' then 'true' end as reopened_today
@@ -353,10 +354,16 @@ select * from res
     sql: ${TABLE}."CL" ;;
   }
 
+  dimension: istopsystem {
+    type: string
+    sql: ${TABLE}."ISTOPSYSTEM" ;;
+  }
+
   set: detail {
     fields: [
       day,
       created_today,
+      istopsystem,
       closed_today,
       reopened_today,
       id_ticket,

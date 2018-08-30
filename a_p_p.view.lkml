@@ -39,7 +39,7 @@ group by iac_isbn
       , pp.user_environment
       , iac.pp_name as  name
       , cc
-      , case when types.pp_product_type not like 'SMART' then types.pp_product_type else
+      , case when types.pp_product_type like 'SMEB' then 'Vitalsource' else case when types.pp_product_type not like 'SMART' then types.pp_product_type else
       case when ARRAY_CONTAINS('MTC'::variant, cppt) then 'MTC' else
       case when ARRAY_CONTAINS('CSFI'::variant, cppt) then 'CSFI' else
       case when ARRAY_CONTAINS('4LT'::variant, cppt) then '4LT' else
@@ -64,6 +64,7 @@ group by iac_isbn
       end
       end
 
+      end
       end
       end
       end
