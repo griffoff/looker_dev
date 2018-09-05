@@ -40,7 +40,7 @@ view: a_no_cu_pay {
                   case when e.user_sso_guid in (select user_sso_guid from prod.unlimited.RAW_SUBSCRIPTION_EVENT where subscription_state like 'full_access') and  e.user_sso_guid not in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'Commerce'
                   end
       end as status
-      , 'CU Paid' as status_2
+      , case when pp."source" like  'unlimited' then 'Paid via CU (Unlimited)' else case when pp."source" like 'gateway' then 'Paid via CU (Gateway)' end  end as status_2
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
       , e._rsrc as enroll_rsrc
@@ -56,7 +56,7 @@ view: a_no_cu_pay {
       FROM en as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp
       where e.user_sso_guid = pp.user_sso_guid
       and e.course_key = pp.context_id
-      and pp."source" = 'unlimited'
+      --and pp."source" = 'unlimited'
       AND pp.SOURCE_ID <> 'Something'
       and pp.USER_ENVIRONMENT like 'production'
       and pp.PLATFORM_ENVIRONMENT like 'production'
