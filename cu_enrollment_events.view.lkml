@@ -70,7 +70,6 @@ view: cu_enrollment_events {
       inner join en e on a.user_guid = e.user_sso_guid and e.course_key = a.context_id
       left outer join paid on paid.user_sso_guid = e.user_sso_guid and paid.course_key = e.course_key
       where paid.user_sso_guid is null
-      and paid.course_key is null
 
       )
 
@@ -94,8 +93,6 @@ view: cu_enrollment_events {
       left outer join paid on paid.user_sso_guid = e.user_sso_guid  and paid.course_key = e.course_key
       where paid.user_sso_guid is null
       and paid_no_cu.user_sso_guid is null
-      and paid.course_key is null
-      and paid_no_cu.course_key is null
       )
 
 
