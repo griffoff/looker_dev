@@ -1,7 +1,6 @@
 view: cu_enrollment_events {
   derived_table: {
-    sql: with
-      enroll as (
+    sql: with  enroll as (
       select distinct sub.user_sso_guid as user
       , sub.course_key
       , min(sub.local_time) as time
@@ -25,14 +24,16 @@ view: cu_enrollment_events {
       , e.product_platform
       , e.user_environment
       , e.user_sso_guid
-      FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT  e
-      inner join enroll on enroll.user = e.user_sso_guid and e.local_time = enroll.time
-      inner join  prod.STG_CLTS.OLR_COURSES c on c."#CONTEXT_ID" = e.course_key
-      where e.access_role like 'STUDENT'
+      FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT as e,  enroll, prod.STG_CLTS.OLR_COURSES c
+      where  enroll.user = e.user_sso_guid
+      and e.local_time = enroll.time
+      and e.course_key = enroll.course_key
+      and c."#CONTEXT_ID" = e.course_key
+      and e.access_role like 'STUDENT'
       )
 
       ,paid as( SELECT distinct
-       case when pp."source" like 'unlimited' then 'Paid via CU' else case when pp."source" like 'gateway' and pp.code_type like 'Site License User Access' then 'Paid via Gateway Site license' else case when pp."source" is null and  pp.code_type is null then 'Paid via K12 Site License' else 'Other payment'   end end end  as status
+      case when pp."source" like 'unlimited' then 'Paid via CU' when (pp."source" like 'gateway' and pp.code_type like 'Site License User Access') then 'Paid via Gateway Site license' when (pp."source" is null and  pp.code_type is null) then 'Paid via K12 Site License' else 'Other payment' end  as status
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
       , e._rsrc as enroll_rsrc
@@ -45,8 +46,10 @@ view: cu_enrollment_events {
       , e.product_platform as enroll_product_platform
       , e.user_environment as enroll_user_environment
       , e.user_sso_guid as user_sso_guid
-      FROM en e inner join  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp on e.user_sso_guid = pp.user_sso_guid and e.course_key = pp.context_id
-      where  pp.USER_ENVIRONMENT like 'production'
+      FROM en as e,  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT as pp
+      where e.user_sso_guid = pp.user_sso_guid
+      and e.course_key = pp.context_id
+      and pp.USER_ENVIRONMENT like 'production'
       and pp.PLATFORM_ENVIRONMENT like 'production'
       AND (pp.SOURCE_ID is null or pp.SOURCE_ID <> 'Something')
       )
@@ -66,10 +69,10 @@ view: cu_enrollment_events {
       , e.product_platform as enroll_product_platform
       , e.user_environment as enroll_user_environment
       , e.user_sso_guid as user_sso_guid
-      FROM prod.STG_CLTS.ACTIVATIONS_OLR_V a
-      inner join en e on a.user_guid = e.user_sso_guid and e.course_key = a.context_id
-      left outer join paid on paid.user_sso_guid = e.user_sso_guid
-      where paid.user_sso_guid is null
+      FROM prod.STG_CLTS.ACTIVATIONS_OLR_V a,  en e
+      where a.user_guid = e.user_sso_guid
+      and e.course_key = a.context_id
+      and enroll_hash not in (select enroll_hash from paid)
 
       )
 
@@ -89,10 +92,30 @@ view: cu_enrollment_events {
       , e.user_environment as enroll_user_environment
       , e.user_sso_guid as user_sso_guid
       FROM en e
-      left outer join paid_no_cu on paid_no_cu.user_sso_guid = e.user_sso_guid
-      left outer join paid on paid.user_sso_guid = e.user_sso_guid
-      where paid.user_sso_guid is null
-      and paid_no_cu.user_sso_guid is null
+      where e._hash not in (select enroll_hash from paid_no_cu)
+      and e._hash not in (select enroll_hash from paid)
+      )
+
+      , other as (
+       SELECT distinct
+      'error' as status
+      , e._hash as enroll_hash
+      , e._ldts as enroll_ldts
+      , e._rsrc as enroll_rsrc
+      , e.access_role as enroll_access_role
+      , e.course_key as course_key
+      , e.local_time as enroll_local_time
+      , e.message_format_version as enroll_message_format_version
+      , e.message_type as enroll_message_type
+      , e.platform_environment as enroll_platform_environment
+      , e.product_platform as enroll_product_platform
+      , e.user_environment as enroll_user_environment
+      , e.user_sso_guid as user_sso_guid
+      FROM en e
+      where e._hash not in (select enroll_hash from paid_no_cu)
+      and e._hash not in (select enroll_hash from paid)
+      and e._hash not in (select enroll_hash from unpaid)
+
       )
 
 
@@ -105,6 +128,8 @@ view: cu_enrollment_events {
       select * from unpaid
       union
       select * from paid_no_cu
+      union
+      select * from other
       )
 
 
