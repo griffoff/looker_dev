@@ -4,6 +4,49 @@ include: "/bnoc/*.view.lkml"         # include all CU views in this project
 include: "dim_date.view.lkml"
 include: "/bnoc/cu*.dashboard.lookml"  # include all CU dashboards in this project
 
+## Base views
+explore: cu_clts_excluded_users {
+  # from: cu_clts_excluded_users
+  label: "cu_clts_excluded_users"
+}
+explore: cu_enrollment_events {
+  # from: cu_enrollment_events
+  label: "cu_enrollment_events"
+}
+explore: cu_raw_olr_enrollment {
+  # from: cu_raw_olr_enrollment
+  label: "cu_raw_olr_enrollment"
+}
+explore: cu_raw_olr_extended_iac {
+  # from: cu_raw_olr_extended_iac
+  label: "cu_raw_olr_extended_iac"
+}
+explore: cu_raw_olr_provisioned_product {
+  # from: cu_raw_olr_provisioned_product
+  label: "cu_raw_olr_provisioned_product"
+}
+explore: cu_raw_subscription_event {
+  # from: cu_raw_subscription_event
+  label: "cu_raw_subscription_event"
+}
+
+## Derived views
+explore: cu_vw_enrollment_base {
+  # from: cu_vw_enrollment_base
+  label: "cu_vw_enrollment_base"
+}
+
+explore: cu_vw_enrollment_payments {
+  # from: cu_vw_enrollment_payments
+  label: "cu_vw_enrollment_payments"
+}
+
+explore: cu_vw_enrollment_payments_30 {
+  # from: cu_vw_enrollment_payments_30
+  label: "cu_vw_enrollment_payments_30"
+}
+
+## ORIGINAL
 explore: sub_event_ {
   # from: sub_event_
   label: "sub_event_"
