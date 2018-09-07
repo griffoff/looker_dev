@@ -21,7 +21,7 @@ view: cu_vw_enrollment_payments {
           , e.user_sso_guid
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
-          INNER JOIN prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp ON e.user_sso_guid = pp.user_sso_guid AND e.course_key = pp.context_id
+          INNER JOIN ${cu_raw_olr_provisioned_product.SQL_TABLE_NAME} pp ON e.user_sso_guid = pp.user_sso_guid AND e.course_key = pp.context_id
         WHERE
           pp.USER_ENVIRONMENT like 'production'
           AND pp.PLATFORM_ENVIRONMENT like 'production'

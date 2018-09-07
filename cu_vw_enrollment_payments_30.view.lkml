@@ -5,7 +5,7 @@ view: cu_vw_enrollment_payments_30 {
           SELECT
             DATEVALUE AS day
           FROM
-            prod.DW_DEVMATH.DIM_DATE
+            ${dim_date.SQL_TABLE_NAME}
           WHERE
             DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2)))
           ORDER BY

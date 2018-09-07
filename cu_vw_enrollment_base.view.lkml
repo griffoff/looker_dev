@@ -7,7 +7,7 @@ view: cu_vw_enrollment_base {
           , sub.course_key AS course_key
           , MIN(sub.local_time) AS earliest_local_time
         FROM
-          prod.UNLIMITED.RAW_OLR_ENROLLMENT sub
+          ${cu_raw_olr_enrollment.SQL_TABLE_NAME} sub
           LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc
             ON sub.user_sso_guid = exc.user_sso_guid
         WHERE
@@ -30,7 +30,7 @@ view: cu_vw_enrollment_base {
         , e.user_environment
         , e.user_sso_guid
         FROM
-          prod.UNLIMITED.RAW_OLR_ENROLLMENT AS e
+          ${cu_raw_olr_enrollment.SQL_TABLE_NAME} AS e
           INNER JOIN base
             ON e.user_sso_guid = base.user_sso_guid AND e.course_key = base.course_key AND e.local_time = base.earliest_local_time
           INNER JOIN prod.STG_CLTS.OLR_COURSES c

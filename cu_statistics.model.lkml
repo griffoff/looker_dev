@@ -4,6 +4,11 @@ include: "/bnoc/*.view.lkml"         # include all CU views in this project
 include: "dim_date.view.lkml"
 include: "/bnoc/cu*.dashboard.lookml"  # include all CU dashboards in this project
 
+datagroup: enrollment_datagroup {
+  sql_trigger: SELECT COUNT(*) FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT ;;
+  max_cache_age: "12 hours"
+}
+
 ## Base views
 explore: cu_clts_excluded_users {
   # from: cu_clts_excluded_users
@@ -14,6 +19,7 @@ explore: cu_enrollment_events {
   label: "cu_enrollment_events"
 }
 explore: cu_raw_olr_enrollment {
+  persist_with: enrollment_datagroup
   # from: cu_raw_olr_enrollment
   label: "cu_raw_olr_enrollment"
 }
