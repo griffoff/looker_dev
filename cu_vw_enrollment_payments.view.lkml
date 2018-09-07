@@ -6,7 +6,7 @@ view: cu_vw_enrollment_payments {
           CASE WHEN pp."source" like 'unlimited' THEN 'Paid via CU'
             WHEN (pp."source" like 'gateway' AND pp.code_type like 'Site License User Access') THEN 'Paid via Gateway Site license'
             WHEN (pp."source" is null AND  pp.code_type is null) THEN 'Paid via K12 Site License'
-            ELSE 'Other Payment' END AS status
+            ELSE 'Other Payment' END AS report_status
           , e._hash
           , e._ldts
           , e._rsrc
@@ -29,7 +29,7 @@ view: cu_vw_enrollment_payments {
       )
       , paid_no_cu AS (
         SELECT DISTINCT
-          'Paid, without CU' as status
+          'Paid, without CU' as report_status
           , e._hash
           , e._ldts
           , e._rsrc
@@ -51,7 +51,7 @@ view: cu_vw_enrollment_payments {
       )
       , unpaid AS (
         SELECT DISTINCT
-          'Unpaid' as status
+          'Unpaid' as report_status
           , e._hash
           , e._ldts
           , e._rsrc
@@ -85,9 +85,9 @@ view: cu_vw_enrollment_payments {
       ;;
     }
 
-  dimension: status {
+  dimension: report_status {
     type: string
-    sql: ${TABLE}."status" ;;
+    sql: ${TABLE}."report_status" ;;
   }
 
   dimension: _hash {
@@ -152,7 +152,7 @@ view: cu_vw_enrollment_payments {
 
   set: detail {
     fields: [
-      status,
+      report_status,
       _hash,
       _ldts_time,
       _rsrc,

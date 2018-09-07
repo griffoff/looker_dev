@@ -1,9 +1,9 @@
 view: cu_vw_enrollment_payments_30 {
   derived_table: {
     sql: with
-        days AS (
+        report_days AS (
           SELECT
-            DATEVALUE AS day
+            DATEVALUE AS report_date
           FROM
             ${dim_date.SQL_TABLE_NAME}
           WHERE
@@ -13,11 +13,11 @@ view: cu_vw_enrollment_payments_30 {
         )
         , res AS (
           SELECT
-            days.day
+            report_days.report_date
             , _all.*
           FROM
-            days, ${cu_vw_enrollment_payments.SQL_TABLE_NAME} _all
-          WHERE _all.local_time <= days.day
+            report_days, ${cu_vw_enrollment_payments.SQL_TABLE_NAME} _all
+          WHERE _all.local_time <= report_days.report_date
         )
 
         SELECT * FROM res
@@ -25,14 +25,14 @@ view: cu_vw_enrollment_payments_30 {
         ;;
   }
 
-  dimension: day {
+  dimension: report_date {
     type: date
-    sql: ${TABLE}."day" ;;
+    sql: ${TABLE}."report_date" ;;
   }
 
-  dimension: status {
+  dimension: report_status {
     type: string
-    sql: ${TABLE}."status" ;;
+    sql: ${TABLE}."report_status" ;;
   }
 
   dimension: _hash {
@@ -97,8 +97,8 @@ view: cu_vw_enrollment_payments_30 {
 
   set: detail {
     fields: [
-      day,
-      status,
+      report_date,
+      report_status,
       _hash,
       _ldts_time,
       _rsrc,
