@@ -27,12 +27,12 @@ view: cu_vw_enrollment_payments_30 {
 
   dimension: report_date {
     type: date
-    sql: ${TABLE}."report_date" ;;
+    sql: ${TABLE}.report_date ;;
   }
 
   dimension: report_status {
     type: string
-    sql: ${TABLE}."report_status" ;;
+    sql: ${TABLE}.report_status ;;
   }
 
   dimension: _hash {
