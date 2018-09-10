@@ -33,7 +33,14 @@ view: cu_enrollment_events {
       where e.access_role like 'STUDENT'
       )
 
-      ,p as( SELECT distinct
+      ,first AS (select distinct
+    user_sso_guid,
+    context_id,
+    first_value(_hash) over (partition by user_sso_guid, CONTEXT_ID order by LOCAL_TIME) as first_hash
+    from prod.UNLIMITED.raw_olr_provisioned_product)
+
+
+      ,paid as( SELECT distinct
       case when pp."source" like 'unlimited' then 'Paid via CU' when (pp."source" like 'gateway' and pp.code_type like 'Site License User Access') then 'Paid via Gateway Site license' when (pp."source" is null and  pp.code_type is null) then 'Paid via K12 Site License' else 'Other payment' end  as status
       , e._hash as enroll_hash
       , e._ldts as enroll_ldts
@@ -47,55 +54,15 @@ view: cu_enrollment_events {
       , e.product_platform as enroll_product_platform
       , e.user_environment as enroll_user_environment
       , e.user_sso_guid as user_sso_guid
-      , pp.local_time as pp_local_time
-      FROM en e inner join  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp on e.user_sso_guid = pp.user_sso_guid and e.course_key = pp.context_id
+      FROM en e
+      inner join  prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp on e.user_sso_guid = pp.user_sso_guid and e.course_key = pp.context_id
+      inner join first on pp.user_sso_guid = first.user_sso_guid and pp.context_id = first.context_id and pp._hash = first.first_hash
       where  pp.USER_ENVIRONMENT like 'production'
       and pp.PLATFORM_ENVIRONMENT like 'production'
       AND (pp.SOURCE_ID is null or pp.SOURCE_ID <> 'Something')
       )
 
-      , paid_ as (
-      select distinct
-      case when p1.pp_local_time < p2.pp_local_time then  p1.status else p2.status end as status
-      , p1.enroll_hash
-      , p1.enroll_ldts
-      , p1.enroll_rsrc
-      , p1.enroll_access_role
-      , p1.course_key
-      , p1.enroll_local_time
-      , p1.enroll_message_format_version
-      , p1.enroll_message_type
-      , p1.enroll_platform_environment
-      , p1.enroll_product_platform
-      , p1.enroll_user_environment
-      , p1.user_sso_guid
-      FROM p p1 inner join  p p2 on p1.user_sso_guid = p2.user_sso_guid and p1.course_key = p2.course_key
-      and p1.status <> p2.status
-      )
 
-      , paid as (
-      select
-      p.status
-      , p.enroll_hash
-      , p.enroll_ldts
-      , p.enroll_rsrc
-      , p.enroll_access_role
-      , p.course_key
-      , p.enroll_local_time
-      , p.enroll_message_format_version
-      , p.enroll_message_type
-      , p.enroll_platform_environment
-      , p.enroll_product_platform
-      , p.enroll_user_environment
-      , p.user_sso_guid
-      from p
-      left outer join paid_ on p.enroll_hash = paid_.enroll_hash
-      where paid_.enroll_hash is null
-
-      union
-
-      select * from paid_
-      )
 
       , paid_no_cu as (
       SELECT distinct
@@ -161,7 +128,6 @@ view: cu_enrollment_events {
       from _all, days
       where to_date(enroll_local_time) <= days.day
       )
-
 
       select * from res
        ;;
