@@ -118,4 +118,10 @@ view: cu_vw_enrollment_payments_30 {
     type: count
     drill_fields: [detail*]
   }
+
+  measure: count_distinct {
+    type: count_distinct
+    drill_fields: [detail*]
+    sql: ${_hash} ;;
+  }
 }
