@@ -37,6 +37,11 @@ explore: cu_raw_subscription_event {
 }
 
 ## Derived views
+explore: cu_vw_provisioned_product_base {
+  # from: cu_vw_provisioned_product_base
+  label: "cu_vw_provisioned_product_base"
+}
+
 explore: cu_vw_enrollment_base {
   # from: cu_vw_enrollment_base
   label: "cu_vw_enrollment_base"
