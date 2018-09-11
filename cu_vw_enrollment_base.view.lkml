@@ -37,7 +37,7 @@ view: cu_vw_enrollment_base {
             ON e.course_key = c."#CONTEXT_ID"
         WHERE
           e.access_role like 'STUDENT'  -- only count students
-          AND (c.instructor_guid is null or e.user_sso_guid != c.instructor_guid)  -- disregard instructors who make student accounts
+          --AND (c.instructor_guid is null or e.user_sso_guid != c.instructor_guid)  -- disregard instructors who make student accounts
       )
 
       SELECT * FROM enrollment

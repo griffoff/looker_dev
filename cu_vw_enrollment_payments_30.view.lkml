@@ -25,82 +25,75 @@ view: cu_vw_enrollment_payments_30 {
         ;;
   }
 
-  measure: count_enrollments {
-    type: count_distinct
-    sql: ${_hash} ;;
-    drill_fields: [detail*]
+  dimension: report_date {
+    type: date
+    sql: ${TABLE}.report_date ;;
+
   }
-
-
 
   dimension: report_status {
     type: string
-    sql: ${TABLE}."report_status" ;;
-  }
-
-  dimension: report_date {
-    type: date
-    sql: ${TABLE}."report_date" ;;
+    sql: ${TABLE}.report_status ;;
   }
 
   dimension: _hash {
     type: string
-    sql: ${TABLE}."_hash" ;;
+    sql: ${TABLE}._hash ;;
   }
 
   dimension_group: _ldts {
     type: time
-    sql: ${TABLE}."_ldts" ;;
+    sql: ${TABLE}._ldts ;;
   }
 
   dimension: _rsrc {
     type: string
-    sql: ${TABLE}."_rsrc" ;;
+    sql: ${TABLE}._rsrc ;;
   }
 
   dimension: access_role {
     type: string
-    sql: ${TABLE}."access_role" ;;
+    sql: ${TABLE}.access_role ;;
   }
 
   dimension: course_key {
     type: string
-    sql: ${TABLE}."course_key" ;;
+    sql: ${TABLE}.course_key ;;
   }
 
   dimension_group: local_time {
     type: time
-    sql: ${TABLE}."local_time" ;;
+    sql: ${TABLE}.local_time ;;
   }
 
   dimension: message_format_version {
     type: number
-    sql: ${TABLE}."message_format_version" ;;
+    sql: ${TABLE}.message_format_version ;;
   }
 
   dimension: message_type {
     type: string
-    sql: ${TABLE}."message_type" ;;
+    sql: ${TABLE}.message_type ;;
   }
 
   dimension: platform_environment {
     type: string
-    sql: ${TABLE}."platform_environment" ;;
+    sql: ${TABLE}.platform_environment ;;
   }
 
   dimension: product_platform {
     type: string
-    sql: ${TABLE}."product_platform" ;;
+    sql: ${TABLE}.product_platform ;;
   }
 
   dimension: user_environment {
     type: string
-    sql: ${TABLE}."user_environment" ;;
+    sql: ${TABLE}.user_environment ;;
   }
 
   dimension: user_sso_guid {
     type: string
-    sql: ${TABLE}."user_sso_guid" ;;
+    sql: ${TABLE}.user_sso_guid ;;
   }
 
   set: detail {
@@ -128,5 +121,10 @@ view: cu_vw_enrollment_payments_30 {
   }
 
 
+  measure: count_distinct {
+    type: count_distinct
+    drill_fields: [detail*]
+    sql: ${_hash} ;;
+  }
 
 }
