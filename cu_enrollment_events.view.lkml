@@ -5,7 +5,7 @@ view: cu_enrollment_events {
       select distinct sub.user_sso_guid as user
       , sub.course_key
       , min(sub.local_time) as time
-      from prod.UNLIMITED.RAW_OLR_ENROLLMENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
+      from prod.UNLIMITED.RAW_OLR_ENROLLMENT sub left outer join prod.unlimited.VW_USER_BLACKLIST exc on sub.user_sso_guid = exc.user_sso_guid
       where exc.user_sso_guid is null
       group by user, sub.course_key
       )
