@@ -13,7 +13,7 @@ view: cu_vw_enrollment_payments_30 {
         )
         , res AS (
           SELECT
-            report_days.report_date
+            report_days.report_date as report_date
             , _all.*
           FROM
             report_days, ${cu_vw_enrollment_payments.SQL_TABLE_NAME} _all
@@ -25,14 +25,22 @@ view: cu_vw_enrollment_payments_30 {
         ;;
   }
 
-  dimension: report_date {
-    type: date
-    sql: ${TABLE}."report_date" ;;
+  measure: count_enrollments {
+    type: count_distinct
+    sql: ${_hash} ;;
+    drill_fields: [detail*]
   }
+
+
 
   dimension: report_status {
     type: string
     sql: ${TABLE}."report_status" ;;
+  }
+
+  dimension: report_date {
+    type: date
+    sql: ${TABLE}."report_date" ;;
   }
 
   dimension: _hash {
@@ -118,4 +126,7 @@ view: cu_vw_enrollment_payments_30 {
     type: count
     drill_fields: [detail*]
   }
+
+
+
 }

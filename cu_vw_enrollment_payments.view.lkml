@@ -22,6 +22,7 @@ view: cu_vw_enrollment_payments {
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
           INNER JOIN ${cu_raw_olr_provisioned_product.SQL_TABLE_NAME} pp ON e.user_sso_guid = pp.user_sso_guid AND e.course_key = pp.context_id
+          inner join ${cu_vw_provisioned_product_base.SQL_TABLE_NAME} first on pp.user_sso_guid = first.user_sso_guid and pp.context_id = first.context_id and pp._hash = first._hash
         WHERE
           pp.USER_ENVIRONMENT like 'production'
           AND pp.PLATFORM_ENVIRONMENT like 'production'
