@@ -122,3 +122,8 @@ explore: a_sub_m {
   # from: a_sub_m
   label: "a_sub_m"
 }
+
+explore: a_sum_m_copy {
+  from: a_sum_m_copy
+  label: "a_sum_m_copy"
+}
