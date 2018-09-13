@@ -20,6 +20,13 @@ view: number_of_sub_per_day {
       group by user_sso_guid, subscription_state
       )
 
+      , cancelled_ as (
+      select distinct sub.user_sso_guid
+      , last_value(sub.subscription_state) over (partition by sub.user_sso_guid order by sub.LOCAL_TIME) AS last_subscription_state
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
+      inner join true_users t on t.user = sub.user_sso_guid
+      )
+
       , trial as (
       select distinct sub.user_sso_guid
       , m.local_time
@@ -49,6 +56,21 @@ view: number_of_sub_per_day {
       and m.subscription_state like 'full_access'
 
       )
+
+      , banned as(
+      select distinct sub.user_sso_guid
+      , m.local_time
+      , sub.SUBSCRIPTION_START
+      , sub.SUBSCRIPTION_END
+      , sub.SUBSCRIPTION_STATE
+      , sub.CONTRACT_ID
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
+      inner join true_users t on t.user = sub.user_sso_guid
+      inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
+      where sub.SUBSCRIPTION_STATE like 'banned'
+      and m.subscription_state like 'banned'
+      )
+
       , only_trial as (
       select distinct trial.user_sso_guid
       , to_date(trial.local_time) as time
@@ -74,7 +96,11 @@ view: number_of_sub_per_day {
       , case when _full.user_sso_guid in (select user_guid from prod.STG_CLTS.ACTIVATIONS_OLR_V where actv_isbn in ('9780357700006','9780357700013','9780357700020')) then 'PAC' else 'Commerce' end as paid_status
       from _full
       left outer join trial t on _full.user_sso_guid = t.user_sso_guid
+      left outer join cancelled_ c on c.user_sso_guid = _full.user_sso_guid and c.last_subscription_state like 'cancelled'
+      left outer join banned b on b.user_sso_guid = _full.user_sso_guid
       where t.user_sso_guid is null
+      and c.user_sso_guid is null
+      and b.user_sso_guid is null
       )
 
       , two_state as (
