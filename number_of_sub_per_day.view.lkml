@@ -2,7 +2,7 @@ view: number_of_sub_per_day {
   derived_table: {
     sql: with true_users as (
       select distinct sub.user_sso_guid as user
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.VW_USER_BLACKLIST exc on sub.user_sso_guid = exc.user_sso_guid
       where exc.user_sso_guid is null
       and sub.USER_ENVIRONMENT like 'production'
       and sub.PLATFORM_ENVIRONMENT like 'production'

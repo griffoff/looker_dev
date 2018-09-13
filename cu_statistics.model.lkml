@@ -127,3 +127,8 @@ explore: a_sum_m_copy {
   from: a_sum_m_copy
   label: "a_sum_m_copy"
 }
+
+explore: cu_sub_per_day {
+  from: cu_sub_per_day
+  label: "cu_sub_per_day"
+}
