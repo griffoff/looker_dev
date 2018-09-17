@@ -5,19 +5,27 @@ view: cu_sub_per_day_2 {
   SELECT DATEVALUE as day FROM DW_DEVMATH.DIM_DATE WHERE DATEKEY BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2))) ORDER BY DATEVALUE
   )
 
+  , p_sum as (
+  select
+  days.day
+  , p.*
+  from
+  prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt p
+  , days
+  WHERE
+  to_date(LOCAL_TIME) <= day
+  )
+
   , min_dates AS(
   SELECT
   DISTINCT
-  days.day
+  day
   , user_sso_guid
-  , first_value(local_time) over (partition by user_sso_guid order by LOCAL_TIME)  as first_local_time
-  , first_value(subscription_state) over (partition by user_sso_guid order by LOCAL_TIME) AS first_subscription_state
+  , first_value(local_time) over (partition by user_sso_guid, day order by LOCAL_TIME)  as first_local_time
+  , first_value(subscription_state) over (partition by user_sso_guid, day order by LOCAL_TIME) AS first_subscription_state
   FROM
-  prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt
-  , days
-  WHERE
-  to_date(local_time) <= day
-  and USER_ENVIRONMENT like 'production'
+  p_sum
+  WHERE  USER_ENVIRONMENT like 'production'
   AND PLATFORM_ENVIRONMENT like 'production'
   AND contract_id <> 'stuff'
   AND contract_id <> 'Testuser'
@@ -27,16 +35,13 @@ view: cu_sub_per_day_2 {
   , max_dates AS(
   SELECT
   DISTINCT
-  days.day
+  day
   , user_sso_guid
-  , last_value(local_time) over (partition by user_sso_guid order by LOCAL_TIME)  as last_local_time
-  , last_value(subscription_state) over (partition by user_sso_guid order by LOCAL_TIME) AS last_subscription_state
+  , last_value(local_time) over (partition by user_sso_guid, day order by LOCAL_TIME)  as last_local_time
+  , last_value(subscription_state) over (partition by user_sso_guid, day order by LOCAL_TIME) AS last_subscription_state
   FROM
-  prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt
-  , days
-  WHERE
-  to_date(local_time) <= day
-  and USER_ENVIRONMENT like 'production'
+  p_sum
+  WHERE USER_ENVIRONMENT like 'production'
   AND PLATFORM_ENVIRONMENT like 'production'
   AND contract_id <> 'stuff'
   AND contract_id <> 'Testuser'
