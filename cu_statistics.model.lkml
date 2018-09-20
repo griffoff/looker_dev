@@ -136,3 +136,8 @@ explore: cu_sub_per_day_2 {
   from: cu_sub_per_day_2
   label: "cu_sub_per_day_2"
 }
+
+explore: cu_sub_per_day_3 {
+  from: cu_sub_per_day_3
+  label: "cu_sub_per_day_3"
+}

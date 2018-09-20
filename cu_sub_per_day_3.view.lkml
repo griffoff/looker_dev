@@ -38,6 +38,8 @@ view: cu_sub_per_day_3 {
         , f.min_full_time as full_start
         , datediff(day, trial_start, full_start) as day
         from min_dates t inner join min_full f on t.user_sso_guid = f.user_sso_guid
+        LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc ON exc.user_sso_guid = f.user_sso_guid
+        WHERE exc.user_sso_guid is null
         )
 
 
