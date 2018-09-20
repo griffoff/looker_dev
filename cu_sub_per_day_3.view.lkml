@@ -57,6 +57,26 @@ view: cu_sub_per_day_3 {
     type: count_distinct
     sql: ${user_sso_guid} ;;
   }
+  measure: n_14 {
+    drill_fields: [detail*]
+    type: sum_distinct
+    sql_distinct_key: ${user_sso_guid} ;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) >= 14 then 1 else 0 end ;;
+  }
+
+  measure: n_20 {
+    drill_fields: [detail*]
+    type: sum_distinct
+    sql_distinct_key: ${user_sso_guid} ;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) >= 20 then 1 else 0 end;;
+  }
+
+  measure: n_30 {
+    drill_fields: [detail*]
+    type: sum_distinct
+    sql_distinct_key: ${user_sso_guid} ;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) >= 30 then 1 else 0 end;;
+  }
 
   dimension: user_sso_guid {
     type: string
