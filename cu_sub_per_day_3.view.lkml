@@ -82,21 +82,21 @@ view: cu_sub_per_day_3 {
     drill_fields: [detail*]
     type: sum_distinct
     sql_distinct_key: ${user_sso_guid} ;;
-    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 14 then 1 else 0 end;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 15 then 1 else 0 end;;
   }
 
   measure: created_21 {
     drill_fields: [detail*]
     type: sum_distinct
     sql_distinct_key: ${user_sso_guid} ;;
-    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 21 then 1 else 0 end;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 22 then 1 else 0 end;;
   }
 
   measure: created_28 {
     drill_fields: [detail*]
     type: sum_distinct
     sql_distinct_key: ${user_sso_guid} ;;
-    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 28 then 1 else 0 end;;
+    sql: case when abs(datediff(day, current_date, ${trial_start_date})) = 29 then 1 else 0 end;;
   }
 
   dimension: user_sso_guid {
