@@ -53,11 +53,11 @@ view: ra_check {
       , plan.MT_ISBN as plan_MT_ISBN
       , plan.CREATED_ON as  plan_CREATED_ON
       , plan.MT_MTC_ISBN as plan_MT_MTC_ISBN
-      from int.UNLIMITED.SCENARIO_ACTIVITIES a
-      inner join int.UNLIMITED.SCENARIO_ENROLLMENTS e on e.uid = a.uid
-      inner join int.UNLIMITED.SCENARIO_PROVISIONING p on p.uid = a.uid
-      inner join int.UNLIMITED.SCENARIO_SUBSCRIPTIONS s on s.uid = a.uid
-      inner join int.UNLIMITED.SCENARIO_DETAILS as plan on plan.uid = a.uid
+      from UNLIMITED.SCENARIO_ACTIVITIES a
+      inner join UNLIMITED.SCENARIO_ENROLLMENTS e on e.uid = a.uid
+      inner join UNLIMITED.SCENARIO_PROVISIONING p on p.uid = a.uid
+      inner join UNLIMITED.SCENARIO_SUBSCRIPTIONS s on s.uid = a.uid
+      inner join UNLIMITED.SCENARIO_DETAILS as plan on plan.uid = a.uid
        ;;
 }
 

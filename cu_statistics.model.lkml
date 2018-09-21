@@ -141,8 +141,3 @@ explore: cu_sub_per_day_3 {
   from: cu_sub_per_day_3
   label: "cu_sub_per_day_3"
 }
-
-explore: ra_check {
-  from: ra_check
-  label: "ra_check"
-}
