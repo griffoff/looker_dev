@@ -40,3 +40,9 @@ explore: cu_enrollment_events {
   label: "cu_enrollment_events"
 
 }
+
+explore: ra_check {
+  from: ra_check
+  label: "ra_check"
+
+}
