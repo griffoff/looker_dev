@@ -9,6 +9,11 @@ datagroup: enrollment_datagroup {
   max_cache_age: "12 hours"
 }
 
+datagroup: subscription_datagroup {
+  sql_trigger: SELECT COUNT(*) FROM prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT ;;
+  max_cache_age: "12 hours"
+}
+
 ## Base views
 explore: cu_clts_excluded_users {
   # from: cu_clts_excluded_users
@@ -32,6 +37,7 @@ explore: cu_raw_olr_provisioned_product {
   label: "cu_raw_olr_provisioned_product"
 }
 explore: cu_raw_subscription_event {
+  persist_with: subscription_datagroup
   # from: cu_raw_subscription_event
   label: "cu_raw_subscription_event"
 }
@@ -55,6 +61,11 @@ explore: cu_vw_enrollment_payments {
 explore: cu_vw_enrollment_payments_30 {
   # from: cu_vw_enrollment_payments_30
   label: "cu_vw_enrollment_payments_30"
+}
+
+explore: cu_vw_subscription_base {
+  # from: cu_vw_subscription_base
+  label: "cu_vw_subscription_base"
 }
 
 ## ORIGINAL
