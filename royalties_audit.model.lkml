@@ -1,4 +1,4 @@
-connection: "snowflake_prod"
+connection: "snowflake_int"
 label: "Royalties Audit and Unlimited"
 
 # include all the CU views
