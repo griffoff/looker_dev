@@ -9,6 +9,10 @@ view: cu_vw_subscription_base {
           ON sub.user_sso_guid = exc.user_sso_guid
       WHERE
         exc.user_sso_guid is null -- not found in exclusions table
+      and sub.USER_ENVIRONMENT like 'production'
+      and sub.PLATFORM_ENVIRONMENT like 'production'
+      and sub.contract_id <> 'stuff'
+      and sub.contract_id <> 'Testuser'
       ;;
   }
   dimension: _hash {
@@ -76,7 +80,7 @@ view: cu_vw_subscription_base {
     sql: ${TABLE}."USER_ENVIRONMENT" ;;
   }
 
-  dimension: user_sso_guid {
+  dimension: user {
     type: string
     sql: ${TABLE}."USER_SSO_GUID" ;;
   }
@@ -96,7 +100,7 @@ view: cu_vw_subscription_base {
       subscription_start_time,
       subscription_state,
       user_environment,
-      user_sso_guid
+      user
     ]
   }
 

@@ -1,30 +1,19 @@
 view: number_of_sub_per_day {
   derived_table: {
-    sql: with true_users as (
-      select distinct sub.user_sso_guid as user
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.VW_USER_BLACKLIST exc on sub.user_sso_guid = exc.user_sso_guid
-      where exc.user_sso_guid is null
-      and sub.USER_ENVIRONMENT like 'production'
-      and sub.PLATFORM_ENVIRONMENT like 'production'
-      and sub.contract_id <> 'stuff'
-      and sub.contract_id <> 'Testuser'
-      group by user
-      )
-
-      , min_dates as(
-      select user_sso_guid
-      , subscription_state
-      , min(local_time)  as  local_time
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt
-      inner join true_users t on t.user = user_sso_guid
-      group by user_sso_guid, subscription_state
+    sql: with  min_dates as(
+      select s.user_sso_guid
+      , s.subscription_state
+      , min(s.local_time)  as  local_time
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt s
+      inner join ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid = s.user_sso_guid
+      group by s.user_sso_guid, s.subscription_state
       )
 
       , cancelled_ as (
       select distinct sub.user_sso_guid
       , last_value(sub.subscription_state) over (partition by sub.user_sso_guid order by sub.LOCAL_TIME) AS last_subscription_state
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid  = sub.user_sso_guid
       )
 
       , trial as (
@@ -35,7 +24,7 @@ view: number_of_sub_per_day {
       , sub.SUBSCRIPTION_STATE
       , sub.CONTRACT_ID
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid  = sub.user_sso_guid
       inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
       where sub.SUBSCRIPTION_STATE like 'trial_access'
       and m.subscription_state like 'trial_access'
@@ -50,7 +39,7 @@ view: number_of_sub_per_day {
       , sub.SUBSCRIPTION_STATE
       , sub.CONTRACT_ID
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid  = sub.user_sso_guid
       inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
       where sub.SUBSCRIPTION_STATE like 'full_access'
       and m.subscription_state like 'full_access'
@@ -65,7 +54,7 @@ view: number_of_sub_per_day {
       , sub.SUBSCRIPTION_STATE
       , sub.CONTRACT_ID
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid  = sub.user_sso_guid
       inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
       where sub.SUBSCRIPTION_STATE like 'banned'
       and m.subscription_state like 'banned'

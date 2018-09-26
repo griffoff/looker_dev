@@ -25,11 +25,8 @@ include: "dim_date.view"
 
 explore: dim_date {}
 
-explore: number_of_sub_per_day {
-  from: number_of_sub_per_day
-  label: "number_of_sub_per_day"
 
-}
+
 explore: products_that_making__full {
   from: products_that_making__full
   label: "products_that_making__full"
