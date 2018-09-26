@@ -1,23 +1,13 @@
 view: a_sub_m {
 derived_table: {
-  sql: with true_users as (
-      select distinct sub.user_sso_guid as user
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub left outer join prod.unlimited.CLTS_EXCLUDED_USERS exc on sub.user_sso_guid = exc.user_sso_guid
-      where exc.user_sso_guid is null
-      and sub.USER_ENVIRONMENT like 'production'
-      and sub.PLATFORM_ENVIRONMENT like 'production'
-      and sub.contract_id <> 'stuff'
-      and sub.contract_id <> 'Testuser'
-      group by user
-      )
-
-      , min_dates as(
-      select user_sso_guid
-      , subscription_state
-      , max(local_time)  as  local_time
-      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt
-      inner join true_users t on t.user = user_sso_guid
-      group by user_sso_guid, subscription_state
+  sql: with
+      min_dates as(
+      select sub.user_sso_guid
+      , sub.subscription_state
+      , max(sub.local_time)  as  local_time
+      from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt sub
+      inner join  ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid = sub.user_sso_guid
+      group by sub.user_sso_guid, sub.subscription_state
       )
 
       , trial as (
@@ -28,7 +18,7 @@ derived_table: {
       , sub.SUBSCRIPTION_STATE
       , sub.CONTRACT_ID
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join  ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid = sub.user_sso_guid
       inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
       where sub.SUBSCRIPTION_STATE like 'trial_access'
       and m.subscription_state like 'trial_access'
@@ -43,7 +33,7 @@ derived_table: {
       , sub.SUBSCRIPTION_STATE
       , sub.CONTRACT_ID
       from prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT sub
-      inner join true_users t on t.user = sub.user_sso_guid
+      inner join  ${cu_vw_subscription_base.SQL_TABLE_NAME}  t on t.user_sso_guid = sub.user_sso_guid
       inner join min_dates m on m.user_sso_guid = sub.user_sso_guid and m.local_time = sub.local_time
       where sub.SUBSCRIPTION_STATE like 'full_access'
       and m.subscription_state like 'full_access'
