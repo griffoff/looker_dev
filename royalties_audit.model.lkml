@@ -46,3 +46,21 @@ explore: ra_check {
   label: "ra_check"
 
 }
+
+
+explore: check_script {
+  from: check_script
+  label: "check_script"
+
+}
+
+explore: prov_prod {
+  # from: prov_prod
+  label: "prov_prod"
+}
+
+explore: usage {
+  # from: usage
+  label: "usage"
+
+}

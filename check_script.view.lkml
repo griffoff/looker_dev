@@ -19,14 +19,14 @@ view: check_script {
               ,to_array(split(concat(concat(concat(concat(concat(concat(concat( concat(concat(concat(to_varchar(VS_isbn), ', '), to_varchar(case when MTR_ISBN is null then '  ' else MTR_ISBN end)),', '),to_varchar(case when APLIA_ISBN is null then '  ' else APLIA_ISBN end)), ', '), case when CNOW_ISBN is null then '  ' else CNOW_ISBN end), ', '), case when WEBASSIGN_ISBN is null then '  ' else WEBASSIGN_ISBN end), ', '), case when MT_ISBN is null then '  ' else MT_ISBN end), ', '))  as expected_ISBN
 
               , CREATED_ON as date_c
-              from prod.UNLIMITED.SCENARIO_DETAILS
+              from UNLIMITED.SCENARIO_DETAILS
               )
               , en as
               (
               SELECT distinct user_sso_guid,
               arrayagg(course_key)as course_key
               , arrayagg(local_time)as local_time
-              FROM prod.UNLIMITED.RAW_OLR_ENROLLMENT
+              FROM UNLIMITED.RAW_OLR_ENROLLMENT
               group by user_sso_guid
 
               )
@@ -53,7 +53,7 @@ view: check_script {
                  , case when (user_id like '%no_cu%') then 1 else 0 end as ennrollment_health
                  , null as en_local_time
                  from res_users
-                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_OLR_ENROLLMENT)
+                 where user_guid not in ( select user_sso_guid from unlimited.RAW_OLR_ENROLLMENT)
 
               )
 
@@ -62,7 +62,7 @@ view: check_script {
               arrayagg(subscription_state)as subscription_state
               , arrayagg(contract_id)as contract_id
               , arrayagg(local_time)as subscription_time
-              FROM prod.UNLIMITED.RAW_SUBSCRIPTION_EVENT
+              FROM UNLIMITED.RAW_SUBSCRIPTION_EVENT
               group by user_sso_guid
               )
 
@@ -98,14 +98,14 @@ view: check_script {
                  , case when (user_id not like '%full%' and user_id not like '%trial%') then 1 else 0 end as contract_id_health
                  , null as subscription_time
                  from res_users
-                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_SUBSCRIPTION_EVENT)
+                 where user_guid not in ( select user_sso_guid from unlimited.RAW_SUBSCRIPTION_EVENT)
 
               )
               ,pp as
               (
               SELECT distinct user_sso_guid,
               arrayagg(iac_isbn)as aa
-              FROM prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT
+              FROM UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT
               group by user_sso_guid
               )
 
@@ -141,7 +141,7 @@ view: check_script {
                  , res_users.WEBASSIGN_ISBN as WEBASSIGN_ISBN
                  , res_users.MT_ISBN as   MT_ISBN
                  from res_users
-                 where user_guid not in ( select user_sso_guid from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT)
+                 where user_guid not in ( select user_sso_guid from unlimited.RAW_OLR_PROVISIONED_PRODUCT)
 
               )
 
