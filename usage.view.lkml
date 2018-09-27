@@ -43,7 +43,7 @@ view: usage {
       , m.event_action as mt_event_action
       , m.event_category as mt_event_type
       , m._hash as mt_hash
-      from cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS as m
+      from cap_er.nonprod.RAW_MT_RESOURCE_INTERACTIONS as m
       , unlimited.RAW_OLR_EXTENDED_IAC as iac
       , unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
       ,STG_CLTS.PRODUCTS_V as t
