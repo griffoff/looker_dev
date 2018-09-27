@@ -23,7 +23,7 @@ view: vw_trust {
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where contains(jsondata:key, 'TRUST') and sprintend<>'<null>'      )
+        where (contains(jsondata:key, 'TRUST') and sprintend<>'<null>') or (contains(jsondata:key, 'PA') and sprintend<>'<null>')       )
  , max_info as(
         select
         id

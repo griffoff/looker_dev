@@ -12,7 +12,7 @@ view: vw_trust_status_interval {
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where contains(jsondata:key, 'TRUST') )
+        where (contains(jsondata:key, 'TRUST')  or contains(jsondata:key, 'PA')) )
 -- select * from  histories ;
 , status_changes as (
         select
