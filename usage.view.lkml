@@ -281,6 +281,7 @@ view: usage {
   {
     type: number
     sql: (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v}) / 6;;
+    drill_fields: [detail*]
 
   }
 
@@ -412,22 +413,18 @@ set: detail {
     subscription_state_u,
     date_c,
     vs_user_sso_guid,
-    vital_sourse_event_local_time_time,
     vital_sourse_event_title,
     vital_sourse_event_isbn,
     vital_sourse_event_session_id,
     vital_sourse_event_event_type,
     vital_sourse_event_event_action,
-    vital_sourse_event_hash,
     mt_user_sso_guid,
-    mt_local_time_time,
     mt_title,
     mt_isbn,
     mt_session_id,
     mt_platform,
     mt_event_action,
-    mt_event_type,
-    mt_hash
+    mt_event_type
   ]
 }
 }
