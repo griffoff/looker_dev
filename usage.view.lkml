@@ -15,7 +15,7 @@ view: usage {
       --,WEBASSIGN_MTR_ISBN as WEBASSIGN_MTR_ISBN
       --,MT_ISBN as   MT_ISBN
       , CREATED_ON as date_c
-      from UNLIMITED.SCENARIO_DETAILS
+      from prod.UNLIMITED.SCENARIO_DETAILS
       )
 
       , vital as (
@@ -28,8 +28,8 @@ view: usage {
       , vs.event_type as vital_sourse_event_event_type
       , vs.event_action as vital_sourse_event_event_action
       , vs._hash as vital_sourse_event_hash
-      from unlimited.RAW_VITALSOURCE_EVENT as vs
-      , unlimited.RAW_OLR_EXTENDED_IAC as iac
+      from prod.unlimited.RAW_VITALSOURCE_EVENT as vs
+      , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
       where iac.pp_isbn_13 = vital_sourse_event_isbn
       )
 
@@ -43,10 +43,10 @@ view: usage {
       , m.event_action as mt_event_action
       , m.event_category as mt_event_type
       , m._hash as mt_hash
-      from cap_er.nonprod.RAW_MT_RESOURCE_INTERACTIONS as m
-      , unlimited.RAW_OLR_EXTENDED_IAC as iac
-      , unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
-      ,STG_CLTS.PRODUCTS_V as t
+      from cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS as m
+      , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
+      , prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
+      ,prod.STG_CLTS.PRODUCTS_V as t
       where (m.component_isbn = iac.cp_isbn_13 or m.component_isbn = iac.pp_isbn_13)
       and pp.user_sso_guid =  mt_user_sso_guid
       and iac.pp_isbn_13 = pp.iac_isbn

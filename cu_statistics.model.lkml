@@ -160,3 +160,7 @@ explore: cu_sub_per_day_3 {
   from: cu_sub_per_day_3
   label: "cu_sub_per_day_3"
 }
+explore: cu_vm_provisioned_product {
+  from: cu_vm_provisioned_product
+  label: "cu_vm_provisioned_product"
+}
