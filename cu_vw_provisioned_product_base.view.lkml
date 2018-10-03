@@ -13,6 +13,7 @@ view: cu_vw_provisioned_product_base {
     FROM
       ${cu_raw_olr_provisioned_product.SQL_TABLE_NAME} pp
       INNER JOIN first ON pp.user_sso_guid = first.user_sso_guid AND pp.context_id = first.context_id AND pp._hash = first.first_hash
+      LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc ON pp.user_sso_guid = exc.user_sso_guid
       ;;
   }
 
