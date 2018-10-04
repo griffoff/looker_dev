@@ -4,82 +4,46 @@ view: usage {
       select guid as user_sso_guid,
       uid as id,
       SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u
-      --,COURSE_KEY as COURSE_KEY
-      --,VS_ISBN as vbid
-      --,MTR_ISBN as MTR_ISBN
-      --,APLIA_ISBN as APLIA_ISBN
-      --,APLIA_MTR_ISBN as APLIA_MTR_ISBN
-      --,CNOW_ISBN as CNOW_ISBN
-      --,CNOW_MTR_ISBN as CNOW_MTR_ISBN
-      --,WEBASSIGN_ISBN as WEBASSIGN_ISBN
-      --,WEBASSIGN_MTR_ISBN as WEBASSIGN_MTR_ISBN
-      --,MT_ISBN as   MT_ISBN
       , CREATED_ON as date_c
       from prod.UNLIMITED.SCENARIO_DETAILS
       )
 
       , vital as (
-
       select vs.user_sso_guid as vs_user_sso_guid
-      , vs.event_time as vital_sourse_event_local_time
-      , iac.pp_name as vital_sourse_event_title
-      , vs.vbid as vital_sourse_event_isbn
-      , vs.session_id as vital_sourse_event_session_id
-      , vs.event_type as vital_sourse_event_event_type
-      , vs.event_action as vital_sourse_event_event_action
       , vs._hash as vital_sourse_event_hash
-      from prod.unlimited.RAW_VITALSOURCE_EVENT as vs
-      , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
-      where iac.pp_isbn_13 = vital_sourse_event_isbn
+      from prod.unlimited.RAW_VITALSOURCE_EVENT  vs inner join prod.unlimited.RAW_OLR_EXTENDED_IAC iac on iac.pp_isbn_13 = vs.vbid
       )
 
       , mt as (
       select m.user_identifier as mt_user_sso_guid
-      , m.event_time as mt_local_time
-      , iac.pp_name as mt_title
-      , m.component_isbn as mt_isbn
-      , m.mt_session_id as mt_session_id
       , t.platform as mt_platform
-      , m.event_action as mt_event_action
-      , m.event_category as mt_event_type
       , m._hash as mt_hash
       from cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS as m
-      , prod.unlimited.RAW_OLR_EXTENDED_IAC as iac
-      , prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
-      ,prod.STG_CLTS.PRODUCTS_V as t
-      where (m.component_isbn = iac.cp_isbn_13 or m.component_isbn = iac.pp_isbn_13)
-      and pp.user_sso_guid =  mt_user_sso_guid
-      and iac.pp_isbn_13 = pp.iac_isbn
-      and t.isbn13 = iac.pp_isbn_13
-      --and mt_platform not in ('MindTap', 'OWL V2', 'Aplia', 'WebAssign', 'CNOW', 'MindTap Reader', 'SAM')
+      inner join prod.unlimited.RAW_OLR_EXTENDED_IAC iac on m.component_isbn = iac.cp_isbn_13 or m.component_isbn = iac.pp_isbn_13
+      inner join prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT pp on pp.user_sso_guid =  m.user_identifier and iac.pp_isbn_13 = pp.iac_isbn
+      inner join prod.STG_CLTS.PRODUCTS_V  t on t.isbn13 = iac.pp_isbn_13
       )
+
+
       , u_v as (
       select res_users.*
       , vital.*
-      from res_users, vital
-      where res_users.user_sso_guid = vital.vs_user_sso_guid
+      from res_users inner join  vital on res_users.user_sso_guid = vital.vs_user_sso_guid
       )
 
       , res as (
       select u_v.*,
       mt.*
-      from u_v, mt
-      where mt.mt_user_sso_guid = u_v.user_sso_guid
+      from u_v inner join  mt on mt.mt_user_sso_guid = u_v.user_sso_guid
 
       union
 
       select u_v.*
       , u_v.user_sso_guid as mt_user_sso_guid
-      , null as mt_local_time
-      , null as mt_title
-      , null as mt_isbn
-      , null as mt_session_id
       , null as mt_platform
-      , null as mt_event_action
-      , null as mt_event_type
       , null as mt_hash
-      from u_v
-      where u_v.user_sso_guid not in (select mt_user_sso_guid from mt)
+      from u_v inner join mt on u_v.user_sso_guid = mt.mt_user_sso_guid
+      where  mt.mt_user_sso_guid is null
 
       )
 
