@@ -164,3 +164,10 @@ explore: cu_vm_provisioned_product {
   from: cu_vm_provisioned_product
   label: "cu_vm_provisioned_product"
 }
+
+
+explore: products_that_making__full {
+  from: products_that_making__full
+  label: "products_that_making__full"
+
+}

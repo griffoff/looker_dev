@@ -239,10 +239,6 @@ explore: a_subscriptions {
 }
 
 
-explore: aaa {
-  from: aaa
-  label: "aaa"
-}
 
 
 explore: a_no_cu_pay {

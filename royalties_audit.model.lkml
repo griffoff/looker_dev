@@ -27,11 +27,6 @@ explore: dim_date {}
 
 
 
-explore: products_that_making__full {
-  from: products_that_making__full
-  label: "products_that_making__full"
-
-}
 explore: cu_enrollment_events {
   from: cu_enrollment_events
   label: "cu_enrollment_events"
