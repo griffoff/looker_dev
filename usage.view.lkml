@@ -65,12 +65,6 @@ view: usage {
 
   }
 
-  measure: h_v
-  {
-    type: number
-    sql: case when ${count_vs} = 0 then 0 else 2 / ((3 / ${count_vs}) + (1/(3 / ${count_vs}))) end ;;
-
-  }
 
 
   measure: p_h_v
@@ -81,7 +75,7 @@ view: usage {
   }
 
   set:  vs_sum{
-    fields: [date_c, id, subscription_state_u, vital_sourse_event_title, vital_sourse_event_isbn, vital_sourse_event_session_id, vital_sourse_event_event_type, vital_sourse_event_event_action, count_vs ]
+    fields: [date_c, id, subscription_state_u,  count_vs ]
   }
 
   measure: count_mtr_e_boock
@@ -95,12 +89,6 @@ view: usage {
     sql: ${mt_hash} ;;
   }
 
-  measure: h_mtr
-  {
-    type: number
-    sql: case when(${id} like '%no_cu%' and ${count_mtr_e_boock} = 0) then 1 else (case when (${id} like '%no_cu%' and ${count_mtr_e_boock} > 0) then 0 else (case when ${count_mtr_e_boock} = 0 then 0 else (2 / ((3 / ${count_mtr_e_boock}) + (1/(3 / ${count_mtr_e_boock})))) end ) end ) end ;;
-
-  }
 
   measure: p_h_mtr
   {
@@ -110,7 +98,7 @@ view: usage {
   }
 
   set:  mtr_e_boock_sum{
-    fields: [date_c, id, subscription_state_u, mt_title, mt_isbn, mt_session_id, mt_event_type, mt_event_action, mt_platform, count_mtr_e_boock]
+    fields: [date_c, id, subscription_state_u, mt_session_id, mt_platform, count_mtr_e_boock]
   }
 
 
@@ -125,12 +113,6 @@ view: usage {
     sql: ${mt_hash} ;;
   }
 
-  measure: h_aplia
-  {
-    type: number
-    sql: case when(${id} like '%no_cu%' and ${count_aplia} = 0) then 1 else (case when (${id} like '%no_cu%' and ${count_aplia} > 0) then 0 else (case when ${count_aplia} = 0 then 0 else (2 / ((3 / ${count_aplia}) + (1/(3 / ${count_aplia})))) end ) end ) end ;;
-
-  }
 
   measure: p_h_aplia
   {
@@ -140,7 +122,7 @@ view: usage {
   }
 
   set:  aplia_sum{
-    fields: [date_c, id, subscription_state_u, mt_title, mt_isbn, mt_session_id, mt_event_type, mt_event_action, mt_platform, count_aplia]
+    fields: [date_c, id, subscription_state_u, mt_session_id, mt_platform, count_aplia]
   }
 
 
@@ -156,12 +138,6 @@ view: usage {
   }
 
 
-  measure: h_cnow
-  {
-    type: number
-    sql: case when(${id} like '%no_cu%' and ${count_cnow} = 0) then 1 else (case when (${id} like '%no_cu%' and ${count_cnow} > 0) then 0 else (case when ${count_cnow} = 0 then 0 else (2 / ((3 / ${count_cnow}) + (1/(3 / ${count_cnow})))) end ) end ) end ;;
-
-  }
 
   measure: p_h_cnow
   {
@@ -172,7 +148,7 @@ view: usage {
 
 
   set:  cnow_sum{
-    fields: [date_c, id, subscription_state_u, mt_title, mt_isbn, mt_session_id, mt_event_type, mt_event_action, mt_platform, count_cnow]
+    fields: [date_c, id, subscription_state_u, mt_session_id, mt_platform, count_cnow]
   }
 
   measure: count_mt
@@ -187,13 +163,6 @@ view: usage {
   }
 
 
-  measure: h_mt
-  {
-    type: number
-    sql: case when(${id} like '%no_cu%' and ${count_mt} = 0) then 1 else (case when (${id} like '%no_cu%' and ${count_mt} > 0) then 0 else (case when ${count_mt} = 0 then 0 else (2 / ((3 / ${count_mt}) + (1/(3 / ${count_mt})))) end ) end ) end ;;
-
-  }
-
   measure: p_h_mt
   {
     type: number
@@ -202,7 +171,7 @@ view: usage {
   }
 
   set:  mt_sum{
-    fields: [date_c, id, subscription_state_u, mt_title, mt_isbn, mt_session_id, mt_event_type, mt_event_action, mt_platform, count_mt]
+    fields: [date_c, id, subscription_state_u, mt_session_id,  mt_platform, count_mt]
   }
 
   measure: count_wa
@@ -216,12 +185,6 @@ view: usage {
     sql: ${mt_hash};;
   }
 
-  measure: h_wa
-  {
-    type: number
-    sql: case when(${id} like '%no_cu%' and ${count_wa} = 0) then 1 else (case when (${id} like '%no_cu%' and ${count_wa} > 0) then 0 else (case when ${count_wa} = 0 then 0 else (2 / ((3 / ${count_wa}) + (1/(3 / ${count_wa})))) end ) end ) end ;;
-
-  }
 
   measure: p_h_wa
   {
@@ -231,15 +194,9 @@ view: usage {
   }
 
   set:  wa_sum{
-    fields: [date_c, id, subscription_state_u, mt_title, mt_isbn, mt_session_id, mt_event_type, mt_event_action, mt_platform, count_wa]
+    fields: [date_c, id, subscription_state_u, mt_session_id,  mt_platform, count_wa]
   }
 
-  measure: health
-  {
-    type: number
-    sql: (${h_aplia} + ${h_cnow} +${h_mtr} + ${h_wa} + ${h_mt} + ${h_v}) / 6;;
-
-  }
 
   measure: p_health
   {
@@ -249,21 +206,7 @@ view: usage {
 
   }
 
-  measure: p_t_success
-  {
-    type: number
-    drill_fields: [detail*]
-    sql: (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
 
-  }
-
-  measure: p_t_fail
-  {
-    type: number
-    drill_fields: [detail*]
-    sql: 6 - (${p_h_aplia} + ${p_h_cnow} +${p_h_mtr} + ${p_h_wa} + ${p_h_mt} + ${p_h_v});;
-
-  }
 
  dimension: user_sso_guid {
   type: string
@@ -290,36 +233,6 @@ dimension: vs_user_sso_guid {
   sql: ${TABLE}."VS_USER_SSO_GUID" ;;
 }
 
-dimension_group: vital_sourse_event_local_time {
-  type: time
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_LOCAL_TIME" ;;
-}
-
-dimension: vital_sourse_event_title {
-  type: string
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_TITLE" ;;
-}
-
-dimension: vital_sourse_event_isbn {
-  type: string
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_ISBN" ;;
-}
-
-dimension: vital_sourse_event_session_id {
-  type: string
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_SESSION_ID" ;;
-}
-
-dimension: vital_sourse_event_event_type {
-  type: string
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_EVENT_TYPE" ;;
-}
-
-dimension: vital_sourse_event_event_action {
-  type: string
-  sql: ${TABLE}."VITAL_SOURSE_EVENT_EVENT_ACTION" ;;
-}
-
 dimension: vital_sourse_event_hash {
   type: string
   sql: ${TABLE}."VITAL_SOURSE_EVENT_HASH" ;;
@@ -330,20 +243,7 @@ dimension: mt_user_sso_guid {
   sql: ${TABLE}."MT_USER_SSO_GUID" ;;
 }
 
-dimension_group: mt_local_time {
-  type: time
-  sql: ${TABLE}."MT_LOCAL_TIME" ;;
-}
 
-dimension: mt_title {
-  type: string
-  sql: ${TABLE}."MT_TITLE" ;;
-}
-
-dimension: mt_isbn {
-  type: string
-  sql: ${TABLE}."MT_ISBN" ;;
-}
 
 dimension: mt_session_id {
   type: string
@@ -355,15 +255,7 @@ dimension: mt_platform {
   sql: ${TABLE}."MT_PLATFORM" ;;
 }
 
-dimension: mt_event_action {
-  type: string
-  sql: ${TABLE}."MT_EVENT_ACTION" ;;
-}
 
-dimension: mt_event_type {
-  type: string
-  sql: ${TABLE}."MT_EVENT_TYPE" ;;
-}
 
 dimension: mt_hash {
   type: string
@@ -377,18 +269,9 @@ set: detail {
     subscription_state_u,
     date_c,
     vs_user_sso_guid,
-    vital_sourse_event_title,
-    vital_sourse_event_isbn,
-    vital_sourse_event_session_id,
-    vital_sourse_event_event_type,
-    vital_sourse_event_event_action,
     mt_user_sso_guid,
-    mt_title,
-    mt_isbn,
     mt_session_id,
-    mt_platform,
-    mt_event_action,
-    mt_event_type
+    mt_platform
   ]
 }
 }
