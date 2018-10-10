@@ -11,13 +11,13 @@ view: usage {
       , vital as (
       select vs.user_sso_guid as vs_user_sso_guid
       , vs._hash as vital_sourse_event_hash
-      , vs.event_time
+      , vs.event_time ------------
       from prod.unlimited.RAW_VITALSOURCE_EVENT  vs inner join prod.unlimited.RAW_OLR_EXTENDED_IAC iac on iac.pp_isbn_13 = vs.vbid
       )
 
       , mt as (
       select distinct m.user_identifier as mt_user_sso_guid
-      , m.event_time as mt_event_time
+      , m.event_time as mt_event_time----------------
       , t.platform as mt_platform
       , m._hash as mt_hash
       from cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS as m
@@ -30,13 +30,13 @@ view: usage {
       , u_v as (
       select res_users.*
       , vital.*
-      from res_users inner join  vital on res_users.user_sso_guid = vital.vs_user_sso_guid and to_date(res_users.date_c) = to_date(vital.event_time)
+      from res_users inner join  vital on res_users.user_sso_guid = vital.vs_user_sso_guid  ----------------------
       )
 
       , res as (
       select u_v.*,
       mt.*
-      from u_v inner join  mt on mt.mt_user_sso_guid = u_v.user_sso_guid and to_date(mt.mt_event_time) = to_date(u_v.event_time)
+      from u_v inner join  mt on mt.mt_user_sso_guid = u_v.user_sso_guid---------------
 
       union
 
@@ -75,6 +75,11 @@ view: usage {
     type: number
     sql: case when ${count_vs} = 0 then 0 else 1 end ;;
 
+  }
+
+  dimension_group: mt_event_time {
+    type: time
+    sql: ${TABLE}."MT_EVENT_TIME" ;;
   }
 
   set:  vs_sum{
