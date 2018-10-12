@@ -33,6 +33,24 @@ explore: cu_enrollment_events {
 
 }
 
+explore: cu_raw_olr_raw_mt_resource_interactions {
+  from: cu_raw_olr_raw_mt_resource_interactions
+  label: "cu_raw_olr_raw_mt_resource_interactions"
+
+}
+
+explore: cu_raw_olr_stg_clts_products_v {
+  from: cu_raw_olr_stg_clts_products_v
+  label: "cu_raw_olr_stg_clts_products_v"
+
+}
+
+explore: cu_raw_vitalsource_event {
+  from: cu_raw_vitalsource_event
+  label: "cu_raw_vitalsource_event"
+
+}
+
 explore: ra_check {
   from: ra_check
   label: "ra_check"
@@ -54,5 +72,10 @@ explore: prov_prod {
 explore: usage {
   # from: usage
   label: "usage"
+
+}
+explore: usage_ra {
+  # from: usage_ra
+  label: "usage_ra"
 
 }
