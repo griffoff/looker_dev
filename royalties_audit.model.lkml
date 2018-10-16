@@ -25,26 +25,36 @@ include: "dim_date.view"
 
 explore: dim_date {}
 
-
-
-explore: cu_enrollment_events {
-  from: cu_enrollment_events
-  label: "cu_enrollment_events"
-
+datagroup: mt {
+  sql_trigger: SELECT COUNT(*) FROM cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS ;;
+  max_cache_age: "12 hours"
 }
 
+datagroup: clts_products_v {
+  sql_trigger: SELECT COUNT(*) FROM prod.STG_CLTS.PRODUCTS_V ;;
+  max_cache_age: "12 hours"
+}
+
+
 explore: cu_raw_olr_raw_mt_resource_interactions {
+  persist_with: mt
   from: cu_raw_olr_raw_mt_resource_interactions
   label: "cu_raw_olr_raw_mt_resource_interactions"
 
 }
 
 explore: cu_raw_olr_stg_clts_products_v {
+  persist_with: clts_products_v
   from: cu_raw_olr_stg_clts_products_v
   label: "cu_raw_olr_stg_clts_products_v"
 
 }
 
+explore: cu_enrollment_events {
+  from: cu_enrollment_events
+  label: "cu_enrollment_events"
+
+}
 explore: cu_raw_vitalsource_event {
   from: cu_raw_vitalsource_event
   label: "cu_raw_vitalsource_event"

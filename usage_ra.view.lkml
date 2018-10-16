@@ -34,7 +34,7 @@ view: usage_ra {
       , u_v as (
       select res_users.*
       , vital.*
-      , datediff(dd, date_c, event_time) as day_number
+      , (datediff(dd, date_c, event_time) + 1) as day_number
       from res_users inner join  vital on res_users.user_sso_guid = vital.vs_user_sso_guid  ----------------------
       )
 
@@ -109,6 +109,40 @@ view: usage_ra {
       event_action,
       vbid
       ]
+  }
+
+  measure: count_success_v {
+    type: count_distinct
+    sql: ${vital_sourse_event_hash} ;;
+    filters: {
+      field: success
+      value: "true"
+    }
+  }
+  measure: count_fail_v {
+    type: count_distinct
+    sql: ${vital_sourse_event_hash} ;;
+    filters: {
+      field: success
+      value: "false"
+    }
+  }
+
+  measure: count_success_mt {
+    type: count_distinct
+    sql: ${vital_sourse_event_hash} ;;
+    filters: {
+      field: success
+      value: "true"
+    }
+  }
+  measure: count_fail_mt {
+    type: count_distinct
+    sql: ${vital_sourse_event_hash} ;;
+    filters: {
+      field: success
+      value: "false"
+    }
   }
 
 
