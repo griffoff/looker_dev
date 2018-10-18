@@ -216,6 +216,17 @@ view: ra_usage {
     drill_fields: [detail*]
   }
 
+  measure: count_enpected_record_empty{
+    type: count_distinct
+    filters: {
+      field: status
+      value: "not planned action, problem with this day, snowflake error"
+
+    }
+    sql: ${event_hash} ;;
+    drill_fields: [detail*]
+  }
+
   measure: count_not_planed_action {
     type: count_distinct
     filters: {
@@ -327,27 +338,6 @@ view: ra_usage {
     drill_fields: [detail*]
   }
 
-  measure: count_success_broke_all {
-    type: count_distinct
-    filters: {
-      field: status
-      value: "in join"
-    }
-    filters: {
-      field: isbn_health
-      value: "0"
-    }
-    filters: {
-      field: sa_successful
-      value: "0"
-    }
-    filters: {
-      field: count_status
-      value: "success"
-    }
-    sql: ${event_hash} ;;
-    drill_fields: [detail*]
-  }
 
   dimension: id {
     type: string
@@ -356,7 +346,7 @@ view: ra_usage {
 
   dimension:user_sso_guid {
     type: string
-    sql: ${TABLE}."user_sso_guid" ;;
+    sql: ${TABLE}."USER_SSO_GUID" ;;
   }
   dimension: date_c {
     type: date
