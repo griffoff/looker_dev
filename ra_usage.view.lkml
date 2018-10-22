@@ -220,7 +220,7 @@ view: ra_usage {
     type: count_distinct
     filters: {
       field: status
-      value: "not planned action, problem with this day, snowflake error"
+      value: "problem with this day, snowflake error"
 
     }
     sql: ${event_hash} ;;
