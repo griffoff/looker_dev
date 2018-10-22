@@ -109,7 +109,7 @@ view: prov_prod {
 
         , case when (position(EBOOK_ISBN_EXPECTED , ACTUAL_BOOK) > 0 or EBOOK_ISBN_EXPECTED is null) then 1 else 0 end as book_health
 
-        , plat.platform as platform
+        , case when plat.platform like 'OWL V2' then 'CNOW' else  plat.platform end as platform
         from res_users
         , prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT as pp
         , plat
@@ -165,6 +165,7 @@ view: prov_prod {
 
   measure: health {
     type: sum
+    drill_fields: [detail*]
     sql: 50 * (${book_health} + ${course_health}) ;;
   }
   measure: success {
