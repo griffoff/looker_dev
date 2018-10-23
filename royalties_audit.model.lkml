@@ -95,3 +95,9 @@ explore: ra_usage {
   label: "ra_usage"
 
 }
+
+explore: check_script_2 {
+  # from: check_script_2
+  label: "check_script_2"
+
+}
