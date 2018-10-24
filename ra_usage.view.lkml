@@ -74,6 +74,7 @@ view: ra_usage {
       , c.count_status as count_status
       from events e inner join prod.UNLIMITED.SCENARIO_ACTIVITIES sa on to_date(e.event_time) = to_date(sa.CREATED_ON) and e.id = sa.uid and e.product_platform = sa.product_type and sa.event_action = e.event_action
       inner join counts_validation c on to_date(e.event_time) = to_date(c.event_time) and e.id = c.id and e.product_platform = c.product_platform and c.event_action = e.event_action
+      where e.event_action not like 'LOGIN'
 
       )
 
@@ -89,36 +90,6 @@ view: ra_usage {
       where sa.uid is null
       )
 
-      , compare_day as (
-      select distinct e.*
-      , 'problem with this day' as status
-      , case when e.isbn = sa.component_isbn then 1 else 0 end as isbn_health
-      , sa.component_isbn as sa_isbn
-      , sa.event_action as sa_event_action
-      , case when sa.SUCCESSFUL then 1 else 0 end as sa_SUCCESSFUL
-      , null as count_status
-      from events e left outer join  prod.UNLIMITED.SCENARIO_ACTIVITIES sa on to_date(e.event_time) = to_date(sa.CREATED_ON) and e.id = sa.uid
-      left outer join compare_error ce on e.event_hash = ce.event_hash
-      where to_date(sa.CREATED_ON) is null
-      and ce.event_hash is null
-      )
-
-      , compare_platform as(
-      select distinct e.*
-      , 'not planned platform' as status
-      , case when e.isbn = sa.component_isbn then 1 else 0 end as isbn_health
-      , sa.component_isbn as sa_isbn
-      , sa.event_action as sa_event_action
-      , case when sa.SUCCESSFUL then 1 else 0 end as sa_SUCCESSFUL
-      , null as count_status
-      from events e left outer join  prod.UNLIMITED.SCENARIO_ACTIVITIES sa on to_date(e.event_time) = to_date(sa.CREATED_ON) and e.id = sa.uid and e.product_platform = sa.product_type
-      left outer join compare_error ce on e.event_hash = ce.event_hash
-      left outer join compare_day cd on e.event_hash = cd.event_hash
-      where sa.product_type is null
-      and ce.event_hash is null
-      and cd.event_hash is null
-      )
-
       , compare_action as(
       select distinct e.*
       , 'not planned action' as status
@@ -129,12 +100,9 @@ view: ra_usage {
       , null as count_status
       from events e left outer join  prod.UNLIMITED.SCENARIO_ACTIVITIES sa on to_date(e.event_time) = to_date(sa.CREATED_ON) and e.id = sa.uid and e.product_platform = sa.product_type and sa.event_action = e.event_action
       left outer join compare_error ce on e.event_hash = ce.event_hash
-      left outer join compare_day cd on e.event_hash = cd.event_hash
-      left outer join compare_platform cp on e.event_hash = cp.event_hash
       where sa.event_action is null
       and ce.event_hash is null
-      and cd.event_hash is null
-      and cp.event_hash is null
+      and e.event_action  not like 'LOGIN'
       )
 
 
@@ -146,14 +114,7 @@ view: ra_usage {
       select * from compare_correct
       union
 
-
       select * from compare_action
-      union
-
-      select * from compare_platform
-      union
-
-      select * from compare_day
       )
 
       , res as(
