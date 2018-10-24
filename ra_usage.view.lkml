@@ -90,6 +90,28 @@ view: ra_usage {
       where sa.uid is null
       )
 
+      , compare_error_sa as (
+      select
+       sd.guid as user_sso_guid
+      , sa.uid
+      , sd.CREATED_ON as date_c
+      , sa.product_type as product_platform
+      , null as isbn
+      , null as event_action
+      , to_date(sa.created_on) as event_time
+      , (datediff(dd, sd.CREATED_ON, sa.created_on) + 1) as day_number
+      , null as event_hash
+      , 'must be in snowflake' as status
+      , null as isbn_health
+      , sa.component_isbn as sa_isbn
+      , sa.event_action as sa_event_action
+      , case when sa.SUCCESSFUL then 1 else 0 end as sa_SUCCESSFUL
+      , null as count_status
+      from prod.UNLIMITED.SCENARIO_ACTIVITIES sa left outer join  events e on e.id = sa.uid and e.product_platform = sa.product_type
+      inner join  prod.UNLIMITED.SCENARIO_DETAILS sd on sd.uid like sa.uid
+      where e.product_platform is null
+      )
+
       , compare_action as(
       select distinct e.*
       , 'not planned action' as status
@@ -115,55 +137,36 @@ view: ra_usage {
       union
 
       select * from compare_action
+
+      union
+      select * from compare_error_sa
+
       )
 
       , res as(
       select * from compare
-
-      union
-
-      select distinct  e.*
-      , 'not in join' as status
-      , null as isbn_health
-      , null as sa_isbn
-      , null as sa_event_action
-      , null as sa_SUCCESSFUL
-      , null as count_status
-      from events e left outer join compare j on j.EVENT_HASH = e.EVENT_HASH
-      where e.EVENT_HASH is null
-
-      union
-
-      select
-       u.user_sso_guid as user_sso_guid
-      , u.id
-      , u.date_c as date_c
-      , null as product_platform
-      , null as isbn
-      , null as event_action
-      , null as event_time
-      , -1 as day_number
-      , null as event_hash
-      , 'snowflake' as status
-      , null as isbn_health
-      , null as sa_isbn
-      , null as sa_event_action
-      , null as sa_SUCCESSFUL
-      , null as count_status
-      from users u left outer join prod.UNLIMITED.SCENARIO_ACTIVITIES a on a.uid = u.id
-      where a.uid is null)
-
-
-
+      )
 
 
     select * from res
  ;;
   }
 
+
+
   measure: count_all {
     type: count_distinct
     sql: ${event_hash} ;;
+    drill_fields: [detail*]
+  }
+
+  measure: count_not_performed{
+    type: count_distinct
+    filters: {
+      field: status
+      value: "must be in snowflake"
+    }
+    sql: ${product_platform} ;;
     drill_fields: [detail*]
   }
 
