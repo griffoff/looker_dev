@@ -253,7 +253,7 @@ view: ra_usage {
       value: "fail"
     }
 
-    sql: ${event_hash} ;;
+    sql: ${product_platform} ;;
     drill_fields: [detail*]
   }
 
