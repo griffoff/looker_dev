@@ -62,7 +62,7 @@ view: cu_sub_per_day_2 {
   min_dates f
   INNER JOIN max_dates l ON f.user_sso_guid = l.user_sso_guid and f.day = l.day
   inner join prod.UNLIMITED.RAW_SUBSCRIPTION_EVENt  s on l.user_sso_guid = s.user_sso_guid and s.local_time = l.last_local_time
-  LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc ON exc.user_sso_guid = f.user_sso_guid
+  LEFT OUTER JOIN prod.unlimited.EXCLUDED_USERS exc ON exc.user_sso_guid = f.user_sso_guid
   WHERE exc.user_sso_guid is null
   and last_subscription_state <> 'cancelled'
   and last_subscription_state <> 'banned'

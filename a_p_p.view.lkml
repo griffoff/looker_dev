@@ -12,7 +12,7 @@ view: a_p_p {
 select distinct iac_isbn
 , count(distinct _hash) as cc
 from prod.unlimited.RAW_OLR_PROVISIONED_PRODUCT
-where user_sso_guid not in (select user_sso_guid from prod.unlimited.CLTS_EXCLUDED_USERS)
+where user_sso_guid not in (select user_sso_guid from prod.unlimited.EXCLUDED_USERS)
 group by iac_isbn
 )
 
@@ -84,7 +84,7 @@ group by iac_isbn
       and types.pp_pid = pp.product_id
       and sourse like 'unlimited'
       and iac.pp_pid = pp.product_id
-      and pp.user_sso_guid not in (select user_sso_guid from prod.unlimited.CLTS_EXCLUDED_USERS)
+      and pp.user_sso_guid not in (select user_sso_guid from prod.unlimited.EXCLUDED_USERS)
       and c.iac_isbn = pp.iac_isbn
 
       )

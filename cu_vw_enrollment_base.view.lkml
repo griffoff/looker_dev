@@ -8,7 +8,7 @@ view: cu_vw_enrollment_base {
           , MIN(enr.local_time) AS earliest_local_time
         FROM
           ${cu_raw_olr_enrollment.SQL_TABLE_NAME} enr
-          LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc
+          LEFT OUTER JOIN prod.unlimited.EXCLUDED_USERS exc
             ON enr.user_sso_guid = exc.user_sso_guid
         WHERE
           exc.user_sso_guid is null -- not found in exclusions table

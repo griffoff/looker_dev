@@ -5,7 +5,7 @@ view: cu_vw_subscription_base {
         sub.*
       FROM
         ${cu_raw_subscription_event.SQL_TABLE_NAME} sub
-        LEFT OUTER JOIN prod.unlimited.VW_USER_BLACKLIST exc
+        LEFT OUTER JOIN prod.unlimited.EXCLUDED_USERS exc
           ON sub.user_sso_guid = exc.user_sso_guid
       WHERE
         exc.user_sso_guid is null -- not found in exclusions table
