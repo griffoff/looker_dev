@@ -61,34 +61,14 @@ explore: cu_raw_vitalsource_event {
 
 }
 
-explore: ra_check {
-  from: ra_check
-  label: "ra_check"
 
-}
-
-
-explore: check_script {
-  from: check_script
-  label: "check_script"
-
-}
 
 explore: prov_prod {
   # from: prov_prod
   label: "prov_prod"
 }
 
-explore: usage {
-  # from: usage
-  label: "usage"
 
-}
-explore: usage_ra {
-  # from: usage_ra
-  label: "usage_ra"
-
-}
 
 explore: ra_usage {
   # from: ra_usage

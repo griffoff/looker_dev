@@ -79,31 +79,11 @@ explore: cu_vw_subscription_base {
 ## ORIGINAL
 
 
-explore: vital_sourse {
-  # from: vital_sourse
-  label: "vital_sourse"
-}
+
 
 explore: prov_prod {
   # from: prov_prod
   label: "prov_prod"
-}
-
-explore: check_script {
-  # from: check_script
-  label: "check_script"
-
-}
-
-explore: usage {
-  # from: usage
-  label: "usage"
-
-}
-
-explore: cs_m {
-  # from: cs_m
-  label: "cs_m"
 }
 
 
@@ -124,10 +104,6 @@ explore: a_subscriptions {
 }
 
 
-explore: aaa {
-  # from: aaa
-  label: "aaa"
-}
 
 
 
@@ -142,19 +118,12 @@ explore: a_sub_m {
   label: "a_sub_m"
 }
 
-explore: a_sum_m_copy {
-  from: a_sum_m_copy
-  label: "a_sum_m_copy"
-}
 
 explore: cu_sub_per_day {
   from: cu_sub_per_day
   label: "cu_sub_per_day"
 }
-explore: cu_sub_per_day_2 {
-  from: cu_sub_per_day_2
-  label: "cu_sub_per_day_2"
-}
+
 
 explore: cu_sub_per_day_3 {
   from: cu_sub_per_day_3
@@ -163,11 +132,4 @@ explore: cu_sub_per_day_3 {
 explore: cu_vm_provisioned_product {
   from: cu_vm_provisioned_product
   label: "cu_vm_provisioned_product"
-}
-
-
-explore: products_that_making__full {
-  from: products_that_making__full
-  label: "products_that_making__full"
-
 }
