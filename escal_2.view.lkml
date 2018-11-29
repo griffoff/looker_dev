@@ -36,7 +36,7 @@ view: escal_2 {
     , jsondata:issuetype:name::string as issuetype
             , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
             ,JSONDATA:customfield_30130::string as sso_isbn
-            ,case when JSONDATA:customfield_26738='null' then 'Unspecified' else trim(JSONDATA:customfield_26738::string) end as discipline
+            ,IFNULL(JSONDATA:customfield_26738,'Unspecified') as discipline
             ,JSONDATA:customfield_11248::string as customer_institution
             ,JSONDATA:customfield_28633::string as course_key
             ,JSONDATA:customfield_33033::string as salesforce_key -- customfield_31335 (old)
@@ -74,6 +74,7 @@ select full_table.*
     type: string
     sql: ${TABLE}.PRODUCTGROUP ;;
   }
+
 
   dimension: DISPLAYORDER {
     type: number
@@ -410,7 +411,6 @@ select full_table.*
   }
 
 
-
   measure: count_resolved {
     label: "# Resolved"
     type:  count_distinct
@@ -437,4 +437,30 @@ select full_table.*
     type: count
     drill_fields: [detalized_set_fields*]
   }
+  #---------------------------------------------------------------
+  measure: Resolved{
+    type:  count_distinct
+    sql: case when datediff(hour, ${last_resolved_date}, current_timestamp) <= 48 then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+  measure: New{
+    type:  count_distinct
+    sql: case when  datediff(hour, ${created_date}, current_timestamp) <= 48  then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+  measure: Total_unresolved{
+    type:  count_distinct
+    sql: case when  ${resolution} is null then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+  measure: Tier_3_Await_Ack{
+    type:  count_distinct
+    sql: case when ${status} like 'Tier 3 Awaiting Acknowledge' then ${ID_TICKET} end ;;
+    drill_fields: [detalized_set_fields*]
+  }
+
+  #---------------------------------------------------------------
 }
