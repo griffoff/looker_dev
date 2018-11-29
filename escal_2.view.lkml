@@ -440,13 +440,13 @@ select full_table.*
   #---------------------------------------------------------------
   measure: Resolved{
     type:  count_distinct
-    sql: case when datediff(hour, ${last_resolved_date}, current_timestamp) <= 48 then ${ID_TICKET} end ;;
+    sql: case when datediff(day, ${last_resolved_date}, current_timestamp) <= 1 then ${ID_TICKET} end ;;
     drill_fields: [detalized_set_fields*]
   }
 
   measure: New{
     type:  count_distinct
-    sql: case when  datediff(hour, ${created_date}, current_timestamp) <= 48  then ${ID_TICKET} end ;;
+    sql: case when  datediff(day, ${created_date}, current_timestamp) <= 1  then ${ID_TICKET} end ;;
     drill_fields: [detalized_set_fields*]
   }
 
