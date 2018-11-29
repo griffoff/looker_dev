@@ -438,29 +438,68 @@ select full_table.*
     drill_fields: [detalized_set_fields*]
   }
   #---------------------------------------------------------------
+  dimension: is_new{
+  type: yesno
+  hidden: yes
+  sql: datediff(day, ${created_date}, current_timestamp) <= 1 ;;
+ }
+
+  dimension: is_resolved{
+    type: yesno
+    hidden: yes
+    sql: datediff(day, ${last_resolved_date}, current_timestamp) <= 1 ;;
+  }
   measure: Resolved{
     type:  count_distinct
-    sql: case when datediff(day, ${last_resolved_date}, current_timestamp) <= 1 then ${ID_TICKET} end ;;
-    drill_fields: [detalized_set_fields*]
+    sql: ${ID_TICKET} ;;
+    filters: {
+      field: is_resolved
+      value: "yes"
+    }
+    drill_fields: [detail*]
   }
 
   measure: New{
     type:  count_distinct
-    sql: case when  datediff(day, ${created_date}, current_timestamp) <= 1  then ${ID_TICKET} end ;;
-    drill_fields: [detalized_set_fields*]
+    sql: ${ID_TICKET} ;;
+    filters: {
+      field: is_new
+      value: "yes"
+    }
+    drill_fields: [detail*]
   }
 
   measure: Total_unresolved{
     type:  count_distinct
-    sql: case when  ${resolution} is null then ${ID_TICKET} end ;;
-    drill_fields: [detalized_set_fields*]
+    sql: ${ID_TICKET} ;;
+    filters: {
+      field: resolution
+      value: "null"
+    }
+    drill_fields: [detail*]
   }
 
   measure: Tier_3_Await_Ack{
     type:  count_distinct
-    sql: case when ${status} like 'Tier 3 Awaiting Acknowledge' then ${ID_TICKET} end ;;
-    drill_fields: [detalized_set_fields*]
+    sql: ${ID_TICKET} ;;
+    filters: {
+      field:status
+      value: "Tier 3 Awaiting Acknowledge"
+    }
+    drill_fields: [detail*]
   }
-
+  set: detail {
+    fields: [
+            jira_url_by_Key,
+      priority,
+      category,
+      component,
+      created_date,
+      resolutionStatus,
+      last_resolved_date,
+      age_days,
+      salesforce_key
+    ]
+  }
   #---------------------------------------------------------------
 }
