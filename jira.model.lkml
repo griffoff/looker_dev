@@ -161,6 +161,19 @@ explore: escal_2 {
 
 }
 
+explore: escal_3 {
+  from: escal_3
+  persist_with: escal_datagroup
+  label: "Escal-3"
+
+  join: dim_date {
+    view_label: "Date"
+    sql_on: ${escal_3.createdatekey} = ${dim_date.datekey} ;;
+    relationship: many_to_one
+  }
+
+}
+
 explore: escal_2_total {
   from: escal_2_total
   persist_with: escal_datagroup
