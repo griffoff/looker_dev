@@ -7,6 +7,7 @@ SELECT key_jira
 , value:inwardIssue:fields:summary as link
 FROM JIRA.RAW_JIRA_DATA
 , lateral flatten ( input => jsondata:issuelinks)
+where value:type:name::string like 'Cloners'
 
 )
 
@@ -14,14 +15,16 @@ FROM JIRA.RAW_JIRA_DATA
 SELECT key_jira
 , jsondata:summary as link
 FROM JIRA.RAW_JIRA_DATA
+, lateral flatten ( input => jsondata:issuelinks)
 where (case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end) in ('Content Source','Digital Production')
-and jsondata:issuetype:name::string in ('Escal - Bug', 'Escal - Enhancement', 'Escal - Inquiry', 'Escal - Service Request')
+and jsondata:issuetype:name::string  in ('Escal - Bug', 'Escal - Enhancement', 'Escal - Inquiry', 'Escal - Service Request')
 and jsondata:status:name::string not in ('Closed', 'Tier 1 Review')
 and COALESCE(COMPONENT, JSONDATA:customfield_32866:value::string) not in ('Gale', 'Gale Courses and COHS', 'Gale ProMo', 'Gale Small Business Builder', 'Gale Subscriptions')
+and value:type:name::string like 'Cloners'
 )
 
 , keys_to_drop as (
-select f.key_jira as clone from fake_escal f inner join true_escal t on f.link like t.link
+select f.key_jira as clone from fake_escal f inner join true_escal t on contains(t.link, f.link)
 )
 
 ,tickets as(
