@@ -78,7 +78,7 @@ view: escal_3 {
     , case when f.clone is null then 'NO' else 'YES' end as is_clone
     from full_table
     left join JIRA.TOPSYSTEM ts on COMPONENT=SYSTEMNAME
-    left outer join ${escal_cloned_tickets.SQL_TABLE_NAME}  f on KEY_JIRA = f.clone
+    left outer join ${escal_cloned_tickets.SQL_TABLE_NAME}  f on ID_TICKET = f.clone
     ;;
   }
 

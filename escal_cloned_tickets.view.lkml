@@ -2,7 +2,7 @@ view: escal_cloned_tickets {
   derived_table: {
     sql: with true_escal as (
       SELECT key_jira
-      , value:inwardIssue:fields:summary as link
+      , value:inwardIssue:id as id
       FROM JIRA.RAW_JIRA_DATA
       , lateral flatten ( input => jsondata:issuelinks)
       where value:type:name::string like 'Cloners'
@@ -11,23 +11,28 @@ view: escal_cloned_tickets {
 
       , fake_escal as (
       SELECT key_jira
-      , jsondata:summary as link
+      , id_ticket as id
       FROM JIRA.RAW_JIRA_DATA
       , lateral flatten ( input => jsondata:issuelinks)
       where value:type:name::string like 'Cloners'
       )
 
       , keys_to_drop as (
-      select f.key_jira as clone from fake_escal f inner join true_escal t on contains(t.link, f.link)
+      select f.key_jira, f.id as clone from fake_escal f inner join true_escal t on t.id like f.id
       )
 
       select * from keys_to_drop
-       ;;
+ ;;
   }
 
   measure: count {
     type: count
     drill_fields: [detail*]
+  }
+
+  dimension: key_jira {
+    type: string
+    sql: ${TABLE}."KEY_JIRA" ;;
   }
 
   dimension: clone {
@@ -36,6 +41,6 @@ view: escal_cloned_tickets {
   }
 
   set: detail {
-    fields: [clone]
+    fields: [key_jira, clone]
   }
 }
