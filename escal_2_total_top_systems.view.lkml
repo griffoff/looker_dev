@@ -13,6 +13,7 @@ view: escal_2_top_systems {
   )
 , full_table as (select
     KEY_JIRA
+    , ID_TICKET
     , TO_TIMESTAMP_TZ(jsondata:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as CREATED
     --, case when JSONDATA:resolutiondate='null' then null else to_timestamp_tz(jsondata:resolutiondate::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as acknowledged
     --, case when JSONDATA:customfield_24430='null' then null else to_timestamp_tz(jsondata:customfield_24430::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as resolved
@@ -27,8 +28,11 @@ select full_table.*
     ,    PRODUCTGROUP::string as PRODUCTGROUP
     , DISPLAYORDER::number as DISPLAYORDER
     , ISTOPSYSTEM::boolean as ISTOPSYSTEM
+    , case when f.clone is null then 'NO' else 'YES' end as is_clone
      from full_table
     left join JIRA.TOPSYSTEM ts on COMPONENT=SYSTEMNAME
+    left outer join ${escal_cloned_tickets.SQL_TABLE_NAME}  f on ID_TICKET = f.clone
+    where is_clone like 'NO'
         ;;
   }
 
