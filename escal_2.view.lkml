@@ -19,6 +19,7 @@ view: escal_2 {
           , case when JSONDATA:updated='null' then null else to_timestamp_tz(jsondata:updated::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') end as updated
           , case when JSONDATA:customfield_13438='null' then null else to_timestamp(as_number(JSONDATA:customfield_13438), 3) end as last_resolved
           , case when JSONDATA:customfield_13430='null' then null else to_timestamp(as_number(JSONDATA:customfield_13430), 3) end as last_closed
+          , IFNULL(JSONDATA:customfield_26737,'Unknown') as product_manager
           , JSONDATA:priority:name::string as priority
           , JSONDATA:description::string as description
           , JSONDATA:customfield_23432:value::string as severity
@@ -193,6 +194,11 @@ view: escal_2 {
   dimension: resolution {
     type: string
     sql: ${TABLE}.resolution ;;
+  }
+
+  dimension: product_manager {
+    type: string
+    sql: ${TABLE}.product_manager ;;
   }
 
   dimension: resolutionTime {
