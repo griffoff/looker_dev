@@ -35,7 +35,8 @@ view: escal_2 {
           , jsondata:updated::string as LAST_UPDATED
           , jsondata:issuetype:name::string as issuetype
           , case when contains(KEY_JIRA, 'ESCAL-') then JSONDATA:customfield_21431[0]:value::string else JSONDATA:customfield_20434:value::string end as category
-          ,JSONDATA:customfield_30130::string as sso_isbn
+          ,JSONDATA:customfield_30130::string as sso_isbn_13
+          ,JSONDATA:customfield_30131::string as core_isbn
           ,IFNULL(JSONDATA:customfield_26738,'Unspecified') as discipline
           ,JSONDATA:customfield_11248::string as customer_institution
           ,JSONDATA:customfield_28633::string as course_key
@@ -243,9 +244,14 @@ view: escal_2 {
     sql: ${TABLE}.salesforce_key ;;
   }
 
-  dimension: sso_isbn {
+  dimension: sso_isbn_13 {
     type: string
-    sql: ${TABLE}.sso_isbn ;;
+    sql: ${TABLE}.sso_isbn_13 ;;
+  }
+
+  dimension: core_isbn {
+    type: string
+    sql: ${TABLE}.core_isbn ;;
   }
 
   dimension: status {
@@ -438,7 +444,7 @@ view: escal_2 {
     label: "IssuesDistinct"
     type: count_distinct
     sql: ${ID_TICKET};;
-    drill_fields: [detalized_set_fields*]
+    drill_fields: [detail*]
   }
 
   measure: count {
@@ -512,7 +518,9 @@ view: escal_2 {
       resolutionStatus,
       last_resolved_date,
       age_days,
-      salesforce_key
+      salesforce_key,
+      sso_isbn_13,
+      core_isbn
     ]
   }
   #---------------------------------------------------------------

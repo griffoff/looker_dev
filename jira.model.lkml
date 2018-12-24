@@ -13,6 +13,11 @@ datagroup: escal_datagroup {
   max_cache_age: "12 hours"
 }
 
+datagroup: escal_test {
+  sql_trigger: SELECT i.*,  d.*, s.*FROM JIRA.RAW_JIRA_ISSUE i, JIRA.RAW_JIRA_DATA d, JIRA_PROCS_SYNC s ;;
+  max_cache_age: "12 hours"
+}
+
 explore: escal_2_new_copy {
   from: escal_2_new_copy
   label: "escal_2_new_copy"
@@ -150,7 +155,7 @@ explore: vw_sso{
 
 explore: escal_2 {
   from: escal_2
-  persist_with: escal_datagroup
+  persist_with:escal_test
   label: "Escal-2"
 
   join: dim_date {
