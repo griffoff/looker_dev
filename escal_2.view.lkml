@@ -26,6 +26,7 @@ view: escal_2 {
           , jsondata:resolution:name::string  AS resolution
           , jsondata:status:name::string  AS status
           , jsondata:summary::string  AS summary
+          , jsondata:assignee:name::string  AS assignee
           --, jsondata:project:projectCategory:name::string as Category
           --, jsondata:customfield_31240:value::string as COMPONENT
           --,JSONDATA:components[0]:name::string as component_escal
@@ -112,6 +113,11 @@ view: escal_2 {
   dimension: acknowledged {
     type: string
     sql: ${TABLE}.ACKNOWLEDGED ;;
+  }
+
+  dimension: assignee {
+    type: string
+    sql: ${TABLE}.assignee ;;
   }
 
   dimension:age_days {
@@ -520,7 +526,11 @@ view: escal_2 {
       age_days,
       salesforce_key,
       sso_isbn_13,
-      core_isbn
+      core_isbn,
+      status,
+      assignee,
+      updated_date
+
     ]
   }
   #---------------------------------------------------------------
