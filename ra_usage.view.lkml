@@ -1,42 +1,41 @@
 view: ra_usage {
   derived_table: {
     sql: with users as (
-      select guid as user_sso_guid,
-      uid as id,
-      SUBSCRIPTION_STATE as SUBSCRIPTION_STATE_u
-      , CREATED_ON as date_c
-      from prod.UNLIMITED.SCENARIO_DETAILS
+      select sa.uid as id
+      , sd.guid as guid
+      , sa.product_type as product_type
+      , sd.CREATED_ON as date_c
+      , sa.COMPONENT_ISBN as COMPONENT_ISBN
+      --, (datediff(dd, sd.CREATED_ON, sa.created_on) + 1) as day_number
+      from prod.UNLIMITED.SCENARIO_ACTIVITIES sa inner join prod.UNLIMITED.SCENARIO_DETAILS sd on sa.uid = sd.uid
       )
 
       , events as (
       select vs.user_sso_guid as user_sso_guid
       , u.id
-      , u.date_c as date_c
+      , u.date_c
       , 'SMEB' as product_platform
       , vs.vbid as isbn
       , vs.event_action as event_action
       , to_date(vs.event_time) as event_time
       , (datediff(dd, date_c, event_time) + 1) as day_number
       , vs._hash as event_hash
-      from prod.UNLIMITED.RAW_VITALSOURCE_EVENT  vs inner join UNLIMITED.RAW_OLR_EXTENDED_IAC iac on iac.pp_isbn_13 = vs.vbid
-      inner join users u on u.user_sso_guid = vs.user_sso_guid
+      from prod.UNLIMITED.RAW_VITALSOURCE_EVENT vs inner join UNLIMITED.RAW_OLR_EXTENDED_IAC iac on iac.pp_isbn_13 = vs.vbid
+      inner join users u on u.guid = vs.user_sso_guid
 
       union
 
       select distinct m.user_identifier as user_sso_guid
       , u.id
-      , u.date_c as date_c
-      , case when t.platform like 'WebAssign' then 'WA'  when t.platform like 'MindTap Reader' then 'MTR' when t.platform like 'MindTap' then 'MTC' when t.platform like 'Aplia' then 'APLIA' when t.platform like 'OWL V2' then 'CNOW' else t.platform end as product_platform
+      , u.date_c
+      , u.product_type as product_platform
       , m.COMPONENT_ISBN as isbn
       , m.event_action as event_action
       , to_date(m.event_time) as event_time
       , (datediff(dd, date_c, event_time) + 1) as day_number
       , m._hash as event_hash
       from cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS as m
-      inner join users u on u.user_sso_guid = m.user_identifier
-      inner join prod.UNLIMITED.RAW_OLR_EXTENDED_IAC iac on m.component_isbn = iac.cp_isbn_13 or m.component_isbn = iac.pp_isbn_13
-      inner join prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp on pp.user_sso_guid =  m.user_identifier and iac.pp_isbn_13 = pp.iac_isbn
-      inner join prod.STG_CLTS.PRODUCTS_V  t on t.isbn13 = iac.pp_isbn_13
+      inner join users u on u.guid = m.user_identifier and u.COMPONENT_ISBN = m.COMPONENT_ISBN
       )
 
       , counts as(
