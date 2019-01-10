@@ -73,7 +73,7 @@ view: ra_usage {
       , c.count_status as count_status
       from events e inner join prod.UNLIMITED.SCENARIO_ACTIVITIES sa on to_date(e.event_time) = to_date(sa.CREATED_ON) and e.id = sa.uid and e.product_platform = sa.product_type and sa.event_action = e.event_action
       inner join counts_validation c on to_date(e.event_time) = to_date(c.event_time) and e.id = c.id and e.product_platform = c.product_platform and c.event_action = e.event_action
-      where e.event_action not like 'LOGIN'
+      where e.event_action not like 'LOGIN' and e.event_action not like 'UNFOCUSED'
 
       )
 
@@ -123,7 +123,7 @@ view: ra_usage {
       left outer join compare_error ce on e.event_hash = ce.event_hash
       where sa.event_action is null
       and ce.event_hash is null
-      and e.event_action  not like 'LOGIN'
+      and e.event_action  not like 'LOGIN' and e.event_action not like 'UNFOCUSED'
       )
 
 
