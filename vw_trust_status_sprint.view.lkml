@@ -258,6 +258,7 @@ select
     label: "# Reopened"
     type:  count_distinct
     sql: case when ${currentstatus_on_interval}='Reopened' then ${begin_status_raw} end;;
+    drill_fields: [key, currentstatus_on_interval]
   }
   measure: total_time_DEV {
     type: max

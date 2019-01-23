@@ -65,10 +65,23 @@ view: vw_trust {
       from status_prep
       left join max_info on status_prep.id=max_info.id     and status_prep.max_modifyedtime=max_info.modifyedtime
        and max_info.field='status'    and status_prep.sprint=max_info.sprint )
-  select         max_info.*
+  , data as (select         max_info.*
       , case when status_before.id is null then 'Open' else status_before.status end as start_status_sprint
      from status_before
- RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint
+ RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint)
+
+ , fin as (select data.id
+ , data.sprint
+ , case when ARRAY_CONTAINS('Closed'::variant, array_agg(distinct data.toString)) then 'yes' else 'no' end as isfinished
+ from data
+ where data.field like 'status'
+ and to_date(data.SPRINTSTART) <= data.MODIFYEDDATE
+ and to_date(data.sprintend) >= data.MODIFYEDDATE
+ group by data.id , data.sprint)
+
+ select data.*
+ , fin.isfinished
+ from data inner join fin on data.id = fin.id and data.sprint = fin.sprint
    ;;
     }
 
@@ -272,14 +285,34 @@ view: vw_trust {
     sql: case when ${field}='status' then ${NewString} end  ;;
   }
 
-  dimension: isFinished {
-    type: yesno
-    sql:  ARRAY_CONTAINS('Closed'::variant, array_agg(distinct ${NewString})) ;;
+  dimension: isfinished {
+    type: string
+    sql: ${TABLE}."ISFINISHED" ;;
   }
 
   measure: count {
     type: count
     drill_fields: [key, field, OldString, NewString]
+  }
+
+  measure: count_finished{
+    type: count_distinct
+    filters: {
+      field: isfinished
+      value: "yes"
+    }
+    sql: ${key} ;;
+    drill_fields: [key]
+  }
+
+  measure: count_0_storypoint{
+    type: count_distinct
+    filters: {
+      field: storypoint
+      value: "0"
+    }
+    sql: ${key} ;;
+    drill_fields: [key]
   }
 
   measure: count_tickets_in_sprint{
@@ -288,15 +321,7 @@ view: vw_trust {
     drill_fields: [key]
   }
 
-  measure: count_finished{
-    type: count_distinct
-    filters: {
-      field: isFinished
-      value: "yes"
-    }
-    sql: ${key} ;;
-    drill_fields: [key]
-  }
+
 
   measure: latest_state {
     type: string
