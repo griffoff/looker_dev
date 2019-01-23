@@ -14,6 +14,11 @@ datagroup: subscription_datagroup {
   max_cache_age: "12 hours"
 }
 
+datagroup: enrollment_test {
+  sql_trigger: SELECT * FROM prod.UNLIMITED.RAW_OLR_ENROLLMEN;;
+  max_cache_age: "12 hours"
+}
+
 ## Base views
 explore: cu_clts_excluded_users {
   # from: cu_clts_excluded_users
@@ -24,7 +29,7 @@ explore: cu_enrollment_events {
   label: "cu_enrollment_events"
 }
 explore: cu_raw_olr_enrollment {
-  persist_with: enrollment_datagroup
+  persist_with: enrollment_test
   # from: cu_raw_olr_enrollment
   label: "cu_raw_olr_enrollment"
 }

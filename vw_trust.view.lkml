@@ -272,9 +272,30 @@ view: vw_trust {
     sql: case when ${field}='status' then ${NewString} end  ;;
   }
 
+  dimension: isFinished {
+    type: yesno
+    sql:  ARRAY_CONTAINS('Closed'::variant, array_agg(distinct ${NewString})) ;;
+  }
+
   measure: count {
     type: count
     drill_fields: [key, field, OldString, NewString]
+  }
+
+  measure: count_tickets_in_sprint{
+    type: count_distinct
+    sql: ${key} ;;
+    drill_fields: [key]
+  }
+
+  measure: count_finished{
+    type: count_distinct
+    filters: {
+      field: isFinished
+      value: "yes"
+    }
+    sql: ${key} ;;
+    drill_fields: [key]
   }
 
   measure: latest_state {
