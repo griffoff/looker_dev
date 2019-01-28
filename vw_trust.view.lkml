@@ -70,7 +70,7 @@ view: vw_trust {
      from status_before
  RIGHT OUTER  join max_info on status_before.id=max_info.id  and status_before.sprint=max_info.sprint)
 
- , fin as (select data.id
+ , f1 as (select data.id
  , data.sprint
  , case when ARRAY_CONTAINS('Closed'::variant, array_agg(distinct data.toString)) then 'yes' else 'no' end as isfinished
  from data
@@ -79,9 +79,32 @@ view: vw_trust {
  and to_date(data.sprintend) >= data.MODIFYEDDATE
  group by data.id , data.sprint)
 
+ , f2 as (
+ select data.id
+ , data.sprint
+ , 'no' as isfinished
+ from data left outer join f1 on data.id = f1.id and data.sprint = f1.sprint
+ where f1.sprint is null
+)
+, fin as (
+select * from f1
+union
+select * from f2
+)
+, number_of_sprints as (
+select fin.id
+, array_size(array_agg(distinct fin.sprint)) as count_sprints
+from fin
+group by fin.id
+)
+
  select data.*
  , fin.isfinished
- from data inner join fin on data.id = fin.id and data.sprint = fin.sprint
+ , ns.count_sprints
+ , first_value(data.SPRINTSTART) over (partition by data.id order by data.SPRINTSTART)  as first_SPRINTSTART
+ from data
+ inner join fin on data.id = fin.id and data.sprint = fin.sprint
+inner join  number_of_sprints ns on ns.id = data.id
    ;;
     }
 
@@ -289,10 +312,50 @@ view: vw_trust {
     type: string
     sql: ${TABLE}."ISFINISHED" ;;
   }
+  dimension_group: first_sprintstart {
+    type: time
+    sql: ${TABLE}."FIRST_SPRINTSTART" ;;
+  }
+
+  dimension: is_from_prev {
+    type: yesno
+    sql: ${sprintstart_date} > ${first_sprintstart_date};;
+  }
+
+  dimension: story_point_claster {
+    type: number
+    sql: case when ${storypoint} = 0 or ${storypoint} is null then 0--'[0 ; 0.5]'
+    when ${storypoint} >= 0.1 and ${storypoint} <= 0.5 then 1--'[0.1 ; 0.5]'
+    when ${storypoint} > 0.5 and ${storypoint} <= 1 then 2-- '(0.5 ; 1]'
+    when ${storypoint} > 1 and ${storypoint} <= 2 then 3 --'(1 ; 2]'
+    when ${storypoint} > 2 and ${storypoint} <= 3 then 4 --'(2 ; 3]'
+    when ${storypoint} > 3 and ${storypoint} <= 5 then 5 -- '(3 ; 5]'
+    when ${storypoint} > 5 and ${storypoint} <= 8 then 6 --'(5 ; 8]'
+    when ${storypoint} > 8 and ${storypoint} <= 13 then 7 --'(8 ; 13]'
+    when ${storypoint} > 13 then 8 end ;;
+  }
+
 
   measure: count {
     type: count
     drill_fields: [key, field, OldString, NewString]
+  }
+
+  measure: count_prev{
+    type: count_distinct
+    filters: {
+      field: is_from_prev
+      value: "yes"
+    }
+    sql: ${key} ;;
+    drill_fields: [key]
+  }
+
+  measure: number_of_sprints{
+    type: sum_distinct
+    sql_distinct_key: ${sprint};;
+    sql: 1;;
+    drill_fields: [key, storypoint]
   }
 
   measure: count_finished{
@@ -305,6 +368,11 @@ view: vw_trust {
     drill_fields: [key]
   }
 
+  dimension: count_sprints {
+    type: number
+    sql: ${TABLE}."COUNT_SPRINTS" ;;
+  }
+
   measure: count_0_storypoint{
     type: count_distinct
     filters: {
@@ -315,10 +383,40 @@ view: vw_trust {
     drill_fields: [key]
   }
 
+  measure: count_storypoints_in_sprint{
+    type: sum_distinct
+    sql_distinct_key: ${key};;
+    sql: ${storypoint};;
+    drill_fields: [key, storypoint]
+  }
+
+  measure: count_finished_storypoints{
+    type: sum_distinct
+    filters: {
+      field: isfinished
+      value: "yes"
+    }
+    sql_distinct_key: ${key};;
+    sql: ${storypoint};;
+    drill_fields: [key, storypoint]
+  }
+
+  measure: count_unfinished_storypoints{
+    type: sum_distinct
+    filters: {
+      field: isfinished
+      value: "no"
+    }
+    sql_distinct_key: ${key};;
+    sql: ${storypoint};;
+    drill_fields: [key, storypoint]
+  }
+
+
   measure: count_tickets_in_sprint{
     type: count_distinct
     sql: ${key} ;;
-    drill_fields: [key]
+    drill_fields: [key, storypoint]
   }
 
 

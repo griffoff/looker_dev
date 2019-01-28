@@ -110,6 +110,10 @@ explore: vw_trust{
     sql_on:${vw_trust_status_sprint.key} = ${vw_trust.key}  ;;
     relationship: one_to_many
   }
+  join: vw_trust_leadtime {
+    sql_on:${vw_trust_leadtime.id} = ${vw_trust.key}  ;;
+    relationship: one_to_many
+  }
 }
 
 
