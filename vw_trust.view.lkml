@@ -23,7 +23,7 @@ view: vw_trust {
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
       , lateral flatten(input => JSONDATA:changelog:histories) j
-        where (contains(jsondata:key, 'TRUST') and sprintend<>'<null>') or (contains(jsondata:key, 'PA') and sprintend<>'<null>') or (contains(jsondata:key, 'ISRV') and sprintend<>'<null>') )
+        where sprintend<>'<null>' )
  , max_info as(
         select
         id
@@ -322,6 +322,11 @@ inner join  number_of_sprints ns on ns.id = data.id
     sql: ${sprintstart_date} > ${first_sprintstart_date};;
   }
 
+  dimension: is_finished_now {
+    type: yesno
+    sql: ${currentstatus} like 'Closed';;
+  }
+
   dimension: story_point_claster {
     type: number
     sql: case when ${storypoint} = 0 or ${storypoint} is null then 0--'[0 ; 0.5]'
@@ -368,6 +373,16 @@ inner join  number_of_sprints ns on ns.id = data.id
     drill_fields: [key]
   }
 
+  measure: count_finished_generalzed{
+    type: count_distinct
+    filters: {
+      field: currentstatus
+      value: "Closed"
+    }
+    sql: ${key} ;;
+    drill_fields: [key]
+  }
+
   dimension: count_sprints {
     type: number
     sql: ${TABLE}."COUNT_SPRINTS" ;;
@@ -394,6 +409,17 @@ inner join  number_of_sprints ns on ns.id = data.id
     type: sum_distinct
     filters: {
       field: isfinished
+      value: "yes"
+    }
+    sql_distinct_key: ${key};;
+    sql: ${storypoint};;
+    drill_fields: [key, storypoint]
+  }
+
+  measure: count_finished_storypoints_generalized{
+    type: sum_distinct
+    filters: {
+      field: is_finished_now
       value: "yes"
     }
     sql_distinct_key: ${key};;

@@ -11,8 +11,7 @@ view: vw_trust_status_interval {
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
-      , lateral flatten(input => JSONDATA:changelog:histories) j
-        where (contains(jsondata:key, 'TRUST')  or contains(jsondata:key, 'PA') or contains(jsondata:key, 'ISRV')) )
+      , lateral flatten(input => JSONDATA:changelog:histories) j )
 -- select * from  histories ;
 , status_changes as (
         select

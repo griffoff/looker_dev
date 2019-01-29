@@ -11,8 +11,7 @@ view: vw_trust_leadtime {
       ,  to_timestamp_tz(j.value:created::string,'YYYY-MM-DD"T"HH24:MI:SS.FFTZHTZM') as modifyedtime
       ,  j.value:items as items
       from JIRA.RAW_JIRA_ISSUE , lateral flatten(input => JSONDATA:fields:customfield_12530) i
-      , lateral flatten(input => JSONDATA:changelog:histories) j
-        where contains(jsondata:key, 'TRUST-')  or contains(jsondata:key, 'PA')or contains(jsondata:key, 'ISRV'))
+      , lateral flatten(input => JSONDATA:changelog:histories) j)
 -- select * from  histories ;
 , status_changes as (
         select
@@ -62,8 +61,12 @@ from status_table
 
 select f1.*
 , f2.first_time as open_time
-from first_last f1 inner join first_last f2 on f1.id = f2.id
+, first_value(f3.first_time) over (partition by f3.id order by f3.first_time)  as start_work_time
+from first_last f1
+inner join first_last f2 on f1.id = f2.id
+inner join first_last f3 on f1.id = f3.id
 where f2.current_statuss like 'Open'
+and f3.current_statuss not like 'Open'
  ;;
 }
 
@@ -95,6 +98,10 @@ dimension_group: last_time {
   dimension_group: open_time {
     type: time
     sql: ${TABLE}."OPEN_TIME" ;;
+  }
+  dimension_group: start_work_time {
+    type: time
+    sql: ${TABLE}."START_WORK_TIME" ;;
   }
 
 
