@@ -139,3 +139,18 @@ explore: cu_vm_provisioned_product {
   from: cu_vm_provisioned_product
   label: "cu_vm_provisioned_product"
 }
+
+explore: cu_vw_enrollment_payments_30_new {
+  persist_for: "8 hour"
+  label: "cu_vw_enrollment_payments_30_new"
+   join: cu_vw_enrollment_base {
+     sql_on:  ${cu_vw_enrollment_payments_30_new.user_sso_guid} = ${cu_vw_enrollment_base.user_sso_guid} and ${cu_vw_enrollment_payments_30_new.course_key} = ${cu_vw_enrollment_base.course_key};;
+    relationship: one_to_one
+   }
+  join: dim_date {
+    sql_on: ${cu_vw_enrollment_base.local_time_date}<= ${dim_date.datevalue_date}
+    and ${dim_date.datekey} BETWEEN (TO_CHAR(date_part(year,current_date())) || '0101') AND (TO_CHAR(date_part(year,current_date())) || TO_CHAR(RIGHT('00' || DATE_PART(month,current_date()),2)) || TO_CHAR(RIGHT('00' || DATE_PART(day,current_date()),2)));;
+    relationship: one_to_one
+
+  }
+}

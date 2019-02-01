@@ -26,23 +26,23 @@ view: cu_vw_enrollment_base {
 
   dimension: _hash {
     type: string
-    sql: ${TABLE}."_hash" ;;
+    sql: ${TABLE}."_HASH" ;;
   }
 
 
   dimension: access_role {
     type: string
-    sql: ${TABLE}."access_role" ;;
+    sql: ${TABLE}."ACCESS_ROLE" ;;
   }
 
   dimension: course_key {
     type: string
-    sql: ${TABLE}."course_key" ;;
+    sql: ${TABLE}."COURSE_KEY" ;;
   }
 
   dimension_group: local_time {
     type: time
-    sql: ${TABLE}."local_time" ;;
+    sql: ${TABLE}."LOCAL_TIME" ;;
   }
 
 
@@ -50,14 +50,14 @@ view: cu_vw_enrollment_base {
 
   dimension: product_platform {
     type: string
-    sql: ${TABLE}."product_platform" ;;
+    sql: ${TABLE}."PRODUCT_PLATFORM" ;;
   }
 
 
 
   dimension: user_sso_guid {
     type: string
-    sql: ${TABLE}."user_sso_guid" ;;
+    sql: ${TABLE}."USER_SSO_GUID" ;;
   }
 
   set: detail {
