@@ -63,6 +63,7 @@ explore: number_of_sub_per_day {
 
 explore: cu_vw_enrollment_base {
   # from: cu_vw_enrollment_base
+  persist_for: "12 hour"
   label: "cu_vw_enrollment_base"
 }
 

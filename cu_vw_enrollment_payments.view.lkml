@@ -8,16 +8,10 @@ view: cu_vw_enrollment_payments {
             WHEN (pp."source" is null AND  pp.code_type is null) THEN 'Paid via K12 Site License'
             ELSE 'Other Payment' END AS report_status
           , e._hash
-          , e._ldts
-          , e._rsrc
           , e.access_role
           , e.course_key
           , e.local_time
-          , e.message_format_version
-          , e.message_type
-          , e.platform_environment
           , e.product_platform
-          , e.user_environment
           , e.user_sso_guid
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
@@ -32,16 +26,10 @@ view: cu_vw_enrollment_payments {
         SELECT DISTINCT
           'Paid, without CU' as report_status
           , e._hash
-          , e._ldts
-          , e._rsrc
           , e.access_role
           , e.course_key
           , e.local_time
-          , e.message_format_version
-          , e.message_type
-          , e.platform_environment
           , e.product_platform
-          , e.user_environment
           , e.user_sso_guid
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
@@ -54,16 +42,10 @@ view: cu_vw_enrollment_payments {
         SELECT DISTINCT
           'Unpaid' as report_status
           , e._hash
-          , e._ldts
-          , e._rsrc
           , e.access_role
           , e.course_key
           , e.local_time
-          , e.message_format_version
-          , e.message_type
-          , e.platform_environment
           , e.product_platform
-          , e.user_environment
           , e.user_sso_guid
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
@@ -96,15 +78,6 @@ view: cu_vw_enrollment_payments {
     sql: ${TABLE}."_hash" ;;
   }
 
-  dimension_group: _ldts {
-    type: time
-    sql: ${TABLE}."_ldts" ;;
-  }
-
-  dimension: _rsrc {
-    type: string
-    sql: ${TABLE}."_rsrc" ;;
-  }
 
   dimension: access_role {
     type: string
@@ -121,30 +94,13 @@ view: cu_vw_enrollment_payments {
     sql: ${TABLE}."local_time" ;;
   }
 
-  dimension: message_format_version {
-    type: number
-    sql: ${TABLE}."message_format_version" ;;
-  }
 
-  dimension: message_type {
-    type: string
-    sql: ${TABLE}."message_type" ;;
-  }
-
-  dimension: platform_environment {
-    type: string
-    sql: ${TABLE}."platform_environment" ;;
-  }
 
   dimension: product_platform {
     type: string
     sql: ${TABLE}."product_platform" ;;
   }
 
-  dimension: user_environment {
-    type: string
-    sql: ${TABLE}."user_environment" ;;
-  }
 
   dimension: user_sso_guid {
     type: string
@@ -155,16 +111,10 @@ view: cu_vw_enrollment_payments {
     fields: [
       report_status,
       _hash,
-      _ldts_time,
-      _rsrc,
       access_role,
       course_key,
       local_time_time,
-      message_format_version,
-      message_type,
-      platform_environment,
       product_platform,
-      user_environment,
       user_sso_guid
     ]
   }

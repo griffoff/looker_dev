@@ -6,12 +6,15 @@ view: cu_vw_provisioned_product_base {
       user_sso_guid,
       context_id,
       FIRST_VALUE(_hash) OVER (PARTITION BY user_sso_guid, CONTEXT_ID ORDER BY LOCAL_TIME) AS first_hash
-    FROM ${cu_raw_olr_provisioned_product.SQL_TABLE_NAME})
+    FROM prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT --${cu_raw_olr_provisioned_product.SQL_TABLE_NAME}
+
+    )
 
     SELECT
       pp.*
     FROM
-      ${cu_raw_olr_provisioned_product.SQL_TABLE_NAME} pp
+      prod.UNLIMITED.RAW_OLR_PROVISIONED_PRODUCT pp
+      --${cu_raw_olr_provisioned_product.SQL_TABLE_NAME} pp
       INNER JOIN first ON pp.user_sso_guid like first.user_sso_guid AND case when (pp.context_id is null and first.context_id is null) or pp.context_id = first.context_id then true else false end  AND pp._hash like first.first_hash
       LEFT OUTER JOIN prod.unlimited.EXCLUDED_USERS exc ON pp.user_sso_guid = exc.user_sso_guid
       where exc.user_sso_guid is null

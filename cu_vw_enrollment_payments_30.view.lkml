@@ -41,15 +41,6 @@ view: cu_vw_enrollment_payments_30 {
     sql: ${TABLE}._hash ;;
   }
 
-  dimension_group: _ldts {
-    type: time
-    sql: ${TABLE}._ldts ;;
-  }
-
-  dimension: _rsrc {
-    type: string
-    sql: ${TABLE}._rsrc ;;
-  }
 
   dimension: access_role {
     type: string
@@ -66,30 +57,13 @@ view: cu_vw_enrollment_payments_30 {
     sql: ${TABLE}.local_time ;;
   }
 
-  dimension: message_format_version {
-    type: number
-    sql: ${TABLE}.message_format_version ;;
-  }
-
-  dimension: message_type {
-    type: string
-    sql: ${TABLE}.message_type ;;
-  }
-
-  dimension: platform_environment {
-    type: string
-    sql: ${TABLE}.platform_environment ;;
-  }
 
   dimension: product_platform {
     type: string
     sql: ${TABLE}.product_platform ;;
   }
 
-  dimension: user_environment {
-    type: string
-    sql: ${TABLE}.user_environment ;;
-  }
+
 
   dimension: user_sso_guid {
     type: string
@@ -101,16 +75,13 @@ view: cu_vw_enrollment_payments_30 {
       report_date,
       report_status,
       _hash,
-      _ldts_time,
-      _rsrc,
+
       access_role,
       course_key,
       local_time_date,
-      message_format_version,
-      message_type,
-      platform_environment,
+
       product_platform,
-      user_environment,
+
       user_sso_guid
     ]
   }
