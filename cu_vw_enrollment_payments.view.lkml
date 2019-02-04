@@ -16,11 +16,6 @@ view: cu_vw_enrollment_payments {
         FROM
           ${cu_vw_enrollment_base.SQL_TABLE_NAME} e
           INNER JOIN ${cu_vw_provisioned_product_base.SQL_TABLE_NAME} pp ON e.user_sso_guid = pp.user_sso_guid AND e.course_key = pp.context_id
-
-        WHERE
-          pp.USER_ENVIRONMENT like 'production'
-          AND pp.PLATFORM_ENVIRONMENT like 'production'
-          AND (pp.SOURCE_ID is null or pp.SOURCE_ID <> 'Something') -- Filter out testing data from published results
       )
       , paid_no_cu AS (
         SELECT DISTINCT
