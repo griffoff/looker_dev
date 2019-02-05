@@ -50,6 +50,7 @@ view: vw_trust_time_interval {
     select last_dates.general_date
         , t1.id as id
         , t1.current_statuss as currentstatuss
+        , last_value(t1.current_statuss) over (partition by last_dates.general_date, t1.id order by last_dates.general_date)as status_daily
       from last_dates
       left join status_time_interval as t1
       on  last_dates.general_date between TIMESTAMPADD(day,-1,t1.begin_status) and TIMESTAMPADD(day,-1,coalesce(t1.end_status, TO_TIMESTAMP(current_date)))
@@ -74,10 +75,16 @@ view: vw_trust_time_interval {
     sql: ${TABLE}.general_date ;;
   }
 
+
   measure: count_date {
     type: count_distinct
     sql: ${currentstatuss};;
     drill_fields: [currentstatuss, general_date, key]
+  }
+  measure: count_tickets {
+    type: count_distinct
+    sql: ${key};;
+    drill_fields: [key]
   }
 
   measure: dayli_state {
@@ -88,5 +95,52 @@ view: vw_trust_time_interval {
   measure: WIP_old  {
     type: date
     sql: max (${currentstatuss});;
+  }
+
+  dimension: status_daily {
+    type: string
+    sql: ${TABLE}."STATUS_DAILY" ;;
+  }
+
+  dimension: status_custom_sort {
+    label: "Status (Custom Sort)"
+    case: {
+      when: {
+        sql: ${status_daily} = 'Open' ;;
+        label: "Open"
+      }
+      when: {
+        sql: ${status_daily} = 'Refining' ;;
+        label: "Refining"
+      }
+      when: {
+        sql: ${status_daily} = 'Ready' ;;
+        label: "Ready"
+      }
+      when: {
+        sql: ${status_daily} = 'Reopened' ;;
+        label: "Reopened"
+      }
+      when: {
+        sql:${status_daily} = 'In Progress' ;;
+        label: "In Progress"
+      }
+      when: {
+        sql: ${status_daily} = 'Dev Complete' ;;
+        label: "Dev Complete"
+      }
+      when: {
+        sql: ${status_daily} = 'Ready for QA' ;;
+        label: "Ready for QA"
+      }
+      when: {
+        sql: ${status_daily} = 'In QA' ;;
+        label: "In QA"
+      }
+      when: {
+        sql: ${status_daily} = 'Closed' ;;
+        label: "Closed"
+      }
+    }
   }
 }
