@@ -139,3 +139,8 @@ explore: cu_vm_provisioned_product {
   from: cu_vm_provisioned_product
   label: "cu_vm_provisioned_product"
 }
+
+explore: actual_number_of_cu_users {
+  from: actual_number_of_cu_users
+  label: "actual_number_of_cu_users"
+}
