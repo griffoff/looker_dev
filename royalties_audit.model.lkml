@@ -4,7 +4,6 @@ label: "Royalties Audit and Unlimited"
 # include all the CU views
 include: "*.view.lkml"
 include: "dim_date.view"
-
 # include all the dashboards
 #include: "*.dashboard.lookml"  # include all dashboards in this project
 
@@ -79,5 +78,23 @@ explore: ra_usage {
 explore: check_script_2 {
   # from: check_script_2
   label: "check_script_2"
+
+}
+
+explore: ra_sub_v2 {
+  from: ra_sub_v2
+  label: "ra_sub_v2"
+
+}
+
+explore: ra_prov_v2 {
+  from: ra_prov_v2
+  label: "ra_prov_v2"
+
+}
+
+explore: ra_usage_v2 {
+  from: ra_usage_v2
+  label: "ra_usage_v2"
 
 }
