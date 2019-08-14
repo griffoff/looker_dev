@@ -38,7 +38,7 @@ view: ra_usage_v2 {
             , UNLIMITED.SCENARIO_DETAILS.GUID as _uid
             , UNLIMITED.SCENARIO_ACTIVITIES.CREATED_ON as e_time
             , UNLIMITED.SCENARIO_ACTIVITIES.COMPONENT_ISBN as ISBN13
-            , UNLIMITED.SCENARIO_ACTIVITIES.PRODUCT_TYPE as e_source
+            , null as e_source
             , UNLIMITED.SCENARIO_ACTIVITIES.EVENT_TYPE as e_category
             , UNLIMITED.SCENARIO_ACTIVITIES.EVENT_ACTION as e_action
             , UNLIMITED.SCENARIO_ACTIVITIES.EVENT_COUNT as e_count
