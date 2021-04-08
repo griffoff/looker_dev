@@ -3,6 +3,7 @@ label: "JIRA"
 
 # include all the views
 include: "*.view"
+include: "//dm-bpl/dm-shared/dim_date.view"
 
 # include all the dashboards
 include: "kpi.dashboard"
@@ -44,7 +45,7 @@ explore: vw_escal_detail {
 
   join: dim_date {
     view_label: "Date"
-    sql_on: ${vw_escal_detail.createdatekey} = ${dim_date.datekey} ;;
+    sql_on: ${vw_escal_detail.createdatekey} = ${dim_date.date_value} ;;
     relationship: many_to_one
   }
 }
@@ -65,7 +66,7 @@ explore: vw_escal_detail_prod {
 
   join: dim_date {
     view_label: "Date"
-    sql_on: ${vw_escal_detail_prod.createdatekey} = ${dim_date.datekey} ;;
+    sql_on: ${vw_escal_detail_prod.createdatekey} = ${dim_date.date_value} ;;
     relationship: many_to_one
   }
 }
@@ -135,7 +136,7 @@ explore: vw_kpi_data{
 
   join: dim_date {
     view_label: "Date"
-    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.datekey} ;;
+    sql_on: ${vw_kpi_data.MODIFIEDdatekey} = ${dim_date.date_value} ;;
     relationship: many_to_one
   }
 
@@ -164,7 +165,7 @@ explore: escal_2 {
 
   join: dim_date {
     view_label: "Date"
-    sql_on: ${escal_2.createdatekey} = ${dim_date.datekey} ;;
+    sql_on: ${escal_2.createdatekey} = ${dim_date.date_value} ;;
     relationship: many_to_one
   }
 

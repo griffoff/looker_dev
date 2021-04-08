@@ -19,7 +19,7 @@
     - vw_escal_detail_prod.resolutionStatus
     filters:
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
-      # dim_date.governmentdefinedacademicterm: Fall 2018
+      # dim_date.gov_ay_term_full: Fall 2018
       # vw_escal_categories_prod.category: Software
       # vw_escal_components_prod.topSystem: 'Yes'
     sorts:
@@ -85,7 +85,7 @@
       No - vw_escal_detail_prod.count: Not resolved
       Yes - vw_escal_detail_prod.count: Resolved
     listen:
-      Data range: dim_date.governmentdefinedacademicterm
+      Data range: dim_date.gov_ay_term_full
       Category: vw_escal_categories_prod.category
       System: vw_escal_components_prod.topSystem
       Component: vw_escal_components_prod.component
@@ -100,16 +100,16 @@
     type: looker_line
     fields:
     - vw_escal_detail_prod.count
-    - dim_date.governmentdefinedacademicterm
-    - dim_date.isoweekofyearid
+    - dim_date.gov_ay_term_full
+    - dim_date.iso_week
     pivots:
-    - dim_date.governmentdefinedacademicterm
+    - dim_date.gov_ay_term_full
     filters:
-      dim_date.governmentdefinedacademicterm: Fall 2017,Fall 2018
+      dim_date.gov_ay_term_full: Fall 2017,Fall 2018
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
     sorts:
-    - dim_date.governmentdefinedacademicterm 0
-    - dim_date.isoweekofyearid
+    - dim_date.gov_ay_term_full 0
+    - dim_date.iso_week
     limit: 500
     column_limit: 50
     stacking: ''
@@ -185,21 +185,21 @@
     fields:
     - vw_escal_detail_prod.count
     - vw_escal_detail_prod.resolutionStatus
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     pivots:
     - vw_escal_detail_prod.resolutionStatus
     fill_fields:
     - vw_escal_detail_prod.resolutionStatus
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     filters:
-      dim_date.datevalue_date: 31 days
+      dim_date.date_basic: 31 days
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
-      # dim_date.governmentdefinedacademicterm: Fall 2018
+      # dim_date.gov_ay_term_full: Fall 2018
       # vw_escal_categories_prod.category: Software
       # vw_escal_components_prod.topSystem: 'Yes'
     sorts:
     - vw_escal_detail_prod.resolutionStatus desc
-    - dim_date.datevalue_date desc
+    - dim_date.date_basic desc
     limit: 500
     column_limit: 50
     stacking: normal
@@ -260,7 +260,7 @@
       No - vw_escal_detail_prod.count: Not resolved
       Yes - vw_escal_detail_prod.count: Resolved
     listen:
-      Data range: dim_date.governmentdefinedacademicterm
+      Data range: dim_date.gov_ay_term_full
       Category: vw_escal_categories_prod.category
       System: vw_escal_components_prod.topSystem
       Component: vw_escal_components_prod.component
@@ -274,18 +274,18 @@
     explore: vw_escal_detail_prod
     type: looker_column
     fields:
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     - vw_escal_detail_prod.priority
     - vw_escal_detail_prod.count
     pivots:
     - vw_escal_detail_prod.priority
     fill_fields:
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     filters:
-      dim_date.datevalue_date: 31 days
+      dim_date.date_basic: 31 days
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
     sorts:
-    - dim_date.datevalue_date desc
+    - dim_date.date_basic desc
     - vw_escal_detail_prod.priority
     limit: 500
     column_limit: 50
@@ -347,7 +347,7 @@
     x_axis_label: Date
     totals_rotation: 0
     listen:
-      Data range: dim_date.governmentdefinedacademicterm
+      Data range: dim_date.gov_ay_term_full
       Category: vw_escal_categories_prod.category
       System: vw_escal_components_prod.topSystem
       Component: vw_escal_components_prod.component
@@ -363,20 +363,20 @@
     fields:
     - vw_escal_detail_prod.count
     - vw_escal_detail_prod.resolutionStatus
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     pivots:
     - vw_escal_detail_prod.resolutionStatus
     fill_fields:
     - vw_escal_detail_prod.resolutionStatus
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     filters:
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
-      # dim_date.governmentdefinedacademicterm: Fall 2018
+      # dim_date.gov_ay_term_full: Fall 2018
       # vw_escal_categories_prod.category: Software
       # vw_escal_components_prod.topSystem: 'Yes'
     sorts:
     - vw_escal_detail_prod.resolutionStatus desc
-    - dim_date.datevalue_date desc
+    - dim_date.date_basic desc
     limit: 500
     column_limit: 50
     stacking: normal
@@ -438,7 +438,7 @@
       Yes - vw_escal_detail_prod.count: Resolved
     column_group_spacing_ratio:
     listen:
-      Data range: dim_date.governmentdefinedacademicterm
+      Data range: dim_date.gov_ay_term_full
       Category: vw_escal_categories_prod.category
       System: vw_escal_components_prod.topSystem
       Component: vw_escal_components_prod.component
@@ -452,17 +452,17 @@
     explore: vw_escal_detail_prod
     type: looker_column
     fields:
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     - vw_escal_detail_prod.priority
     - vw_escal_detail_prod.count
     pivots:
     - vw_escal_detail_prod.priority
     fill_fields:
-    - dim_date.datevalue_date
+    - dim_date.date_basic
     filters:
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
     sorts:
-    - dim_date.datevalue_date desc
+    - dim_date.date_basic desc
     - vw_escal_detail_prod.priority
     limit: 500
     column_limit: 50
@@ -530,7 +530,7 @@
       num_rows: 0
     hide_legend: false
     listen:
-      Data range: dim_date.governmentdefinedacademicterm
+      Data range: dim_date.gov_ay_term_full
       Category: vw_escal_categories_prod.category
       System: vw_escal_components_prod.topSystem
       Component: vw_escal_components_prod.component
@@ -783,16 +783,16 @@
     type: looker_line
     fields:
     - vw_escal_detail_prod.count
-    - dim_date.governmentdefinedacademicterm
-    - dim_date.isoweekofyearid
+    - dim_date.gov_ay_term_full
+    - dim_date.iso_week
     pivots:
-    - dim_date.governmentdefinedacademicterm
+    - dim_date.gov_ay_term_full
     filters:
-      dim_date.governmentdefinedacademicterm: Spring 2017,Spring 2018
+      dim_date.gov_ay_term_full: Spring 2017,Spring 2018
       vw_escal_detail_prod.priority: P1 Escalation,P2 Escalation,P3 Escalation
     sorts:
-    - dim_date.governmentdefinedacademicterm 0
-    - dim_date.isoweekofyearid
+    - dim_date.gov_ay_term_full 0
+    - dim_date.iso_week
     limit: 500
     column_limit: 50
     stacking: ''
@@ -867,7 +867,7 @@
     default_value: Spring 2018
     model: jira
     explore: vw_escal_detail_prod
-    field: dim_date.governmentdefinedacademicterm
+    field: dim_date.gov_ay_term_full
     listens_to_filters: []
     allow_multiple_values: true
     required: false

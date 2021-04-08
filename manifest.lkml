@@ -8,5 +8,5 @@ project_name: "dev"
 # }
 
  local_dependency: {
-   project: "cube"
+   project: "dm-bpl"
  }

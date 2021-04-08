@@ -3,7 +3,7 @@ label: "Royalties Audit and Unlimited"
 
 # include all the CU views
 include: "*.view.lkml"
-include: "dim_date.view"
+include: "//dm-bpl/dm-shared/dim_date.view"
 # include all the dashboards
 #include: "*.dashboard.lookml"  # include all dashboards in this project
 
@@ -22,7 +22,7 @@ include: "dim_date.view"
 #   }
 # }
 
-explore: dim_date {}
+# explore: dim_date {}
 
 datagroup: mt {
   sql_trigger: SELECT COUNT(*) FROM cap_er.prod.RAW_MT_RESOURCE_INTERACTIONS ;;
