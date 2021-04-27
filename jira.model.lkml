@@ -133,7 +133,7 @@ explore: vw_gia_detail{
 
 # for work with KPI-data from PROD
 explore: vw_kpi_data{
-  persist_for: "8 hour"
+  persist_with: daily_refresh
   label: "KPI status (PROD)"
 
   join: dim_date {
