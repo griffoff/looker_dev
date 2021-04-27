@@ -10,3 +10,7 @@ project_name: "dev"
  local_dependency: {
    project: "dm-bpl"
  }
+
+local_dependency: {
+  project: "core"
+}

@@ -5,6 +5,8 @@ label: "JIRA"
 include: "*.view"
 include: "//dm-bpl/dm-shared/dim_date.view"
 
+include: "//core/datagroups.lkml"
+
 # include all the dashboards
 include: "kpi.dashboard"
 include: "escal.dashboard"
@@ -98,7 +100,7 @@ explore: vw_escal_optimized {
 # for work with TRUST
 explore: vw_trust{
   label: "TRUST (PROD)"
-  persist_for: "8 hour"
+  persist_with: daily_refresh
   join: vw_trust_time_interval {
     sql_on: ${vw_trust.key} = ${vw_trust_time_interval.key} ;;
     relationship: one_to_many

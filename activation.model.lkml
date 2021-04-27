@@ -1,5 +1,7 @@
 connection: "snowflake_prod"
 
+include: "//core/datagroups.lkml"
+
 include: "*.view.lkml"         # include all views in this project
 # include: "*.dashboard.lookml"  # include all dashboards in this project
 
@@ -26,7 +28,7 @@ label:"Test: Source Data stg_clts on Snowflake"
 ## CLTS
 explore:activations_olr_v {
   label: "Import CLTS - Activations_v"
-  persist_for: "8 hour"
+  persist_with: daily_refresh
  # fields: [
 #    # activations_olr Dimension
 #    actv_code, actv_count, activations_olr.actv_datekey,

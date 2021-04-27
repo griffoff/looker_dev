@@ -1,5 +1,7 @@
 connection: "snowflake_prod"
 
+include: "//core/datagroups.lkml"
+
 # include: "/bnoc/*.view.lkml"         # include all CU views in this project
 # include: "dim_date.view.lkml"
 # include: "/bnoc/cu*.dashboard.lookml"  # include all CU dashboards in this project
@@ -63,7 +65,7 @@ connection: "snowflake_prod"
 
 # explore: cu_vw_enrollment_base {
 #   # from: cu_vw_enrollment_base
-#   persist_for: "12 hour"
+#   persist_with: daily_refresh
 #   label: "cu_vw_enrollment_base"
 # }
 
