@@ -14,8 +14,19 @@ include: "field.explore"
 
 
 explore: +issue {
-  hidden: no
-  extends: [status,project,comment,issue_link,worklog]
+  hidden: yes
+  extends: [project,issue_link,status,worklog,comment]
+
+  join: project {
+    sql_on: ${issue.project} = ${project.id} ;;
+    relationship: many_to_one
+  }
+
+  join: issue_link {
+    view_label: "Related Issue"
+    sql_on: ${issue.id} = ${issue_link.issue_id} ;;
+    relationship: one_to_many
+  }
 
   join: parent_issue {
     from: issue
@@ -81,9 +92,7 @@ explore: +issue {
     relationship: one_to_many
   }
 
-  join: issue_link {
-    view_label: "Related Issue"
-  }
+
 
 }
 

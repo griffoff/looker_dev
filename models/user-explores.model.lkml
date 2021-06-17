@@ -1,13 +1,23 @@
 connection: "snowflake_jira"
 
-# include: "/views/issue.explore"
-# include: "/views/project_board.explore"
+include: "/views/issue.explore"
+include: "/views/project.explore"
+include: "/views/board.explore"
 
-# explore: jira_issues {
-#   extends: [project_board,issue]
+explore: jira_issues {
+  group_label: "JIRA"
+  extends: [issue]
+  hidden: no
+}
 
-#   join: project_board {
-#     sql_on: ${project.id} = ${project_board.project_id} ;;
-#     relationship: many_to_one
-#   }
-# }
+explore: jira_projects {
+  group_label: "JIRA"
+  extends: [project]
+  hidden: no
+}
+
+explore: jira_boards {
+  group_label: "JIRA"
+  extends: [board]
+  hidden: no
+}
