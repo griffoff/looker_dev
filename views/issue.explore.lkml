@@ -13,6 +13,7 @@ include: "worklog.view"
 include: "issue_field_history_combined.view"
 include: "field.view"
 include: "issue_type.view"
+include: "issue_custom_fields.view"
 
 
 explore: +issue {
@@ -94,6 +95,11 @@ explore: +issue {
   join: issue_type {
     sql_on: ${issue.issue_type} = ${issue_type.id} ;;
     relationship: many_to_one
+  }
+
+  join: issue_custom_fields {
+    sql_on: ${issue.id} = ${issue_custom_fields.issue_id} ;;
+    relationship: one_to_one
   }
 
 }
