@@ -7,8 +7,3 @@ explore: +field_option {
     relationship: many_to_one
   }
 }
-
-view: +field_option {
-  dimension: parent_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
-}

@@ -1,6 +1,6 @@
 include: "comment.view"
-include: "issue.explore"
-include: "user.explore"
+include: "issue.view"
+include: "user.view"
 
 explore: +comment {
 
@@ -20,11 +20,4 @@ explore: +comment {
     sql_on: ${comment.author_id} = ${comment_update_author.id} ;;
     relationship: many_to_one
   }
-}
-
-view: +comment {
-  dimension: issue_id {hidden:yes}
-  dimension: author_id {hidden:yes}
-  dimension: update_author_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

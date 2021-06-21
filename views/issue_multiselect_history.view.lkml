@@ -12,9 +12,13 @@ explore: issue_multiselect_history{
 }
 
 view: +issue_multiselect_history{
-  dimension: pk {
-    primary_key:yes
-    hidden:yes
-    sql: hash(${author_id},${field_id},${issue_id},${time_raw},${value} ;;
-    }
+  extends: [common_hidden_fields]
+  dimension: _fivetran_id {primary_key:yes}
+  dimension: author_id {hidden:yes}
+  dimension: field_id {hidden:yes}
+  dimension: issue_id {hidden:yes}
+
+  measure: sample_value {
+    sql: any_value(${value}) ;;
+  }
 }

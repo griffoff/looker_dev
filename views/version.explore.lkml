@@ -1,5 +1,5 @@
 include: "version.view"
-include: "project.explore"
+include: "project.view"
 
 explore: +version {
   extends: [project]
@@ -8,9 +8,4 @@ explore: +version {
     sql_on: ${version.project_id} = ${project.id} ;;
     relationship: many_to_one
   }
-}
-
-view: +version {
-  dimension: project_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

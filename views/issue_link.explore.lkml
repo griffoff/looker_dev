@@ -1,5 +1,5 @@
 include: "issue_link.view"
-include: "issue.explore"
+include: "issue.view"
 
 explore: +issue_link {
 
@@ -14,10 +14,4 @@ explore: +issue_link {
     relationship: many_to_one
   }
 
-}
-
-view: +issue_link {
-  dimension: issue_id {hidden:yes}
-  dimension: related_issue_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

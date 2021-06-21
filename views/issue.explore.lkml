@@ -1,16 +1,18 @@
 include: "issue.view"
-include: "priority.explore"
-include: "resolution.explore"
-include: "status.explore"
-include: "epic.explore"
+include: "priority.view"
+include: "resolution.view"
+include: "status.view"
+include: "status_category.view"
+include: "epic.view"
+include: "user.view"
 
-include: "project.explore"
-include: "comment.explore"
-include: "issue_link.explore"
-include: "worklog.explore"
-include: "issue_field_history.explore"
-include: "issue_multiselect_history.explore"
-include: "field.explore"
+include: "project.view"
+include: "comment.view"
+include: "issue_link.view"
+include: "worklog.view"
+include: "issue_field_history_combined.view"
+include: "field.view"
+include: "issue_type.view"
 
 
 explore: +issue {
@@ -54,6 +56,8 @@ explore: +issue {
 
   join: status_category {
     view_label: "Issue Status Category"
+    sql_on: ${status.status_category_id} = ${status_category.id} ;;
+    relationship: many_to_one
   }
 
   join: epic {
@@ -66,24 +70,19 @@ explore: +issue {
     relationship: one_to_many
   }
 
-  join: issue_field_history {
-    sql_on: ${issue.id} = ${issue_field_history.issue_id} ;;
-    relationship: one_to_many
-  }
-
-  join: issue_multiselect_history {
-    sql_on: ${issue.id} = ${issue_multiselect_history.issue_id} ;;
+  join: issue_field_history_combined {
+    sql_on: ${issue.id} = ${issue_field_history_combined.issue_id} ;;
     relationship: one_to_many
   }
 
   join: field {
-    sql_on: coalesce(${issue_field_history.field_id},${issue_multiselect_history.field_id}) = ${field.id} ;;
+    sql_on: ${issue_field_history_combined.field_id} = ${field.id} ;;
     relationship: many_to_one
   }
 
   join: issue_field_history_author {
     from: user
-    sql_on: coalesce(${issue_field_history.author_id},${issue_multiselect_history.author_id}) = ${issue_field_history_author.id} ;;
+    sql_on: ${issue_field_history_combined.author_id} = ${issue_field_history_author.id} ;;
     relationship: many_to_one
   }
 
@@ -92,21 +91,9 @@ explore: +issue {
     relationship: one_to_many
   }
 
-
-
-}
-
-view: +issue {
-  dimension: parent_id {hidden:yes}
-  dimension: project {hidden:yes}
-  dimension: priority {hidden:yes}
-  dimension: resolution {hidden:yes}
-  dimension: status {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
-}
-
-view: +issue_link {
-  dimension: relationship {
-    label: "Relationship to Primary Issue"
+  join: issue_type {
+    sql_on: ${issue.issue_type} = ${issue_type.id} ;;
+    relationship: many_to_one
   }
+
 }

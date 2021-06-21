@@ -12,5 +12,7 @@ explore: field_option{
 }
 
 view: +field_option{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: parent_id {hidden:yes}
 }

@@ -12,5 +12,7 @@ explore: field{
 }
 
 view: +field{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: name {label:"Field Name"}
 }

@@ -1,7 +1,6 @@
 include: "component.view"
-include: "project.explore"
-include: "issue.explore"
-
+include: "project.view"
+include: "issue.view"
 
 explore: +component {
 
@@ -10,9 +9,4 @@ explore: +component {
     relationship: many_to_one
   }
 
-}
-
-view: +component {
-  dimension: project_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

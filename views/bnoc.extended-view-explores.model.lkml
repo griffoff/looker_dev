@@ -1,6 +1,19 @@
 connection: "snowflake_jira"
+case_sensitive: no
 
-include: "/views/*.explore.lkml"                # include all views in the views/ folder in this project
+include: "/views/*.explore.lkml"
+
+include: "/views/common_hidden_fields.view"
+
+view: +common_hidden_fields {
+  dimension_group: _fivetran_synced {hidden:yes}
+}
+
+view: +root {
+  extends: []
+}
+
+# include all views in the views/ folder in this project
 # include: "/**/*.view.lkml"                 # include all views in this project
 # include: "my_dashboard.dashboard.lookml"   # include a LookML dashboard called my_dashboard
 

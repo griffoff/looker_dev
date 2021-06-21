@@ -12,5 +12,11 @@ explore: project_role_actor{
 }
 
 view: +project_role_actor{
-  dimension: id {primary_key:yes}
+  extends: [common_hidden_fields]
+  dimension: id {primary_key:yes hidden:yes}
+  dimension: project_id {hidden:yes}
+  dimension: project_role_id {hidden:yes}
+  dimension: user_id {hidden:yes}
+  dimension: group_name {hidden:yes}
+  measure: count {hidden:yes}
 }

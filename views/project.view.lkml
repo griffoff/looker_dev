@@ -12,5 +12,8 @@ explore: project{
 }
 
 view: +project{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: lead_id {hidden:yes}
+  dimension: project_category_id {hidden:yes}
 }

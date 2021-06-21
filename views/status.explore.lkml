@@ -7,8 +7,3 @@ explore: +status {
     relationship: many_to_one
   }
 }
-
-view: +status {
-  dimension: status_category_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
-}

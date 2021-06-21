@@ -12,9 +12,16 @@ explore: issue_link{
 }
 
 view: +issue_link{
+  extends: [common_hidden_fields]
   dimension: pk {
     primary_key:yes
     hidden: yes
     sql: hash(${issue_id},${related_issue_id},${relationship}) ;;
-    }
+  }
+  dimension: issue_id {hidden:yes}
+  dimension: related_issue_id {hidden:yes}
+  dimension: relationship {
+      label: "Relationship to Primary Issue"
+  }
+
 }

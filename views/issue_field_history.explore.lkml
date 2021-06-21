@@ -1,7 +1,7 @@
 include: "issue_field_history.view"
 include: "user.view"
 include: "field.view"
-include: "issue.explore"
+include: "issue.view"
 
 explore: +issue_field_history {
   extends: [issue]
@@ -21,11 +21,4 @@ explore: +issue_field_history {
     sql_on: ${issue.id} = ${issue_field_history.issue_id} ;;
     relationship: many_to_one
   }
-}
-
-view: +issue_field_history {
-  dimension: author_id {hidden:yes}
-  dimension: field_id {hidden:yes}
-  dimension: issue_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

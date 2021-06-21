@@ -1,8 +1,8 @@
 include: "project_role_actor.view"
-include: "project.explore"
-include: "project_role.explore"
-include: "user.explore"
-include: "user_group.explore"
+include: "project.view"
+include: "project_role.view"
+include: "user.view"
+include: "user_group.view"
 
 explore: +project_role_actor {
 
@@ -29,14 +29,4 @@ explore: +project_role_actor {
     relationship: many_to_one
   }
 
-}
-
-view: +project_role_actor {
-  dimension: project_id {hidden:yes}
-  dimension: project_role_id {hidden:yes}
-  dimension: user_id {hidden:yes}
-  dimension: group_name {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
-  dimension: id {hidden:yes}
-  measure: count {hidden:yes}
 }

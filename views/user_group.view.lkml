@@ -12,9 +12,11 @@ explore: user_group{
 }
 
 view: +user_group{
+  extends: [common_hidden_fields]
   dimension: pk {
     primary_key:yes
     hidden: yes
     sql: hash(${user_id},${group_name}) ;;
-    }
+  }
+  dimension: user_id {hidden:yes}
 }

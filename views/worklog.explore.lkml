@@ -1,6 +1,6 @@
 include: "worklog.view"
 include: "user.view"
-include: "issue.explore"
+include: "issue.view"
 
 explore: +worklog {
   extends: [issue]
@@ -21,11 +21,4 @@ explore: +worklog {
     sql_on: ${worklog.issue_id} = ${issue.id} ;;
     relationship: many_to_one
   }
-}
-
-view: +worklog {
-  dimension: author_id {hidden:yes}
-  dimension: update_author_id {hidden:yes}
-  dimension: issue_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

@@ -12,5 +12,6 @@ explore: status_category{
 }
 
 view: +status_category{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
 }

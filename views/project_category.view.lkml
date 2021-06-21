@@ -12,5 +12,6 @@ explore: project_category{
 }
 
 view: +project_category{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
 }

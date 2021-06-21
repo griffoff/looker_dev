@@ -1,6 +1,6 @@
 include: "board.view"
-include: "sprint.explore"
-include: "project_board.explore"
+include: "sprint.view"
+include: "project_board.view"
 
 explore: +board {
   extends: [sprint,project_board]
@@ -15,9 +15,4 @@ explore: +board {
     relationship: one_to_many
   }
 
-
-}
-
-view: +board {
-  dimension_group: _fivetran_synced {hidden:yes}
 }

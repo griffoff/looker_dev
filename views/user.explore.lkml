@@ -1,6 +1,6 @@
 include: "user.view"
-include: "user_group.explore"
-include: "comment.explore"
+include: "user_group.view"
+include: "comment.view"
 
 explore: +user {
   extends: [user_group,comment]
@@ -10,9 +10,4 @@ explore: +user {
     relationship: one_to_many
   }
 
-
-}
-
-view: +user {
-  dimension_group: _fivetran_synced {hidden:yes}
 }

@@ -12,5 +12,7 @@ explore: component{
 }
 
 view: +component{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: project_id {hidden:yes}
 }

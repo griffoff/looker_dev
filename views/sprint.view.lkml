@@ -12,5 +12,7 @@ explore: sprint{
 }
 
 view: +sprint{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: board_id {hidden:yes}
 }

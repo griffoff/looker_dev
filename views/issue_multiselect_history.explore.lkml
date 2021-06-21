@@ -1,7 +1,7 @@
 include: "issue_multiselect_history.view"
-include: "user.explore"
-include: "field.explore"
-include: "issue.explore"
+include: "user.view"
+include: "field.view"
+include: "issue.view"
 
 explore: +issue_multiselect_history {
 
@@ -20,11 +20,4 @@ explore: +issue_multiselect_history {
     sql_on: ${issue_multiselect_history.issue_id} = ${issue.id} ;;
     relationship: many_to_one
   }
-}
-
-view: +issue_multiselect_history {
-  dimension: author_id {hidden:yes}
-  dimension: field_id {hidden:yes}
-  dimension: issue_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }

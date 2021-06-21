@@ -12,5 +12,6 @@ explore: epic{
 }
 
 view: +epic{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
 }

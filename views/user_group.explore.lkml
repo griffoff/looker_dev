@@ -7,8 +7,3 @@ explore: +user_group {
     relationship: many_to_one
   }
 }
-
-view: +user_group {
-  dimension: user_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
-}

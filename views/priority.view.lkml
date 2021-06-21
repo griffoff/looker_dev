@@ -12,5 +12,6 @@ explore: priority{
 }
 
 view: +priority{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
 }

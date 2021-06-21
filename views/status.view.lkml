@@ -12,5 +12,7 @@ explore: status{
 }
 
 view: +status{
+  extends: [common_hidden_fields]
   dimension: id {primary_key:yes}
+  dimension: status_category_id {hidden:yes}
 }

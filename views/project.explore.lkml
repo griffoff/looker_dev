@@ -1,11 +1,11 @@
 include: "project.view"
-include: "project_role_actor.explore"
-include: "user.explore"
-include: "component.explore"
-include: "issue.explore"
-include: "project_board.explore"
-include: "version.explore"
-include: "project_category.explore"
+include: "project_role_actor.view"
+include: "user.view"
+include: "component.view"
+include: "issue.view"
+include: "project_board.view"
+include: "version.view"
+include: "project_category.view"
 
 
 explore: +project {
@@ -49,10 +49,4 @@ explore: +project {
     relationship: many_to_one
   }
 
-}
-
-view: +project {
-  dimension: lead_id {hidden:yes}
-  dimension: project_category_id {hidden:yes}
-  dimension_group: _fivetran_synced {hidden:yes}
 }
