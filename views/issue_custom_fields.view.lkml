@@ -15,14 +15,16 @@ view: issue_custom_fields {
     publish_as_db_view: yes
     sql:
       select
-        issue_id
+        i.id as issue_id
         , max(case when f.NAME = 'Time to Close' then ifhc.value end)  as time_to_close
         , max(case when f.NAME = 'Story Points' then ifhc.value end)  as story_points
         , max(case when f.NAME = 'SSO ISBN 13' then ifhc.value end)  as sso_isbn13
+        , max(case when f.NAME = 'SF To Jira Production Case Reference' then ifhc.value end)  as sf_to_jira_production_case_reference
         , max(case when f.NAME = 'SF Ticket Status' then ifhc.value end)  as sf_ticket_status
         , max(case when f.NAME = 'Product(s)' then ifhc.value end)  as products
         , max(case when f.NAME = 'Product Owner' then ifhc.value end)  as product_owner
         , max(case when f.NAME = 'Product Manager_' then ifhc.value end)  as product_manager_
+        , max(case when f.NAME = 'Product Manager_ Report' then ifhc.value end)  as product_manager_report
         , max(case when f.NAME = 'Product Group_' then ifhc.value end)  as product_group_
         , max(case when f.NAME = 'Last Resolution Date' then ifhc.value end)  as last_resolution_date
         , max(case when f.NAME = 'Last Closure User' then ifhc.value end)  as last_closure_user
@@ -39,9 +41,21 @@ view: issue_custom_fields {
         , max(case when f.NAME = 'Core ISBN' then ifhc.value end)  as core_isbn
         , max(case when f.NAME = 'Content Manager' then ifhc.value end)  as content_manager
         , max(case when f.NAME = 'Case Number' then ifhc.value end)  as case_number
-      from ${issue_field_history_combined.SQL_TABLE_NAME} ifhc
-      inner join ${field.SQL_TABLE_NAME} f on f.id = ifhc.field_id
-      where ifhc._latest
+        , nullif(listagg(distinct case when il.relationship = 'is Cloned from' then ri.key end,', ')
+            within group(order by case when il.relationship = 'is Cloned from' then ri.key end),'') as is_cloned_from
+        , nullif(listagg(distinct case when il.relationship = 'Depends On' then ri.key end,', ')
+            within group(order by case when il.relationship = 'Depends On' then ri.key end),'') as depends_on
+        , nullif(listagg(distinct case when il.relationship = 'Duplicates' then ri.key end,', ')
+            within group(order by case when il.relationship = 'Duplicates' then ri.key end),'') as duplicates
+        , nullif(listagg(distinct case when il.relationship = 'is related to' then ri.key end,', ')
+            within group(order by case when il.relationship = 'is related to' then ri.key end),'') as is_related_to
+        , nullif(listagg(distinct case when il.relationship = 'is a story of' then ri.key end,', ')
+            within group(order by case when il.relationship = 'is a story of' then ri.key end),'') as is_a_story_of
+      from ${issue.SQL_TABLE_NAME} i
+      left join ${issue_field_history_combined.SQL_TABLE_NAME} ifhc on ifhc.issue_id = i.id  and ifhc._latest
+      left join ${field.SQL_TABLE_NAME} f on f.id = ifhc.field_id
+      left join ${issue_link.SQL_TABLE_NAME} il on il.issue_id = i.id
+      left join ${issue.SQL_TABLE_NAME} ri on ri.id = il.related_issue_id
       group by 1
     ;;
     datagroup_trigger: issue_field_history_combined_trigger
@@ -51,10 +65,12 @@ view: issue_custom_fields {
   dimension: time_to_close {}
   dimension: story_points {}
   dimension: sso_isbn13 {}
+  dimension: sf_to_jira_production_case_reference {}
   dimension: sf_ticket_status {}
   dimension: products {}
   dimension: product_owner {}
   dimension: product_manager_ {}
+  dimension: product_manager_report {}
   dimension: product_group_ {}
 
   dimension_group: last_resolution {
@@ -99,5 +115,11 @@ view: issue_custom_fields {
   dimension: core_isbn {}
   dimension: content_manager {}
   dimension: case_number {}
+
+  dimension: is_cloned_from {group_label:"Issue Links"}
+  dimension: depends_on {group_label:"Issue Links"}
+  dimension: duplicates {group_label:"Issue Links"}
+  dimension: is_related_to {group_label:"Issue Links"}
+  dimension: is_a_story_of {group_label:"Issue Links"}
 
 }

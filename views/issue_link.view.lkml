@@ -20,8 +20,11 @@ view: +issue_link{
   }
   dimension: issue_id {hidden:yes}
   dimension: related_issue_id {hidden:yes}
+
   dimension: relationship {
       label: "Relationship to Primary Issue"
   }
+
+  measure: count {hidden:yes}
 
 }
