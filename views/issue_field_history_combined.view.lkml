@@ -19,24 +19,26 @@ view: issue_field_history_combined {
     publish_as_db_view: yes
     sql:
       select
-        field_id
-        , issue_id
-        , time
-        , author_id
-        , _fivetran_synced
-        , value
-        , lead(time) over(partition by field_id,issue_id order by time) is null as _latest
-      from ${issue_field_history.SQL_TABLE_NAME}
+        ifh.field_id as field_id
+        , ifh.issue_id as issue_id
+        , ifh.time as time
+        , ifh.author_id as author_id
+        , ifh._fivetran_synced as _fivetran_synced
+        , coalesce(fo.name,ifh.value) as value
+        , lead(ifh.time) over(partition by ifh.field_id,ifh.issue_id order by ifh.time) is null as _latest
+      from ${issue_field_history.SQL_TABLE_NAME} ifh
+      left join ${field_option.SQL_TABLE_NAME} fo on fo.id::string = ifh.value::string
       union all
       select
-        field_id
-        , issue_id
-        , time
-        , author_id
-        , _fivetran_synced
-        , nullif(listagg(distinct value,', ') within group(order by value),'') as value
-        , lead(time) over(partition by field_id,issue_id order by time) is null as _latest
-      from ${issue_multiselect_history.SQL_TABLE_NAME}
+        imh.field_id
+        , imh.issue_id
+        , imh.time
+        , imh.author_id
+        , imh._fivetran_synced
+        , nullif(listagg(distinct coalesce(fo.name,imh.value),', ') within group(order by coalesce(fo.name,imh.value)),'') as value
+        , lead(imh.time) over(partition by imh.field_id,imh.issue_id order by imh.time) is null as _latest
+      from ${issue_multiselect_history.SQL_TABLE_NAME} imh
+      left join ${field_option.SQL_TABLE_NAME} fo on fo.id::string = imh.value::string
       group by 1,2,3,4,5
     ;;
     datagroup_trigger: issue_field_history_combined_trigger

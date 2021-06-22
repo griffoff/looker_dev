@@ -19,7 +19,7 @@ view: issue_custom_fields {
   derived_table: {
     publish_as_db_view: yes
     sql:
-      with custom_fields as (
+      -- with custom_fields as (
         select
           i.id as issue_id
           , max(case when f.NAME = 'Time to Close' then ifhc.value end)  as time_to_close
@@ -36,7 +36,7 @@ view: issue_custom_fields {
           , max(case when f.NAME = 'Last Closure User' then ifhc.value end)  as last_closure_user
           , max(case when f.NAME = 'Last Closure Date' then ifhc.value end)  as last_closure_date
           , max(case when f.NAME = 'Labels' then ifhc.value end)  as labels
-          , max(case when f.NAME = 'Issue Category' then ifhc.value end)  as issue_category_id
+          , max(case when f.NAME = 'Issue Category' then ifhc.value end)  as issue_category
           , max(case when f.NAME = 'ESC-COMP' then ifhc.value end)  as esc_comp
           , max(case when f.NAME = 'Epic/Theme' then ifhc.value end)  as epic_theme
           , max(case when f.NAME = 'Discipline Minor' then ifhc.value end)  as discipline_minor
@@ -63,11 +63,11 @@ view: issue_custom_fields {
         left join ${issue_link.SQL_TABLE_NAME} il on il.issue_id = i.id
         left join ${issue.SQL_TABLE_NAME} ri on ri.id = il.related_issue_id
         group by 1
-      )
+      /*)
       select distinct *
         , fo.name as issue_category
       from custom_fields cf
-      left join ${field_option.SQL_TABLE_NAME} fo on fo.id = cf.issue_category_id
+      left join ${field_option.SQL_TABLE_NAME} fo on fo.id = cf.issue_category_id */
     ;;
     datagroup_trigger: issue_field_history_combined_trigger
   }
