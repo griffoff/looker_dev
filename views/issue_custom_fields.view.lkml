@@ -39,6 +39,7 @@ view: issue_custom_fields {
           , max(case when f.NAME = 'Issue Category' then ifhc.value end)  as issue_category
           , max(case when f.NAME = 'ESC-COMP' then ifhc.value end)  as esc_comp
           , max(case when f.NAME = 'Epic/Theme' then ifhc.value end)  as epic_theme
+          , max(case when f.NAME = 'Discipline' then ifhc.value end)  as discipline
           , max(case when f.NAME = 'Discipline Minor' then ifhc.value end)  as discipline_minor
           , max(case when f.NAME = 'Discipline Major' then ifhc.value end)  as discipline_major
           , max(case when f.NAME = 'Customer Reported ISBN' then ifhc.value end)  as customer_reported_isbn
@@ -118,6 +119,7 @@ view: issue_custom_fields {
   dimension: issue_category {}
   dimension: esc_comp {}
   dimension: epic_theme {}
+  dimension: discipline {}
   dimension: discipline_minor {}
   dimension: discipline_major {}
   dimension: customer_reported_isbn {}
