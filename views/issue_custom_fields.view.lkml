@@ -1,4 +1,8 @@
 include: "/base/common_includes.lkml"
+include: "issue.view"
+include: "issue_field_history_combined.view"
+include: "field.view"
+include: "issue_link.view"
 include: "field_option.view"
 
 explore: issue_custom_fields{
