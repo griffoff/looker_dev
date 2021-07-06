@@ -24,7 +24,7 @@ view: issue_field_history_combined {
         , ifh.time as time
         , ifh.author_id as author_id
         , ifh._fivetran_synced as _fivetran_synced
-        , coalesce(e.key, s.name, sp.name, c.name, fo.name, ifh.value) as value
+        , coalesce(e.key, s.name, sp.name, c.name, r.name, fo.name, ifh.value) as value
         , lead(ifh.time) over(partition by ifh.field_id,ifh.issue_id order by ifh.time) is null as _latest
       from ${issue_field_history.SQL_TABLE_NAME} ifh
       left join ${field.SQL_TABLE_NAME} f on f.id = ifh.field_id
@@ -32,6 +32,7 @@ view: issue_field_history_combined {
       left join ${status.SQL_TABLE_NAME} s on s.id = case when f.name = 'Status' then ifh.value::string end
       left join ${sprint.SQL_TABLE_NAME} sp on sp.id = case when f.name = 'Sprint' then ifh.value::string end
       left join ${component.SQL_TABLE_NAME} c on c.id = case when f.name = 'Component/s' then ifh.value::string end
+      left join ${resolution.SQL_TABLE_NAME} r on r.id = case when f.name = 'Resolution' then ifh.value::string end
       left join ${field_option.SQL_TABLE_NAME} fo on fo.id::string = ifh.value::string
       union all
       select
@@ -40,8 +41,8 @@ view: issue_field_history_combined {
         , imh.time
         , imh.author_id
         , max(imh._fivetran_synced) as _fivetran_synced
-        , nullif(listagg(distinct coalesce(e.key, s.name, sp.name, c.name, fo.name, imh.value),', ')
-            within group(order by coalesce(e.key, s.name, sp.name, c.name, fo.name, imh.value)),'') as value
+        , nullif(listagg(distinct coalesce(e.key, s.name, sp.name, c.name, r.name, fo.name, imh.value),', ')
+            within group(order by coalesce(e.key, s.name, sp.name, c.name, r.name, fo.name, imh.value)),'') as value
         , lead(imh.time) over(partition by imh.field_id,imh.issue_id order by imh.time) is null as _latest
       from ${issue_multiselect_history.SQL_TABLE_NAME} imh
       left join ${field.SQL_TABLE_NAME} f on f.id = imh.field_id
@@ -49,6 +50,7 @@ view: issue_field_history_combined {
       left join ${status.SQL_TABLE_NAME} s on s.id = case when f.name = 'Status' then imh.value::string end
       left join ${sprint.SQL_TABLE_NAME} sp on sp.id = case when f.name = 'Sprint' then imh.value::string end
       left join ${component.SQL_TABLE_NAME} c on c.id = case when f.name = 'Component/s' then imh.value::string end
+      left join ${resolution.SQL_TABLE_NAME} r on r.id = case when f.name = 'Resolution' then imh.value::string end
       left join ${field_option.SQL_TABLE_NAME} fo on fo.id::string = imh.value::string
       group by 1,2,3,4
     ;;
